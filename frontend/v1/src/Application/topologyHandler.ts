@@ -1,3 +1,3 @@
-const topologyToTree = () => {
+export const topologyToTree = () => {
     return "Not implemented";
 }
