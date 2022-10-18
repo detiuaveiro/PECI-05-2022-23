@@ -1,1 +1,1 @@
-ssh -i "backend_server.pem" admin@ec2-13-41-78-133.eu-west-2.compute.amazonaws.com
+ssh -i "~/.shh/backend_server.pem" admin@ec2-13-41-78-133.eu-west-2.compute.amazonaws.com
