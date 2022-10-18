@@ -4,6 +4,7 @@ import Navbar from './Views/Components/Navbar';
 import Calendar from './Views/Calendar';
 import About from './Views/About';
 import Home from './Views/Home';
+import Topology from './Views/Topology'
 
 const App: React.FC = () => {
     return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
             <Route path='/' element={<Home />} />
             <Route path='/calendar' element={<Calendar />} />
             <Route path='/about' element={<About />} />
+            <Route path='/topology' element={<Topology />} />
         </Routes>
         </>
     );
