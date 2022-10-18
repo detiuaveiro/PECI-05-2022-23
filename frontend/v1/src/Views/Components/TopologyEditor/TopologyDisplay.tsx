@@ -1,27 +1,7 @@
-import React from 'react';
-import ReactFlow, {Background, MiniMap , Controls} from 'react-flow-renderer';
+import React, {useState, useCallback } from 'react';
+import ReactFlow, {Background, MiniMap , Controls, Node, Edge, NodeChange, EdgeChange, applyEdgeChanges, applyNodeChanges, addEdge, Connection, FitViewOptions } from 'react-flow-renderer';
 import 'reactflow/dist/style.css';
 
-
-interface Node {
-    id : string;
-    type? : string;
-    data : {
-        label : string;
-    };
-    position : {
-        x : number;
-        y : number;
-    };
-};
-
-interface Edge {
-    id : string;
-    source : string;
-    target : string;
-    type? : string;
-
-}
 
 const initialNodes : Array<Node>=  [
     {
@@ -46,7 +26,7 @@ const initialNodes : Array<Node>=  [
     }, 
 ];
 
-const edges : Array<Edge> = [
+const initialEdges : Array<Edge> = [
     {
         id : '1-2',
         source : '1',
@@ -56,11 +36,35 @@ const edges : Array<Edge> = [
 ]
 
 const TopologyDisplay : React.FC = () => {
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges]
+  );
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
+  const fitViewOptions: FitViewOptions = {
+    padding: 0.2,
+  };
+
     return (
         <ReactFlow
-            nodes={initialNodes}
             style={{width:'100%',height:'90vh'}}
+            nodes={nodes}
             edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            fitView
+            fitViewOptions={fitViewOptions}
         >
             <Background />
             <Controls />
