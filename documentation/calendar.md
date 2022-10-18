@@ -1,9 +1,11 @@
 # Tarefa 1 Estado da Arte e Aquisição de conhecimentos
 
-Ambientação à linguagem P4
-Análise das APIs de gestão externas (Prometheus)
+Ambientação à linguagem P4  
+Análise das APIs de gestão externas (Prometheus)  
 Análise de soluções existentes SDN's 
 Análise de literatura sobre deployment de serviços em ambientes inter-domínio  
+Desenvolvimento de um plano para o projeto  
+Distribuição de tarefas pelos membros  
 
 # Tarefa 2 Testes e análise de soluções existentes  
 
