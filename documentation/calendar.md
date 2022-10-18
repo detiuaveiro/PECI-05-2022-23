@@ -1,10 +1,8 @@
 # Tarefa 1 Estado da Arte e Aquisição de conhecimentos
 
-Ambientação ao ambiente kubernettes  
-Análise das diferentes implementações (k8's, k3's)  
-Análise das APIs de gestão externas  
-Análise de soluções existentes de gestão do Kubernettes (e.g., Rancher)  
-Análise de soluções existentes de Service Mesh (e.g., istio, Linkerd, Consul)  
+Ambientação à linguagem P4
+Análise das APIs de gestão externas (Prometheus)
+Análise de soluções existentes SDN's 
 Análise de literatura sobre deployment de serviços em ambientes inter-domínio  
 
 # Tarefa 2 Testes e análise de soluções existentes  
