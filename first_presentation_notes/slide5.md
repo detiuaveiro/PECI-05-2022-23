@@ -6,13 +6,13 @@
 
 ## SDN control pane  
 
-Com a pesquisa já feita nesta area percebeu-se que essencialmente existem 3 possiveis maneiras de o implementar sendo estas:  
- - Centralisado:
+Com a pesquisa já feita na area das SDN's percebemos que existem 3 possiveis maneiras de implementar o control pane sendo estas:  
+ - control pane Centralisado:
     - 1 nó de controlo tem a vista da rede por completo. Topologia mais usada nas primeiras soluções com SDN's.
     - Apesar de esta implementação simplificar a lógica de controlo, não permite que a rede escale para grandes dimenções.
  - Hierarquicamente:
     - 1 nó root e vários nós de controlo filhos, que enviam informções acerca da seção de redo pela qual são responsáveis ao root node, e este com uma visão global da rede toma decisões e propaga as mesmas para os filhos.
- - Distribuido:  
+ - Control pane Distribuido:  
    - vários nós de controlo cada um responsável por uma secção da rede
 
 
