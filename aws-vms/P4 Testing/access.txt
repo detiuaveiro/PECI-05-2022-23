@@ -1,1 +1,0 @@
-ssh -i "p4_testing_vm.pem" ubuntu@ec2-18-133-76-65.eu-west-2.compute.amazonaws.com
