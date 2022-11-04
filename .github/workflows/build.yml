@@ -10,6 +10,5 @@ jobs:
     name: Build Vue
     steps:
     - uses: actions/checkout@v2
-    - id: Build-Vue
     - run: npm install
     - run: npm run build
