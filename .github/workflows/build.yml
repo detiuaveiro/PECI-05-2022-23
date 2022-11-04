@@ -10,5 +10,7 @@ jobs:
     name: Build Vue
     steps:
     - uses: actions/checkout@v2
-    - run: npm install
-    - run: npm run build
+    - run: | 
+        cd peci-g5-2022-23
+        npm install
+        npm run build
