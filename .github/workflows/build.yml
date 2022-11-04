@@ -15,8 +15,6 @@ jobs:
     - id: Build-Vue
       uses: xRealNeon/VuePagesAction@1.0.1
       with:
-        username: $commiter
+        username: 'detiuaveiro'
         reponame: 'PECI-05-2022-23'
         token: ${{ secrets.GITHUB_TOKEN }}
-    env:
-       commiter: detiuaveiro
