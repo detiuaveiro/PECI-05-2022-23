@@ -3,6 +3,8 @@ on:
     push:
       branches:
         - website
+    workflow_dispatch:
+        
 jobs:
   build_vue:
     runs-on: ubuntu-latest
