@@ -9,11 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy GitHub Pages site
     steps:
-      - run: cd peci-g5-2022-23 && npm install && npm run build
       - id: Build Pages
+      - run: cd peci-g5-2022-23 && npm install && npm run build
       - uses: actions/checkout@v2
       - uses: actions/deploy-pages@v1.2.2
         with:
           token: ${{ github.token }}
           timeout: 600
+      
       
