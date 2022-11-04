@@ -16,4 +16,4 @@ jobs:
         reponame: 'PECI-05-2022-23'
         token: ${{ secrets.GITHUB_TOKEN }}
     env:
-       commiter: $GITHUB_ACTOR 
+       commiter: $GITHUB_ACTOR
