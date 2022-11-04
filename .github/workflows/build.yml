@@ -10,7 +10,6 @@ jobs:
     name: Deploy GitHub Pages site
     steps:
       - id: Build Pages
-      - run: cd peci-g5-2022-23 && npm install && npm run build
       - uses: actions/checkout@v2
       - uses: actions/deploy-pages@v1.2.2
         with:
