@@ -11,8 +11,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: Build-Vue
-      uses: xRealNeon/VuePagesAction@1.0.1
-      with:
-        username: 'davidaraujo98'
-        reponame: '/PECI-05-2022-23/tree/website'
-        token: ${{ secrets.GITHUB_TOKEN }}
+    - run: npm install
+    - run: npm run build
