@@ -7,10 +7,13 @@ on:
 jobs:
   build_vue:
     runs-on: ubuntu-latest
-    name: Build Vue
+    name: Deploy GitHub Pages site
     steps:
-    - uses: actions/checkout@v2
-    - run: | 
-        cd peci-g5-2022-23
-        npm install
-        npm run build
+      - run: cd peci-g5-2022-23 && npm install && npm run build
+      - id: Build Pages
+      - uses: actions/checkout@v2
+      - uses: actions/deploy-pages@v1.2.2
+        with:
+          token: ${{ github.token }}
+          timeout: 600
+      
