@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-  publicPath: '/PECI-05-2022-23/'
+  publicPath: '/PECI-05-2022-23/',
   css: {
     loaderOptions: {
       css: {
