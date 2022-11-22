@@ -1,12 +1,4 @@
-<script setup>
-  import Welcome from './components/Welcome.vue'
-</script>
 
 <template>
-    <body>
-    	<Welcome></Welcome>
-    </body>
+  <router-view/>
 </template>
-
-<style scoped>
-</style>
