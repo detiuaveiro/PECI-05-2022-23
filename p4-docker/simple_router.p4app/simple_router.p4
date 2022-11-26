@@ -8,13 +8,13 @@ control egress(inout headers hdr, inout metadata meta, inout standard_metadata_t
     action rewrite_mac(bit<48> smac) {
         hdr.ethernet.srcAddr = smac;
     }
-    action _drop() {
+    action drop() {
         mark_to_drop(standard_metadata);
     }
     table send_frame {
         actions = {
             rewrite_mac;
-            _drop;
+            drop;
             NoAction;
         }
         key = {
@@ -31,7 +31,7 @@ control egress(inout headers hdr, inout metadata meta, inout standard_metadata_t
 }
 
 control ingress(inout headers hdr, inout metadata meta, inout standard_metadata_t standard_metadata) {
-    action _drop() {
+    action drop() {
         mark_to_drop(standard_metadata);
     }
     action set_nhop(bit<32> nhop_ipv4, bit<9> port) {
@@ -44,7 +44,7 @@ control ingress(inout headers hdr, inout metadata meta, inout standard_metadata_
     }
     table ipv4_lpm {
         actions = {
-            _drop;
+            drop;
             set_nhop;
             NoAction;
         }
@@ -57,7 +57,7 @@ control ingress(inout headers hdr, inout metadata meta, inout standard_metadata_
     table forward {
         actions = {
             set_dmac;
-            _drop;
+            drop;
             NoAction;
         }
         key = {
