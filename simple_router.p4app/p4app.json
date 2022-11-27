@@ -5,16 +5,17 @@
         "multiswitch": {
             "auto-control-plane": true,
             "links": [
-                ["h1", "s1"],
-                ["s1", "s2"],
-                ["s2", "h2", 50]
+                ["h1", "s1-p1"],
+                ["h2", "s1-p2"],
+                ["s1-p3", "s2-p3"],
+                ["h3", "s2-p1"],
+                ["h4", "s2-p2"]
             ],
             "hosts": {
                 "h1": {
                     "ip": "10.0.1.1/24",
                     "mac": "08:00:00:00:01:11",
                     "cmd": "python echo_server.py $port",
-                    "startup_sleep": 0.2,
                     "wait": false,
                     "commands": [
                         "route add default gw 10.0.1.10 dev eth0",
@@ -30,7 +31,28 @@
                         "route add default gw 10.0.2.20 dev eth0",
                         "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00"
                     ]
+                },
+                "h3": {
+                    "ip": "10.0.2.21/24",
+                    "mac": "08:00:00:00:02:11",
+                    "cmd": "python echo_client.py h1 $port $echo_msg",
+                    "wait": true,
+                    "commands": [
+                        "route add default gw 10.0.2.20 dev eth0",
+                        "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00"
+                    ]
+                },
+                "h4": {
+                    "ip": "10.0.2.2/24",
+                    "mac": "08:00:00:00:02:22",
+                    "cmd": "python echo_client.py h1 $port $echo_msg",
+                    "wait": true,
+                    "commands": [
+                        "route add default gw 10.0.2.20 dev eth0",
+                        "arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00"
+                    ]
                 }
+                
             },
             "parameters": {
                 "port": 8000,
