@@ -5,70 +5,51 @@
 #include "parser.p4"
 
 control egress(inout headers hdr, inout metadata meta, inout standard_metadata_t standard_metadata) {
-    action rewrite_mac(bit<48> smac) {
-        hdr.ethernet.srcAddr = smac;
-    }
-    action drop() {
-        mark_to_drop(standard_metadata);
-    }
-    table send_frame {
-        actions = {
-            rewrite_mac;
-            drop;
-            NoAction;
-        }
-        key = {
-            standard_metadata.egress_port: exact;
-        }
-        size = 256;
-        default_action = NoAction();
-    }
-    apply {
-        if (hdr.ipv4.isValid()) {
-          send_frame.apply();
-        }
-    }
+    apply {}
 }
 
 control ingress(inout headers hdr, inout metadata meta, inout standard_metadata_t standard_metadata) {
-    action drop() {
+    action _drop() {
         mark_to_drop(standard_metadata);
     }
-    action set_nhop(bit<32> nhop_ipv4, bit<9> port) {
-        meta.ingress_metadata.nhop_ipv4 = nhop_ipv4;
-        standard_metadata.egress_spec = port;
-        hdr.ipv4.ttl = hdr.ipv4.ttl + 8w255;
+
+    action count() {
+        meta.ingress_metadata.count = meta.ingress_metadata.count + 1;
     }
-    action set_dmac(bit<48> dmac) {
-        hdr.ethernet.dstAddr = dmac;
-    }
-    table ipv4_lpm {
-        actions = {
-            drop;
-            set_nhop;
-            NoAction;
-        }
+    table table_count {
         key = {
-            hdr.ipv4.dstAddr: lpm;
+            hdr.ipv4.srcAddr: exact;
+        }
+        actions = {
+            count;
+            _drop;
+            NoAction;
         }
         size = 1024;
         default_action = NoAction();
     }
+
+    action ipv4_forward(bit<48> dstAddr, bit<9> port) {
+        standard_metadata.egress_spec = port;
+        hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
+        hdr.ethernet.dstAddr = dstAddr;
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+    }
     table forward {
+        key = {
+            hdr.ipv4.dstAddr: lpm;
+        }
         actions = {
-            set_dmac;
-            drop;
+            ipv4_forward;
+            _drop;
             NoAction;
         }
-        key = {
-            meta.ingress_metadata.nhop_ipv4: exact;
-        }
-        size = 512;
+        size = 1024;
         default_action = NoAction();
     }
     apply {
         if (hdr.ipv4.isValid()) {
-          ipv4_lpm.apply();
+          table_count.apply();
           forward.apply();
         }
     }
