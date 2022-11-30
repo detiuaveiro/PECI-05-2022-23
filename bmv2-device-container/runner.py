@@ -53,6 +53,7 @@ def configureP4Switch(**switch_args):
     else:
         class ConfiguredP4Switch(P4Switch):
             next_thrift_port = 9090
+
             def __init__(self, *opts, **kwargs):
                 global next_thrift_port
                 kwargs.update(switch_args)
@@ -69,6 +70,7 @@ def configureP4Switch(**switch_args):
 class ExerciseTopo(Topo):
     """ The mininet topology class for the P4 tutorial exercises.
     """
+
     def __init__(self, hosts, switches, links, log_dir, bmv2_exe, pcap_dir, **opts):
         Topo.__init__(self, **opts)
         host_links = []
@@ -84,14 +86,15 @@ class ExerciseTopo(Topo):
         for sw, params in switches.items():
             if "program" in params:
                 switchClass = configureP4Switch(
-                        sw_path=bmv2_exe,
-                        json_path=params["program"],
-                        log_console=True,
-                        pcap_dump=pcap_dir)
+                    sw_path=bmv2_exe,
+                    json_path=params["program"],
+                    log_console=True,
+                    pcap_dump=pcap_dir)
             else:
                 # add default switch
                 switchClass = None
-            self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw), cls=switchClass)
+            self.addSwitch(sw, log_file="%s/%s.log" %
+                           (log_dir, sw), cls=switchClass)
 
         for link in host_links:
             host_name = link['node1']
@@ -107,9 +110,8 @@ class ExerciseTopo(Topo):
             sw1_name, sw1_port = self.parse_switch_node(link['node1'])
             sw2_name, sw2_port = self.parse_switch_node(link['node2'])
             self.addLink(sw1_name, sw2_name,
-                        port1=sw1_port, port2=sw2_port,
-                        delay=link['latency'], bw=link['bandwidth'])
-
+                         port1=sw1_port, port2=sw2_port,
+                         delay=link['latency'], bw=link['bandwidth'])
 
     def parse_switch_node(self, node):
         assert(len(node.split('-')) == 2)
@@ -117,7 +119,8 @@ class ExerciseTopo(Topo):
         try:
             sw_port = int(sw_port[1:])
         except:
-            raise Exception('Invalid switch node in topology file: {}'.format(node))
+            raise Exception(
+                'Invalid switch node in topology file: {}'.format(node))
         return sw_name, sw_port
 
 
@@ -127,18 +130,15 @@ class ExerciseRunner:
             log_dir  : string   // directory for mininet log files
             pcap_dir : string   // directory for mininet switch pcap files
             quiet    : bool     // determines if we print logger messages
-
             hosts    : dict<string, dict> // mininet host names and their associated properties
             switches : dict<string, dict> // mininet switch names and their associated properties
             links    : list<dict>         // list of mininet link properties
-
             switch_json : string // json of the compiled p4 example
             bmv2_exe    : string // name or path of the p4 switch binary
-
             topo : Topo object   // The mininet topology instance
             net : Mininet object // The mininet instance
-
     """
+
     def logger(self, *items):
         if not self.quiet:
             print(' '.join(items))
@@ -150,12 +150,10 @@ class ExerciseRunner:
         else:
             return str(l) + "ms"
 
-
     def __init__(self, topo_file, log_dir, pcap_dir,
-                       switch_json, bmv2_exe='simple_switch', quiet=False):
+                 switch_json, bmv2_exe='simple_switch', quiet=False):
         """ Initializes some attributes and reads the topology json. Does not
             actually run the exercise. Use run_exercise() for that.
-
             Arguments:
                 topo_file : string    // A json file which describes the exercise's
                                          mininet topology.
@@ -178,13 +176,13 @@ class ExerciseRunner:
         for dir_name in [log_dir, pcap_dir]:
             if not os.path.isdir(dir_name):
                 if os.path.exists(dir_name):
-                    raise Exception("'%s' exists and is not a directory!" % dir_name)
+                    raise Exception(
+                        "'%s' exists and is not a directory!" % dir_name)
                 os.mkdir(dir_name)
         self.log_dir = log_dir
         self.pcap_dir = pcap_dir
         self.switch_json = switch_json
         self.bmv2_exe = bmv2_exe
-
 
     def run_exercise(self):
         """ Sets up the mininet instance, programs the switches,
@@ -207,7 +205,6 @@ class ExerciseRunner:
         # stop right after the CLI is exited
         self.net.stop()
 
-
     def parse_links(self, unparsed_links):
         """ Given a list of links descriptions of the form [node1, node2, latency, bandwidth]
             with the latency and bandwidth being optional, parses these descriptions
@@ -218,27 +215,26 @@ class ExerciseRunner:
             # make sure each link's endpoints are ordered alphabetically
             s, t, = link[0], link[1]
             if s > t:
-                s,t = t,s
+                s, t = t, s
 
-            link_dict = {'node1':s,
-                        'node2':t,
-                        'latency':'0ms',
-                        'bandwidth':None
-                        }
+            link_dict = {'node1': s,
+                         'node2': t,
+                         'latency': '0ms',
+                         'bandwidth': None
+                         }
             if len(link) > 2:
                 link_dict['latency'] = self.format_latency(link[2])
             if len(link) > 3:
                 link_dict['bandwidth'] = link[3]
 
             if link_dict['node1'][0] == 'h':
-                assert link_dict['node2'][0] == 's', 'Hosts should be connected to switches, not ' + str(link_dict['node2'])
+                assert link_dict['node2'][0] == 's', 'Hosts should be connected to switches, not ' + str(
+                    link_dict['node2'])
             links.append(link_dict)
         return links
 
-
     def create_network(self):
         """ Create the mininet network object, and store it as self.net.
-
             Side effects:
                 - Mininet topology instance stored as self.topo
                 - Mininet instance stored as self.net
@@ -246,18 +242,19 @@ class ExerciseRunner:
         self.logger("Building mininet topology.")
 
         defaultSwitchClass = configureP4Switch(
-                                sw_path=self.bmv2_exe,
-                                json_path=self.switch_json,
-                                log_console=True,
-                                pcap_dump=self.pcap_dir)
+            sw_path=self.bmv2_exe,
+            json_path=self.switch_json,
+            log_console=True,
+            pcap_dump=self.pcap_dir)
 
-        self.topo = ExerciseTopo(self.hosts, self.switches, self.links, self.log_dir, self.bmv2_exe, self.pcap_dir)
+        self.topo = ExerciseTopo(
+            self.hosts, self.switches, self.links, self.log_dir, self.bmv2_exe, self.pcap_dir)
 
-        self.net = Mininet(topo = self.topo,
-                      link = TCLink,
-                      host = P4Host,
-                      switch = defaultSwitchClass,
-                      controller = None)
+        self.net = Mininet(topo=self.topo,
+                           link=TCLink,
+                           host=P4Host,
+                           switch=defaultSwitchClass,
+                           controller=None)
 
     def program_switch_p4runtime(self, sw_name, sw_dict):
         """ This method will use P4Runtime to program the switch using the
@@ -267,9 +264,10 @@ class ExerciseRunner:
         grpc_port = sw_obj.grpc_port
         device_id = sw_obj.device_id
         runtime_json = sw_dict['runtime_json']
-        self.logger('Configuring switch %s using P4Runtime with file %s' % (sw_name, runtime_json))
+        self.logger('Configuring switch %s using P4Runtime with file %s' %
+                    (sw_name, runtime_json))
         with open(runtime_json, 'r') as sw_conf_file:
-            outfile = '%s/%s-p4runtime-requests.txt' %(self.log_dir, sw_name)
+            outfile = '%s/%s-p4runtime-requests.txt' % (self.log_dir, sw_name)
             p4runtime_lib.simple_controller.program_switch(
                 addr='127.0.0.1:%d' % grpc_port,
                 device_id=device_id,
@@ -289,9 +287,10 @@ class ExerciseRunner:
         thrift_port = sw_obj.thrift_port
 
         cli_input_commands = sw_dict['cli_input']
-        self.logger('Configuring switch %s with file %s' % (sw_name, cli_input_commands))
+        self.logger('Configuring switch %s with file %s' %
+                    (sw_name, cli_input_commands))
         with open(cli_input_commands, 'r') as fin:
-            cli_outfile = '%s/%s_cli_output.log'%(self.log_dir, sw_name)
+            cli_outfile = '%s/%s_cli_output.log' % (self.log_dir, sw_name)
             with open(cli_outfile, 'w') as fout:
                 subprocess.Popen([cli, '--thrift-port', str(thrift_port)],
                                  stdin=fin, stdout=fout)
@@ -316,10 +315,8 @@ class ExerciseRunner:
                 for cmd in host_info["commands"]:
                     h.cmd(cmd)
 
-
     def do_net_cli(self):
         """ Starts up the mininet CLI and prints some helpful output.
-
             Assumes:
                 - A mininet instance is stored as self.net and self.net.start() has
                   been called.
@@ -345,15 +342,17 @@ class ExerciseRunner:
             print('  simple_switch_CLI --thrift-port <switch thrift port>')
             print('')
         print('To view a switch log, run this command from your host OS:')
-        print('  tail -f %s/<switchname>.log' %  self.log_dir)
+        print('  tail -f %s/<switchname>.log' % self.log_dir)
         print('')
-        print('To view the switch output pcap, check the pcap files in %s:' % self.pcap_dir)
+        print('To view the switch output pcap, check the pcap files in %s:' %
+              self.pcap_dir)
         print(' for example run:  sudo tcpdump -xxx -r s1-eth1.pcap')
         print('')
         if 'grpc' in self.bmv2_exe:
             print('To view the P4Runtime requests sent to the switch, check the')
             print('corresponding txt file in %s:' % self.log_dir)
-            print(' for example run:  cat %s/s1-p4runtime-requests.txt' % self.log_dir)
+            print(' for example run:  cat %s/s1-p4runtime-requests.txt' %
+                  self.log_dir)
             print('')
 
         CLI(self.net)
@@ -368,11 +367,13 @@ def get_args():
                         action='store_true', required=False, default=False)
     parser.add_argument('-t', '--topo', help='Path to topology json',
                         type=str, required=False, default='./topology.json')
-    parser.add_argument('-l', '--log-dir', type=str, required=False, default=default_logs)
-    parser.add_argument('-p', '--pcap-dir', type=str, required=False, default=default_pcaps)
+    parser.add_argument('-l', '--log-dir', type=str,
+                        required=False, default=default_logs)
+    parser.add_argument('-p', '--pcap-dir', type=str,
+                        required=False, default=default_pcaps)
     parser.add_argument('-j', '--switch_json', type=str, required=False)
     parser.add_argument('-b', '--behavioral-exe', help='Path to behavioral executable',
-                                type=str, required=False, default='simple_switch')
+                        type=str, required=False, default='simple_switch')
     return parser.parse_args()
 
 
@@ -385,4 +386,3 @@ if __name__ == '__main__':
                               args.switch_json, args.behavioral_exe, args.quiet)
 
     exercise.run_exercise()
-
