@@ -14,9 +14,8 @@ from p4runtime_switch import P4RuntimeSwitch
 
 
 class Switch:
-
     def __init__(self, switch_json, bmv2_exe='simple_switch'):
-        
+        # line 262 in run_exercise.py
 
 def get_args():
     cwd = os.getcwd()
