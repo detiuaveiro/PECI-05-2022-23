@@ -1,6 +1,6 @@
 services:
     bvm2:
-        image: bmv2:test
+        image: bmv2-switch
         build:
-            context: ./bmv2-device-container
-            dockerfile: bmv2.Dockerfile
+            context: ./docker-switch
+            dockerfile: bmv2-switch.Dockerfile

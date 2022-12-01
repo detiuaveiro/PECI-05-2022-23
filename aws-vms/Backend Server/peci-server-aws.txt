@@ -1,0 +1,2 @@
+server:	ec2-13-41-223-102.eu-west-2.compute.amazonaws.com
+username:	ubuntu
