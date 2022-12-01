@@ -2,6 +2,5 @@ services:
     bvm2:
         image: bmv2:test
         build:
-           dockerfile: bmv2.Dockerfile
-           args: 
-              - p4file=prog.p4 
+            context: ./bmv2-device-container
+            dockerfile: bmv2.Dockerfile
