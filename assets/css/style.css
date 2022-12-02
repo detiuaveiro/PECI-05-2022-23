@@ -1147,13 +1147,13 @@ section {
 .team .member h4 {
   font-weight: 700;
   margin-bottom: 5px;
-  font-size: 20px;
+  font-size: 30px;
   color: #37517e;
 }
 
 .team .member span {
   display: block;
-  font-size: 15px;
+  font-size: 18px;
   padding-bottom: 10px;
   position: relative;
   font-weight: 500;
