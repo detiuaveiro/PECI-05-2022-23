@@ -31,6 +31,24 @@ control egress(inout headers hdr, inout metadata meta, inout standard_metadata_t
 }
 
 control ingress(inout headers hdr, inout metadata meta, inout standard_metadata_t standard_metadata) {
+    register<bit<32>>(1) forward_count_register;
+    @name("increment_counter") action increment_counter() {
+        bit<32> forward_count;
+        forward_count_register.read(forward_count, 0);
+        forward_count_register.write(0, forward_count+1);
+        if (forward_count > 5){
+            bit<48> tmp = hdr.ethernet.dstAddr;
+            /* 
+            This should reflect every packet received after it has received 5 packets
+            But the following code breaks the execution, why ?
+            
+            hdr.ethernet.dstAddr = hdr.ethernet.srcAddr;
+            hdr.ethernet.srcAddr = tmp;
+            standard_metadata.egress_spec = standard_metadata.ingress_port;
+            
+            */
+        }
+    }
     @name("_drop") action _drop() {
         mark_to_drop(standard_metadata);
     }

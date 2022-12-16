@@ -2,5 +2,4 @@ services:
     bvm2:
         image: bmv2-switch
         build:
-            context: ./docker-switch
             dockerfile: bmv2-switch.Dockerfile
