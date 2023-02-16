@@ -45,7 +45,7 @@ class SwitchConnection(object):
         request = p4runtime_pb2.StreamMessageRequest(
             arbitration=p4runtime_pb2.MasterArbitrationUpdate(
                 device_id=self.device_id,
-                election_id=p4runtime_pb2.Uin128(high=0, low=1),
+                election_id=p4runtime_pb2.Uint128(high=0, low=1),
             ))
 
         if dry_run:

@@ -1,5 +1,10 @@
+version: "3"
+
 services:
-    bvm2:
+    bmv2:
         image: bmv2-switch
+        ports:
+            - "9559:9559"
         build:
+            context: .
             dockerfile: bmv2-switch.Dockerfile
