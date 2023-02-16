@@ -2,7 +2,7 @@ import grpc
 from queue import Queue
 from datetime import datetime
 from abc import abstractmethod
-from p4.tmp import p4config_pb2
+from tmp import p4config_pb2
 from p4.v1 import p4runtime_pb2, p4runtime_pb2_grpc
 
 MSG_LOG_MAX_LEN = 1024
@@ -10,11 +10,9 @@ MSG_LOG_MAX_LEN = 1024
 # List of all active connections
 connections = []
 
-
 def ShutdownAllSwitchConnections():
     for c in connections:
         c.shutdown()
-
 
 class SwitchConnection(object):
 
