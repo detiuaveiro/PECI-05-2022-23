@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+    p4cAPI:
+        image: p4capi
+        ports:
+            - "5000:5000"
+        build:
+            context: .
+            dockerfile: p4cAPI.Dockerfile

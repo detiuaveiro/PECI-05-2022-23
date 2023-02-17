@@ -3,7 +3,7 @@ import json
 import os
 from zipfile import ZipFile
 
-url = 'http://127.0.0.1:5000/compile'
+url = 'http://localhost:5000/compile'
 p4_file = "basic.p4"
 
 # Set of parameters accepted by the p4 compiler
@@ -23,13 +23,14 @@ files = {
 # Posting request to compiler
 r = requests.post(url, files=files)
 
-# Write .zip file received
-filename = 'response.zip'
-open(filename, 'wb').write(r.content)
+if r.content != b"Error":
+    # Write .zip file received
+    filename = 'response.zip'
+    open(filename, 'wb').write(r.content)
 
-# Extract files inside .zip file to /response directory
-with ZipFile(filename, 'r') as zip:
-    zip.extractall(path="./response")
+    # Extract files inside .zip file to /response directory
+    with ZipFile(filename, 'r') as zip:
+        zip.extractall(path="./response")
 
-# Erase .zip file
-os.system(f"rm {filename}")
+    # Erase .zip file
+    os.system(f"rm {filename}")
