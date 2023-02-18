@@ -1,16 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { handleCollectors } from '../library/Metrics';
 import TelemetryReport from '../models/TelemetryReport';
 
 const createTelemetryReport = (req: Request, res: Response, next: NextFunction) => {
     const telemetryReport = new TelemetryReport({
         _id: new mongoose.Types.ObjectId(),
+        timestamp: new Date(),
         ...req.body
     });
 
     return telemetryReport
         .save()
-        .then((TelemetryReport) => res.status(201).json({ TelemetryReport }))
+        .then((TelemetryReport) => {
+            handleCollectors(TelemetryReport);
+            res.status(201).json({ TelemetryReport });
+        })
         .catch((error) => res.status(500).json({ error }));
 };
 
