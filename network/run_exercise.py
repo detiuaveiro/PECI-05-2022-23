@@ -1,37 +1,18 @@
-#!/usr/bin/env python3
-# Copyright 2013-present Barefoot Networks, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Adapted by Robert MacDavid (macdavid@cs.princeton.edu) from scripts found in
-# the p4app repository (https://github.com/p4lang/p4app)
-#
-# We encourage you to dissect this script to better understand the BMv2/Mininet
-# environment used by the P4 tutorial.
-#
 import argparse
 import json
 import os
 import subprocess
 from time import sleep
 
-import p4runtime_lib.simple_controller
 from mininet.cli import CLI
 from mininet.link import TCLink
 from mininet.net import Mininet
 from mininet.topo import Topo
+
+import p4runtime_lib.simple_controller
 from p4_mininet import P4Host, P4Switch
 from p4runtime_switch import P4RuntimeSwitch
+from mininet_topo import ExerciseTopo
 
 
 def configureP4Switch(**switch_args):
@@ -39,87 +20,16 @@ def configureP4Switch(**switch_args):
         the virtual P4 switches. The purpose is to ensure each
         switch's thrift server is using a unique port.
     """
-    if "sw_path" in switch_args and 'grpc' in switch_args['sw_path']:
-        # If grpc appears in the BMv2 switch target, we assume will start P4Runtime
-        class ConfiguredP4RuntimeSwitch(P4RuntimeSwitch):
-            def __init__(self, *opts, **kwargs):
-                kwargs.update(switch_args)
-                P4RuntimeSwitch.__init__(self, *opts, **kwargs)
+    # If grpc appears in the BMv2 switch target, we assume will start P4Runtime
+    class ConfiguredP4RuntimeSwitch(P4RuntimeSwitch):
+        def __init__(self, *opts, **kwargs):
+            kwargs.update(switch_args)
+            P4RuntimeSwitch.__init__(self, *opts, **kwargs)
 
-            def describe(self):
-                print("%s -> gRPC port: %d" % (self.name, self.grpc_port))
+        def describe(self):
+            print("%s -> gRPC port: %d" % (self.name, self.grpc_port))
 
-        return ConfiguredP4RuntimeSwitch
-    else:
-        class ConfiguredP4Switch(P4Switch):
-            next_thrift_port = 9090
-            def __init__(self, *opts, **kwargs):
-                global next_thrift_port
-                kwargs.update(switch_args)
-                kwargs['thrift_port'] = ConfiguredP4Switch.next_thrift_port
-                ConfiguredP4Switch.next_thrift_port += 1
-                P4Switch.__init__(self, *opts, **kwargs)
-
-            def describe(self):
-                print("%s -> Thrift port: %d" % (self.name, self.thrift_port))
-
-        return ConfiguredP4Switch
-
-
-class ExerciseTopo(Topo):
-    """ The mininet topology class for the P4 tutorial exercises.
-    """
-    def __init__(self, hosts, switches, links, log_dir, bmv2_exe, pcap_dir, **opts):
-        Topo.__init__(self, **opts)
-        host_links = []
-        switch_links = []
-
-        # assumes host always comes first for host<-->switch links
-        for link in links:
-            if link['node1'][0] == 'h':
-                host_links.append(link)
-            else:
-                switch_links.append(link)
-
-        for sw, params in switches.items():
-            if "program" in params:
-                switchClass = configureP4Switch(
-                        sw_path=bmv2_exe,
-                        json_path=params["program"],
-                        log_console=True,
-                        pcap_dump=pcap_dir)
-            else:
-                # add default switch
-                switchClass = None
-            self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw), cls=switchClass)
-
-        for link in host_links:
-            host_name = link['node1']
-            sw_name, sw_port = self.parse_switch_node(link['node2'])
-            host_ip = hosts[host_name]['ip']
-            host_mac = hosts[host_name]['mac']
-            self.addHost(host_name, ip=host_ip, mac=host_mac)
-            self.addLink(host_name, sw_name,
-                         delay=link['latency'], bw=link['bandwidth'],
-                         port2=sw_port)
-
-        for link in switch_links:
-            sw1_name, sw1_port = self.parse_switch_node(link['node1'])
-            sw2_name, sw2_port = self.parse_switch_node(link['node2'])
-            self.addLink(sw1_name, sw2_name,
-                        port1=sw1_port, port2=sw2_port,
-                        delay=link['latency'], bw=link['bandwidth'])
-
-
-    def parse_switch_node(self, node):
-        assert(len(node.split('-')) == 2)
-        sw_name, sw_port = node.split('-')
-        try:
-            sw_port = int(sw_port[1:])
-        except:
-            raise Exception('Invalid switch node in topology file: {}'.format(node))
-        return sw_name, sw_port
-
+    return ConfiguredP4RuntimeSwitch
 
 class ExerciseRunner:
     """
