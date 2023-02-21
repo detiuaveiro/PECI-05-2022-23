@@ -15,7 +15,7 @@ class RunnerTopo(Topo):
             else:
                 switch_links.append(link)
 
-        for sw in switches.items():
+        for sw, _ in switches.items():   
             self.addSwitch(sw, log_file="%s/%s.log" %(log_dir, sw), cls=None)
 
         for link in host_links:

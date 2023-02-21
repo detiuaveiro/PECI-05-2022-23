@@ -160,7 +160,7 @@ class Runner:
                                 log_console=True,
                                 pcap_dump=self.pcap_dir)
 
-        self.topo = RunnerTopo(self.hosts, self.switches, self.links, self.log_dir, self.bmv2_exe, self.pcap_dir)
+        self.topo = RunnerTopo(self.hosts, self.switches, self.links, self.log_dir)
 
         self.net = Mininet(topo = self.topo,
                       link = TCLink,
