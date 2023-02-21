@@ -12,7 +12,6 @@ def upload_file():
 
     if request.method == 'POST':
         try:
-            
             file = request.files['file']
 
             # Securing original filename and writing file

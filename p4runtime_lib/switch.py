@@ -7,13 +7,6 @@ from p4.v1 import p4runtime_pb2, p4runtime_pb2_grpc
 
 MSG_LOG_MAX_LEN = 1024
 
-# List of all active connections
-connections = []
-
-def ShutdownAllSwitchConnections():
-    for c in connections:
-        c.shutdown()
-
 class SwitchConnection(object):
 
     def __init__(self, name=None, address='127.0.0.1:50051', device_id=0,
@@ -22,16 +15,16 @@ class SwitchConnection(object):
         self.address = address
         self.device_id = device_id
         self.p4info = None
+        
         self.channel = grpc.insecure_channel(self.address)
         if proto_dump_file is not None:
             interceptor = GrpcRequestLogger(proto_dump_file)
             self.channel = grpc.intercept_channel(self.channel, interceptor)
         self.client_stub = p4runtime_pb2_grpc.P4RuntimeStub(self.channel)
         self.requests_stream = IterableQueue()
-        self.stream_msg_resp = self.client_stub.StreamChannel(
-            iter(self.requests_stream))
+        self.stream_msg_resp = self.client_stub.StreamChannel(iter(self.requests_stream))
+        
         self.proto_dump_file = proto_dump_file
-        connections.append(self)
 
     @abstractmethod
     def buildDeviceConfig(self, **kwargs):
