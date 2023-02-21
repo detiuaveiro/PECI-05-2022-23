@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { config } from './config/config';
 import Logging from './library/Logging';
 import TelemetryReportRoutes from './routes/TelemetryReport';
+import TopologyRoutes from './routes/Topology';
 import MetricsRoutes from './routes/Metrics';
 
 const router = express();
@@ -49,6 +50,7 @@ const StartServer = () => {
 
     /** Routes */
     router.use('/api/TelemetryReport', TelemetryReportRoutes);
+    router.use('/api/Topology', TopologyRoutes);
     router.use('/metrics', MetricsRoutes);
 
     /** Healthcheck */
