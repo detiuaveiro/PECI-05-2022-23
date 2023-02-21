@@ -1,6 +1,6 @@
 from mininet.topo import Topo
 
-class ExerciseTopo(Topo):
+class RunnerTopo(Topo):
     """ The mininet topology class for the P4 tutorial exercises.
     """
     def __init__(self, hosts, switches, links, log_dir, **opts):

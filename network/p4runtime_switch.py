@@ -22,13 +22,14 @@ from mininet.log import debug, error, info
 from mininet.moduledeps import pathCheck
 from mininet.node import Switch
 from netstat import check_listening_on_port
-from p4_mininet import SWITCH_START_TIMEOUT, P4Switch
 
+SWITCH_START_TIMEOUT = 10
 
-class P4RuntimeSwitch(P4Switch):
+class P4RuntimeSwitch(Switch):
     "BMv2 switch with gRPC support"
     next_grpc_port = 50051
     next_thrift_port = 9090
+    device_id = 0
 
     def __init__(self, name, sw_path = None, json_path = None,
                  grpc_port = None,
@@ -83,10 +84,11 @@ class P4RuntimeSwitch(P4Switch):
             self.log_file = "/tmp/p4s.{}.log".format(self.name)
         if device_id is not None:
             self.device_id = device_id
-            P4Switch.device_id = max(P4Switch.device_id, device_id)
+            P4RuntimeSwitch.device_id = max(
+                P4RuntimeSwitch.device_id, device_id)
         else:
-            self.device_id = P4Switch.device_id
-            P4Switch.device_id += 1
+            self.device_id = P4RuntimeSwitch.device_id
+            P4RuntimeSwitch.device_id += 1
         self.nanomsg = "ipc:///tmp/bm-{}-log.ipc".format(self.device_id)
 
 
@@ -99,6 +101,8 @@ class P4RuntimeSwitch(P4Switch):
             sleep(0.5)
 
     def start(self, controllers):
+        "Start up a new P4 switch"
+        P4RuntimeSwitch.device_id += 1
         info("Starting P4 switch {}.\n".format(self.name))
         args = [self.sw_path]
         for port, intf in list(self.intfs.items()):
@@ -109,11 +113,7 @@ class P4RuntimeSwitch(P4Switch):
         if self.nanomsg:
             args.extend(['--nanolog', self.nanomsg])
         args.extend(['--device-id', str(self.device_id)])
-        P4Switch.device_id += 1
-        if self.json_path:
-            args.append(self.json_path)
-        else:
-            args.append("--no-p4")
+        args.append("--no-p4")
         if self.enable_debugger:
             args.append("--debugger")
         if self.log_console:
@@ -125,7 +125,6 @@ class P4RuntimeSwitch(P4Switch):
         cmd = ' '.join(args)
         info(cmd + "\n")
 
-
         pid = None
         with tempfile.NamedTemporaryFile() as f:
             self.cmd(cmd + ' >' + self.log_file + ' 2>&1 & echo $! >> ' + f.name)
@@ -136,3 +135,17 @@ class P4RuntimeSwitch(P4Switch):
             exit(1)
         info("P4 switch {} has been started.\n".format(self.name))
 
+    def stop(self):
+        "Terminate P4 switch."
+        self.output.flush()
+        self.cmd('kill %' + self.sw_path)
+        self.cmd('wait')
+        self.deleteIntfs()
+
+    def attach(self, intf):
+        "Connect a data port"
+        assert(0)
+
+    def detach(self, intf):
+        "Disconnect a data port"
+        assert(0)
