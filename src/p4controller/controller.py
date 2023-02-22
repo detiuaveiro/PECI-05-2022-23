@@ -1,14 +1,15 @@
-import argparse
-import os
 import sys
 import warnings
 from time import sleep
-import grpc
-
 
 sys.path.append("..")
+
+from network.p4runtime_switch import P4RuntimeSwitch
+
 from p4runtime_lib import bmv2
 from p4runtime_lib import helper
+
+from p4 import p4info_pb2
 
 SWITCH_TO_HOST_PORT = 1
 SWITCH_TO_SWITCH_PORT = 2
@@ -91,11 +92,27 @@ def _validateTableEntry(table_fields, p4info_helper):
                 table_name, match_field_name)
             match_type = p4info_match.match_type
             if match_type in match_types_with_priority:
-                warning.warn("non-zero 'priority' field is required")
+                warnings.warn("non-zero 'priority' field is required")
                 return False            
     return True
 
-# FEATURE - Add/Remove switch
+# TBT - Experimenting creating a new switch
+def addSwitch(net, name, bmv2_exe, pcap_dir):
+    """
+        Creates a new switch in the Mininet network and returns its p4runtime connection
+
+        Attributes
+            - net       :   Mininet.net     // Mininet net object
+            - name      :   str             // switch name
+            - bmv2_exe  :   str             // path to bmv2 executable
+            - pcap_dir  :   str             // path to directory for switch's pcaps
+    """  
+    sw = net.addSwitch(name, P4RuntimeSwitch, sw_path=bmv2_exe, log_console=True, pcap_dump=pcap_dir)
+    return connect(name, f"0.0.0.0:{sw.grpc_port}", sw.device_id, sw.pcap_dump)
+
+
+def delSwitch()
+
 # FEATURE - Add/Remove host
 # FEATURE - Add/Remove/Modify link
 

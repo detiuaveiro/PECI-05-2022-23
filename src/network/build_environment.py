@@ -58,7 +58,7 @@ class Runner:
 
     def __init__(self, topo_file, log_dir, pcap_dir, bmv2_exe='simple_switch', quiet=False):
         """ Initializes some attributes and reads the topology json. Does not
-            actually run the exercise. Use run_exercise() for that.
+            actually run the exercise. Use build_env() for that.
 
             Arguments:
                 topo_file : string    // A json file which describes the exercise's
@@ -116,7 +116,7 @@ class Runner:
             links.append(link_dict)
         return links
 
-    def run_exercise(self):
+    def build_env(self):
         """ Sets up the mininet instance, programs the switches,
             and starts the mininet CLI. This is the main method to run after
             initializing the object.
@@ -132,10 +132,6 @@ class Runner:
             if "commands" in host_info:
                 for cmd in host_info["commands"]:
                     h.cmd(cmd)
-         
-        # FIXME - Configuration will be made by controller            
-        #for sw_name, sw_dict in self.switches.items():
-        #    self.program_switch_p4runtime(sw_name, sw_dict)
 
         # wait for that to finish. Not sure how to do this better
         sleep(1)
@@ -165,27 +161,6 @@ class Runner:
                       host = P4Host,
                       switch = defaultSwitchClass,
                       controller = None)
-
-    # FIXME - Configuration will be made by controller
-    #def program_switch_p4runtime(self, sw_name, sw_dict):
-    #    """ This method will use P4Runtime to program the switch using the
-    #        content of the runtime JSON file as input.
-    #    """
-    #    sw_obj = self.net.get(sw_name)
-    #    grpc_port = sw_obj.grpc_port
-    #    device_id = sw_obj.device_id
-    #    runtime_json = sw_dict['runtime_json']
-    #    self.logger('Configuring switch %s using P4Runtime with file %s' % (sw_name, runtime_json))
-    #    with open(runtime_json, 'r') as sw_conf_file:
-    #        outfile = '%s/%s-p4runtime-requests.txt' %(self.log_dir, sw_name)
-    #        p4runtime_lib.simple_controller.program_switch(
-    #            addr='127.0.0.1:%d' % grpc_port,
-    #            device_id=device_id,
-    #            sw_conf_file=sw_conf_file,
-    #            workdir=os.getcwd(),
-    #            proto_dump_fpath=outfile,
-    #            runtime_json=runtime_json
-    #        )
 
     def do_net_cli(self):
         """ Starts up the mininet CLI and prints some helpful output.
@@ -242,11 +217,7 @@ def get_args():
 
 
 if __name__ == '__main__':
-    # from mininet.log import setLogLevel
-    # setLogLevel("info")
-
     args = get_args()
-    exercise = Runner(args.topo, args.log_dir, args.pcap_dir, args.behavioral_exe, args.quiet)
+    env = Runner(args.topo, args.log_dir, args.pcap_dir, args.behavioral_exe, args.quiet)
 
-    exercise.run_exercise()
-
+    env.build_env()
