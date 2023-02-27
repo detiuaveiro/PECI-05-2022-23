@@ -96,7 +96,6 @@ def _validateTableEntry(table_fields, p4info_helper):
                 return False            
     return True
 
-# TBT - Experimenting creating a new switch
 def addSwitch(net, name, bmv2_exe, pcap_dir):
     """
         Creates a new switch in the Mininet network and returns its p4runtime connection
@@ -110,7 +109,6 @@ def addSwitch(net, name, bmv2_exe, pcap_dir):
     sw = net.addSwitch(name, P4RuntimeSwitch, sw_path=bmv2_exe, log_console=True, pcap_dump=pcap_dir)
     return connect(name, f"0.0.0.0:{sw.grpc_port}", sw.device_id, sw.pcap_dump)
 
-
 def delSwitch(net, sw):
     """
         Deletes a switch from the Mininet network
@@ -123,11 +121,10 @@ def delSwitch(net, sw):
         if x.id == sw.device_id:
             sw.delSwitch(x)
             break
-        
-    
+    sw.shutdown()
 
-# FEATURE - Add/Remove host
 # FEATURE - Add/Remove/Modify link
+# FEATURE - Add/Remove Interfaces
 
 sw1 = connect("s1","0.0.0.0:50051", 0, "./dump1.txt")
 sw2 = connect("s2","0.0.0.0:50052", 1, "./dump2.txt")
