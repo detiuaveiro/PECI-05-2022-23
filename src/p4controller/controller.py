@@ -111,7 +111,20 @@ def addSwitch(net, name, bmv2_exe, pcap_dir):
     return connect(name, f"0.0.0.0:{sw.grpc_port}", sw.device_id, sw.pcap_dump)
 
 
-def delSwitch()
+def delSwitch(net, sw):
+    """
+        Deletes a switch from the Mininet network
+        
+        Attributes
+            - net       :   Mininet.net             // Mininet net object
+            - sw        :   Bmv2SwitchConnection    // Connection object to the BMV2 switch
+    """
+    for x in net.switches:
+        if x.id == sw.device_id:
+            sw.delSwitch(x)
+            break
+        
+    
 
 # FEATURE - Add/Remove host
 # FEATURE - Add/Remove/Modify link
