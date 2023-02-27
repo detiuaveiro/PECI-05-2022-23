@@ -90,9 +90,9 @@ class Runner:
 
     def parse_links(self, unparsed_links):
         """ Given a list of links descriptions of the form [node1, node2, latency, bandwidth]
-                with the latency and bandwidth being optional, parses these descriptions
-                into dictionaries and store them as self.links
-            """
+            with the latency and bandwidth being optional, parses these descriptions
+            into dictionaries and store them as self.links
+        """
         links = []
         for link in unparsed_links:
             # make sure each link's endpoints are ordered alphabetically

@@ -1,14 +1,13 @@
 from mininet.topo import Topo
 
 class RunnerTopo(Topo):
-    """ The mininet topology class for the P4 tutorial exercises.
-    """
+    """ The Mininet topology class for the P4 tutorial exercises. """
+    
     def __init__(self, hosts, switches, links, log_dir, **opts):
         Topo.__init__(self, **opts)
         host_links = []
         switch_links = []
 
-        # assumes host always comes first for host<-->switch links
         for link in links:
             if link['node1'][0] == 'h':
                 host_links.append(link)
