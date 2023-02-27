@@ -66,7 +66,7 @@ class Runner:
                 log_dir  : string     // Path to a directory for storing exercise logs
                 pcap_dir : string     // Ditto, but for mininet switch pcap files
                 switch_json : string  // Path to a compiled p4 json for bmv2
-                bmv2_exe    : string  // Path to the p4 behavioral binary
+                     : string  // Path to the p4 behavioral binary
                 quiet : bool          // Enable/disable script debug messages
         """
 

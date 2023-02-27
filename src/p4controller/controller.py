@@ -59,11 +59,11 @@ def insertTableEntry(sw_conn, table_fields):
     
     if _validateTableEntry(table_fields, p4info_helper):
         table_name = table_fields['table']
-        match_fields = table_fields.get('match')  # None if not found
+        match_fields = table_fields.get('match')
         action_name = table_fields['action_name']
-        default_action = table_fields.get('default_action')  # None if not found
+        default_action = table_fields.get('default_action')
         action_params = table_fields['action_params']
-        priority = table_fields.get('priority')  # None if not found
+        priority = table_fields.get('priority')
 
         table_entry = p4info_helper.buildTableEntry(
             table_name=table_name,
@@ -109,7 +109,7 @@ def addSwitch(net, name, bmv2_exe, pcap_dir):
     sw = net.addSwitch(name, P4RuntimeSwitch, sw_path=bmv2_exe, log_console=True, pcap_dump=pcap_dir)
     return connect(name, f"0.0.0.0:{sw.grpc_port}", sw.device_id, sw.pcap_dump)
 
-def delSwitch(net, sw):
+def delSwitch(net, sw_conn):
     """
         Deletes a switch from the Mininet network
         
@@ -118,10 +118,19 @@ def delSwitch(net, sw):
             - sw        :   Bmv2SwitchConnection    // Connection object to the BMV2 switch
     """
     for x in net.switches:
-        if x.id == sw.device_id:
-            sw.delSwitch(x)
+        if x.id == sw_conn.device_id:
+            sw_conn.delSwitch(x)
             break
-    sw.shutdown()
+    sw_conn.shutdown()
+
+def addLink(link):
+    """Adding a link between a switch and another device
+
+    Args:
+        link (list): List like [<switch-p#, h#] or [sw#-p#, sw#-p#]
+    """
+    
+    
 
 # FEATURE - Add/Remove/Modify link
 # FEATURE - Add/Remove Interfaces
