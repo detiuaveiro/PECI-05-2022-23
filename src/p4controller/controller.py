@@ -125,63 +125,6 @@ def delSwitch(net, sw_conn):
             break
     sw_conn.shutdown()
 
-
-def addLink(net, link):
-    """ Adding a link between a switch and another device, already in the topology.
-
-        Attributes:
-            - link (list)   :   List like [h#, sw#-p#] or [sw#-p#, sw#-p#]
-    """
-    
-    s, t, = link[0], link[1]
-    if s > t:
-        s, t = t, s
-
-    link_dict = {'node1': s,
-                 'node2': t,
-                 'latency': '0ms',
-                 'bandwidth': None
-                 }
-    
-    if len(link) > 2:
-        link_dict['latency'] = self.format_latency(link[2])
-    if len(link) > 3:
-        link_dict['bandwidth'] = link[3]
-
-    if link_dict['node1'][0] == 'h':
-        assert link_dict['node2'][0] == 's', 'Hosts should be connected to switches, not ' + \
-            str(link_dict['node2'])
-
-    sw_name, sw_port = parse_switch_node(link['node2'])
-    if link['node1'][0] == 'h':
-        net.topo.addLink(link['node1'],
-                        sw_name,
-                        delay=link['latency'],
-                        bw=link['bandwidth'],
-                        port2=sw_port)
-    else:
-        sw1_name, sw1_port = self.parse_switch_node(link['node1'])
-        net.topo.addLink(sw_name,
-                        sw2_name,
-                        port1=sw_port,
-                        port2=sw2_port,
-                        delay=link['latency'],
-                        bw=link['bandwidth'])
-
-def parse_switch_node(self, node):
-    assert(len(node.split('-')) == 2)
-    sw_name, sw_port = node.split('-')
-    try:
-        sw_port = int(sw_port[1:])
-    except:
-        raise Exception(
-            'Invalid switch node in topology file: {}'.format(node))
-    return sw_name, sw_port
-
-# FEATURE - Add/Remove/Modify link
-# FEATURE - Add/Remove Interfaces
-
-
 sw1 = connect("s1", "0.0.0.0:50051", 0, "./dump1.txt")
 sw2 = connect("s2", "0.0.0.0:50052", 1, "./dump2.txt")
 sw3 = connect("s3", "0.0.0.0:50053", 2, "./dump3.txt")
