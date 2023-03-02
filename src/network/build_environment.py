@@ -61,12 +61,12 @@ class Runner:
             actually run the exercise. Use build_env() for that.
 
             Arguments:
-                topo_file : string    // A json file which describes the exercise's
+                topo_file   : string    // A json file which describes the exercise's
                                          mininet topology.
-                log_dir  : string     // Path to a directory for storing exercise logs
+                log_dir : string     // Path to a directory for storing exercise logs
                 pcap_dir : string     // Ditto, but for mininet switch pcap files
                 switch_json : string  // Path to a compiled p4 json for bmv2
-                     : string  // Path to the p4 behavioral binary
+                bmv2_exe : string  // Path to the p4 behavioral binary
                 quiet : bool          // Enable/disable script debug messages
         """
 
@@ -121,24 +121,28 @@ class Runner:
             and starts the mininet CLI. This is the main method to run after
             initializing the object.
         """
-        # Initialize mininet with the topology specified by the config
-        self.create_network()
-        self.net.start()
-        sleep(1)
+        try:
+            # Initialize mininet with the topology specified by the config
+            self.create_network()
+            self.net.start()
+            sleep(1)
 
-        # some programming that must happen after the net has started
-        for host_name, host_info in list(self.hosts.items()):
-            h = self.net.get(host_name)
-            if "commands" in host_info:
-                for cmd in host_info["commands"]:
-                    h.cmd(cmd)
+            # some programming that must happen after the net has started
+            for host_name, host_info in list(self.hosts.items()):
+                h = self.net.get(host_name)
+                if "commands" in host_info:
+                    for cmd in host_info["commands"]:
+                        h.cmd(cmd)
 
-        # wait for that to finish. Not sure how to do this better
-        sleep(1)
+            # wait for that to finish. Not sure how to do this better
+            sleep(1)
 
-        self.do_net_cli()
-        # stop right after the CLI is exited
-        self.net.stop()
+            self.do_net_cli()
+            # stop right after the CLI is exited
+            self.net.stop()
+        except:
+            return False
+        return True
 
     def create_network(self):
         """ Create the mininet network object, and store it as self.net.
@@ -197,7 +201,6 @@ class Runner:
             print('')
 
         CLI(self.net)
-
 
 def get_args():
     cwd = os.getcwd()

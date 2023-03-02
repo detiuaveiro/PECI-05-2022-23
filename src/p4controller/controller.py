@@ -8,17 +8,8 @@ from time import sleep
 
 sys.path.append("..")
 
-
 SWITCH_TO_HOST_PORT = 1
 SWITCH_TO_SWITCH_PORT = 2
-
-
-def printGrpcError(e):
-    print("gRPC Error:", e.details(), end=' ')
-    status_code = e.code()
-    print("(%s)" % status_code.name, end=' ')
-    traceback = sys.exc_info()[2]
-    print("[%s:%d]" % (traceback.tb_frame.f_code.co_filename, traceback.tb_lineno))
 
 
 def connect(name, addr, device_id, proto_dump_fpath):
