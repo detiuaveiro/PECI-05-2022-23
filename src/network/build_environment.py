@@ -56,12 +56,12 @@ class Runner:
         else:
             return str(l) + "ms"
 
-    def __init__(self, topo_file, log_dir, pcap_dir, bmv2_exe='simple_switch', quiet=False):
+    def __init__(self, topo, log_dir, pcap_dir, bmv2_exe='simple_switch', quiet=False):
         """ Initializes some attributes and reads the topology json. Does not
             actually run the exercise. Use build_env() for that.
 
             Arguments:
-                topo_file   : string    // A json file which describes the exercise's
+                topo   : string    // A json that describes the exercise's
                                          mininet topology.
                 log_dir : string     // Path to a directory for storing exercise logs
                 pcap_dir : string     // Ditto, but for mininet switch pcap files
@@ -72,8 +72,6 @@ class Runner:
 
         self.quiet = quiet
         self.logger('Reading topology file.')
-        with open(topo_file, 'r') as f:
-            topo = json.load(f)
         self.hosts = topo['hosts']
         self.switches = topo['switches']
         self.links = self.parse_links(topo['links'])
@@ -221,6 +219,11 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    env = Runner(args.topo, args.log_dir, args.pcap_dir, args.behavioral_exe, args.quiet)
+    
+    topo = NULL
+    with open(args.topo, 'r') as f:
+        topo = json.load(args.topo)
+    
+    env = Runner(topo, args.log_dir, args.pcap_dir, args.behavioral_exe, args.quiet)
 
     env.build_env()
