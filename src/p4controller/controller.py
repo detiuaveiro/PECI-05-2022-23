@@ -1,4 +1,4 @@
-from p4 import p4info_pb2
+from p4.config.v1 import p4info_pb2
 from p4runtime_lib import helper
 from p4runtime_lib import bmv2
 from network.p4runtime_switch import P4RuntimeSwitch

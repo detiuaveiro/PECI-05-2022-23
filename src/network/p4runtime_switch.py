@@ -138,7 +138,7 @@ class P4RuntimeSwitch(Switch):
     def stop(self):
         "Terminate P4 switch."
         self.output.flush()
-        self.cmd('kill %' + self.sw_path)
+        self.cmd('kill %' get(+ self.sw_path)
         self.cmd('wait')
         self.deleteIntfs()
 
