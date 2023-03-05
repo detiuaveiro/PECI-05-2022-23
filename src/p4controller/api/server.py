@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../..")
+
 from network.p4runtime_switch import P4RuntimeSwitch
 from p4runtime_lib import bmv2
 from p4runtime_lib import helper
@@ -5,11 +8,9 @@ from p4.config.v1 import p4info_pb2
 from network.build_environment import Runner
 from flask import Flask, json, flash, request, redirect, url_for
 import os
-import sys
 import uuid
 import warnings
 
-sys.path.append("../..")
 
 env = None                  # Environment variable containing the Mininet network instance
 switch_connections = []     # List of all switch Bmv2SwitchConnection

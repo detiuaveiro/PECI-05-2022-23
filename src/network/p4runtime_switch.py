@@ -21,7 +21,7 @@ from time import sleep
 from mininet.log import debug, error, info
 from mininet.moduledeps import pathCheck
 from mininet.node import Switch
-from netstat import check_listening_on_port
+from .netstat import check_listening_on_port
 
 SWITCH_START_TIMEOUT = 10
 
@@ -138,7 +138,7 @@ class P4RuntimeSwitch(Switch):
     def stop(self):
         "Terminate P4 switch."
         self.output.flush()
-        self.cmd('kill %' get(+ self.sw_path)
+        self.cmd('kill %' + self.sw_path)
         self.cmd('wait')
         self.deleteIntfs()
 
