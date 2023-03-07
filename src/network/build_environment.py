@@ -7,9 +7,9 @@ from mininet.cli import CLI
 from mininet.link import TCLink
 from mininet.net import Mininet
 
-from .p4_host import P4Host
-from .p4runtime_switch import P4RuntimeSwitch
-from .mininet_topo import RunnerTopo
+from p4_host import P4Host
+from p4runtime_switch import P4RuntimeSwitch
+from mininet_topo import RunnerTopo
 
 def configureP4Switch(**switch_args):
     """ Helper class that is called by mininet to initialize
@@ -220,9 +220,8 @@ def get_args():
 if __name__ == '__main__':
     args = get_args()
     
-    topo = NULL
     with open(args.topo, 'r') as f:
-        topo = json.load(args.topo)
+        topo = json.load(f)
     
     env = Runner(topo, args.log_dir, args.pcap_dir, args.behavioral_exe, args.quiet)
 

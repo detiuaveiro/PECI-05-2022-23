@@ -21,7 +21,7 @@ from time import sleep
 from mininet.log import debug, error, info
 from mininet.moduledeps import pathCheck
 from mininet.node import Host
-from .netstat import check_listening_on_port
+from netstat import check_listening_on_port
 
 class P4Host(Host):
     def config(self, **params):

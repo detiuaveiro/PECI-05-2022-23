@@ -5,7 +5,7 @@ LOG_DIR = logs
 all: run
 
 run: build
-	sudo python3 build_environment.py -t topology.json -b simple_switch_grpc
+	sudo python3 build_environment.py -t ../testFiles/topology.json -b simple_switch_grpc
 
 build: dirs
 
