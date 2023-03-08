@@ -7,9 +7,9 @@ from mininet.cli import CLI
 from mininet.link import TCLink
 from mininet.net import Mininet
 
-from p4_host import P4Host
-from p4runtime_switch import P4RuntimeSwitch
-from mininet_topo import RunnerTopo
+from .p4_host import P4Host
+from .p4runtime_switch import P4RuntimeSwitch
+from .mininet_topo import RunnerTopo
 
 def configureP4Switch(**switch_args):
     """ Helper class that is called by mininet to initialize

@@ -11,15 +11,26 @@ import os
 import uuid
 import warnings
 
-
 env = None                  # Environment variable containing the Mininet network instance
 switch_connections = []     # List of all switch Bmv2SwitchConnection
 
 app = Flask(__name__)
 UPLOAD_FOLDER = "./saves/"
 COMPILATION_FOLDER = "./compiles/"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['COMPILATION_FOLDER'] = COMPILATION_FOLDER
 ALLOWED_EXTENSIONS = {'p4'}
 
+# <Utils #
+def allowed_file(filename):
+    """ Utility function to check if file is of allowed extension
+    
+        Attributes:
+            - filename      : string        // File name
+    """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Utils> #
 
 @app.route('/')
 def index():
@@ -27,21 +38,23 @@ def index():
 
 
 @app.route('/api/files/upload', methods=['POST'])
-def upload_load():
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
-    file = request.files['file']
-    # If the user does not select a file, the browser submits an
-    # empty file without a filename.
-    if file.filename == '':
-        flash('No selected file')
-        return redirect(request.url)
-    if file and file.filename:
-        filename = str(uuid.uuid4()) + file.filename
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
-        return os.path.join(UPLOAD_FOLDER, filename), 200
-    return 'Unvalid File', 400
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+    return '',500
 
 
 @app.route('/api/files', methods=['GET'])
@@ -129,7 +142,7 @@ def program_switch():
 
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
-            - device_id     : string    // Bmv2Switch to program
+            - device_id     : string    // Bmv2Switch to program (if equal to @ all switchs are programmed)
     """
     device_id = (int)(request.form['device_id'])
     p4file = request.form['p4file']
@@ -168,14 +181,14 @@ def _compile_p4(p4file):
     p4json = dst + ".json"
     
     return p4info, p4json
-device_id = (int)(request.form['device_id'])
+
 # TBT
 @app.route('/api/switch/inserttable', methods=['POST'])
 def insert_table():
     """ Program bmv2 switch.
 
         Attributes:
-            - device_id         : string    // Bmv2Switch to program
+            - device_id         : string    // Bmv2Switch to program (if equal to @ all switchs are programmed)
             - table             : string    // Table name
             - match             : string    // Matching packet field
             - action_name       : string    // Name of the action
