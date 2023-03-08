@@ -1,0 +1,47 @@
+{
+	"info": {
+		"_postman_id": "3c5c7b4d-0b75-43be-8608-2922cb54b18c",
+		"name": "Server P4Runtime API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Deploy Network",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "topology",
+							"value": "{\n    \"hosts\": {\n        \"h1\": {\n            \"ip\": \"10.0.1.1/24\",\n            \"mac\": \"08:00:00:00:01:11\",\n            \"commands\": [\n                \"route add default gw 10.0.1.10 dev eth0\",\n                \"arp -i eth0 -s 10.0.1.10 08:00:00:00:01:00\"\n            ]\n        },\n        \"h2\": {\n            \"ip\": \"10.0.2.2/24\",\n            \"mac\": \"08:00:00:00:02:22\",\n            \"commands\": [\n                \"route add default gw 10.0.2.20 dev eth0\",\n                \"arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00\"\n            ]\n        },\n        \"h3\": {\n            \"ip\": \"10.0.3.3/24\",\n            \"mac\": \"08:00:00:00:03:33\",\n            \"commands\": [\n                \"route add default gw 10.0.3.30 dev eth0\",\n                \"arp -i eth0 -s 10.0.3.30 08:00:00:00:03:00\"\n            ]\n        },\n        \"h4\": {\n            \"ip\": \"10.0.4.4/24\",\n            \"mac\": \"08:00:00:00:04:44\",\n            \"commands\": [\n                \"route add default gw 10.0.4.40 dev eth0\",\n                \"arp -i eth0 -s 10.0.4.40 08:00:00:00:04:00\"\n            ]\n        }\n    },\n    \"switches\": {\n        \"s1\": {},\n        \"s2\": {},\n        \"s3\": {}\n    },\n    \"links\": [\n        [\"h1\", \"s1-p1\"],\n        [\"s1-p2\", \"s2-p2\"],\n        [\"s1-p3\", \"s3-p2\"],\n        [\"s3-p3\", \"s2-p3\"],\n        [\"h2\", \"s2-p1\"],\n        [\"h3\", \"s3-p1\"],\n        [\"h4\", \"s3-p4\"]\n    ]\n}",
+							"type": "default"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/deploy",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"deploy"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

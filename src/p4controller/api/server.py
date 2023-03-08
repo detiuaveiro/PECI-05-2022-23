@@ -7,8 +7,8 @@ from p4runtime_lib import helper
 from p4.config.v1 import p4info_pb2
 from network.build_environment import Runner
 from flask import Flask, json, flash, request, redirect, url_for
+import werkzeug
 import os
-import uuid
 import warnings
 
 env = None                  # Environment variable containing the Mininet network instance
@@ -17,8 +17,12 @@ switch_connections = []     # List of all switch Bmv2SwitchConnection
 app = Flask(__name__)
 UPLOAD_FOLDER = "./saves/"
 COMPILATION_FOLDER = "./compiles/"
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['COMPILATION_FOLDER'] = COMPILATION_FOLDER
+app.config['ENVIRONMENT'] = env
+app.config['SWS_CONNECTIONS'] = switch_connections
+
 ALLOWED_EXTENSIONS = {'p4'}
 
 # <Utils #
@@ -51,7 +55,7 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = werkzeug.secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('download_file', name=filename))
     return '',500
@@ -77,19 +81,24 @@ def deploy_network():
     """ Deploy the network
         
         Attributes:
-            - topology_json     : string    // json describing the network topology
+            - topology     : string    // json describing the network topology
     """
-    topology = request.form['topology_json']
+    topology = request.form['topology']
 
     cwd = os.getcwd()
-    env = Runner(topology,
-                 os.path.join(cwd, 'logs'),
-                 os.path.join(cwd, 'pcaps'),
-                 "simple_switch_grpc",
-                 False)
+    app.config['ENVIRONMENT'] = Runner(json.loads(topology),
+                                       os.path.join(cwd, 'logs'),
+                                       os.path.join(cwd, 'pcaps'),
+                                       "simple_switch_grpc",
+                                       False)
 
-    # return result
-    return '', 200 if env.build_env() else 500
+    try:
+        app.config['ENVIRONMENT'].build_env()
+        return '', 200
+    except Exception as e:
+        app.config['ENVIRONMENT'].net.stop()
+        return e, 500
+        
 
 # TBT
 @app.route('/api/switch/connect', methods=['POST'])
@@ -111,7 +120,7 @@ def connect_to_switch():
                                      device_id=device_id,
                                      proto_dump_file=proto_dump)
 
-    switch_connections.append(conn)
+    app.config['SWS_CONNECTIONS'].append(conn)
     
     return '', 200
 
@@ -125,13 +134,13 @@ def connect_to_all_switches():
     """
 
     proto_dump = request.form['proto_dump']
-    for sw in env.net.switches:
+    for sw in app.config['ENVIRONMENT'].net.switches:
         conn = bmv2.Bmv2SwitchConnection(name=sw.name,
                                          address=f"0.0.0.0:{sw.grpc_port}",
                                          device_id=sw.device_id,
                                          proto_dump_file=f"{proto_dump}+{sw.device_id}")
 
-        switch_connections.append(conn)
+        app.config['SWS_CONNECTIONS'].append(conn)
         
     return '', 200
 
@@ -153,9 +162,9 @@ def program_switch():
     
     p4info, p4json = _compile_p4(p4file)
 
-    sw_conns = switch_connections
+    sw_conns = app.config['SWS_CONNECTIONS']
     if device_id != '@':
-        sw_conns = list(filter(lambda sw: sw.device_id == device_id, switch_connections))
+        sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
 
     try:
         for sw_conn in sw_conns:
@@ -198,9 +207,9 @@ def insert_table():
     """
     device_id = (int)(request.form['device_id'])
 
-    sw_conns = switch_connections
+    sw_conns = app.config['SWS_CONNECTIONS']
     if device_id != '@':
-        sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, switch_connections))
+        sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
 
     try:
         for sw_conn in sw_conns:
