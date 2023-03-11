@@ -6,6 +6,7 @@ import Logging from './library/Logging';
 import TelemetryReportRoutes from './routes/TelemetryReport';
 import TopologyRoutes from './routes/Topology';
 import MetricsRoutes from './routes/Metrics';
+import swaggerUi from "swagger-ui-express";
 
 const router = express();
 
@@ -38,8 +39,8 @@ const StartServer = () => {
 
     /** Rules of our API */
     router.use((req, res, next) => {
-        //res.header('Access-Control-Allow-Origin', '*');
-        //res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+       	res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
         if (req.method == 'OPTIONS') {
             res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
             return res.status(200).json({});
@@ -47,6 +48,18 @@ const StartServer = () => {
 
         next();
     });
+
+
+    /** Swagger */
+    router.use(
+    	"/",
+	swaggerUi.serve,
+	swaggerUi.setup(undefined, {
+		sawggerOptions: {
+			url: "/swagger.json",
+		}
+	})
+    );
 
     /** Routes */
     router.use('/api/TelemetryReport', TelemetryReportRoutes);
