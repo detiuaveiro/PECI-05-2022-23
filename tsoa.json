@@ -1,7 +1,7 @@
 {
 	"entryFile": "src/server.ts",
 	"noImplicitAdditionalProperties": "throw-on-extras",
-	"spec: {
+	"spec": {
 		"outputDirectory": "public",
 		"specVersion": 3
 	}
