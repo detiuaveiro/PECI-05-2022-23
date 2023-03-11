@@ -1,14 +1,16 @@
+from itertools import chain
 import sys
 sys.path.append("../..")
 
 from network.p4runtime_switch import P4RuntimeSwitch
+from network.p4_host import P4Host
 from p4runtime_lib import bmv2
 from p4runtime_lib import helper
 from p4.config.v1 import p4info_pb2
 from network.build_environment import Runner
 from flask import Flask, json, flash, request, redirect, url_for
 import werkzeug
-import os
+import os, signal
 import warnings
 
 env = None                  # Environment variable containing the Mininet network instance
@@ -97,8 +99,58 @@ def deploy_network():
         return '', 200
     except Exception as e:
         app.config['ENVIRONMENT'].net.stop()
+        print("deploy_network(): " + str(e))
         return e, 500
         
+@app.route('/api/devices', methods=['GET'])
+def get_devices():
+    """ Get all devices in the Mininet network
+
+        Return:
+            - device listing    : json      // json with all the devices id's and addresses
+    """
+    try:
+        devices = {}
+        
+        for node in chain(app.config['ENVIRONMENT'].net.hosts,app.config['ENVIRONMENT'].net.switches):
+            temp = {
+                'name': node.name,
+                'intfs': []
+            }
+            
+            if isinstance(node, P4RuntimeSwitch):
+                if not 'switches' in devices.keys():
+                    devices['switches'] = []
+                    
+                for intfs in node.intfList():
+                    temp['intfs'].append({
+                        'name': intfs.name,
+                        'mac': intfs.mac,
+                    }) 
+                
+                temp['device_id'] = node.device_id
+                temp['grpc_port'] = node.grpc_port
+                              
+                devices['switches'].append(temp)
+                
+            elif isinstance(node, P4Host):
+                if not 'hosts' in devices.keys():
+                    devices['hosts'] = []
+                
+                for intfs in node.intfList():
+                    temp['intfs'].append({
+                        'name': intfs.name,
+                        'mac': intfs.mac,
+                        'ip/prefix': intfs.ip + "/" + str(intfs.prefixLen)
+                    })
+                
+                devices['hosts'].append(temp)
+
+        return json.dumps(devices), 200
+    except Exception as e:
+        print("get_devices(): " + str(e))
+        return e, 500
+    
 
 # TBT
 @app.route('/api/switch/connect', methods=['POST'])
@@ -254,5 +306,12 @@ def _validateTableEntry(table_fields, p4info_helper):
                 return False
     return True
 
+# Fail safe for testing so it shutsdown the 
+# Mininet topology when stoping execution
+def SignalHandler_SIGINT(SignalNumber, Frame):
+    app.config['ENVIRONMENT'].net.stop()
+    os.system('mn -c')
+    
+signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
 app.run(host='0.0.0.0', port=6000)

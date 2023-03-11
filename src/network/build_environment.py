@@ -138,8 +138,9 @@ class Runner:
             # self.do_net_cli()
             # stop right after the CLI is exited
             # self.net.stop()
-        except:
-            return False
+        except Exception as e:
+            self.logger(e)
+            return e
         return True
 
     def create_network(self):
@@ -149,20 +150,24 @@ class Runner:
                 - Mininet topology instance stored as self.topo
                 - Mininet instance stored as self.net
         """
-        self.logger("Building mininet topology.")
+        try:
+            defaultSwitchClass = configureP4Switch(
+                                    sw_path=self.bmv2_exe,
+                                    log_console=True,
+                                    pcap_dump=self.pcap_dir)
 
-        defaultSwitchClass = configureP4Switch(
-                                sw_path=self.bmv2_exe,
-                                log_console=True,
-                                pcap_dump=self.pcap_dir)
+            self.topo = RunnerTopo(self.hosts, self.switches, self.links, self.log_dir)
 
-        self.topo = RunnerTopo(self.hosts, self.switches, self.links, self.log_dir)
-
-        self.net = Mininet(topo = self.topo,
-                      link = TCLink,
-                      host = P4Host,
-                      switch = defaultSwitchClass,
-                      controller = None)
+            self.net = Mininet(topo = self.topo,
+                        link = TCLink,
+                        host = P4Host,
+                        switch = defaultSwitchClass,
+                        controller = None)
+            
+            self.logger("Mininet topology built")
+        except Exception as e:
+            self.logger(e)
+            return e
 
     def do_net_cli(self):
         """ Starts up the mininet CLI and prints some helpful output.
