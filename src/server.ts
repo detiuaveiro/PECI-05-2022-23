@@ -51,15 +51,15 @@ const StartServer = () => {
 
 
     /** Swagger */
-    router.use(
-    	"/",
-	swaggerUi.serve,
-	swaggerUi.setup(undefined, {
-		sawggerOptions: {
-			url: "/swagger.json",
-		}
-	})
-    );
+//    router.use(
+//    	"/",
+//	swaggerUi.serve,
+//	swaggerUi.setup(undefined, {
+//		sawggerOptions: {
+//			url: "/swagger.json",
+//		}
+//	})
+//   );
 
     /** Routes */
     router.use('/api/TelemetryReport', TelemetryReportRoutes);

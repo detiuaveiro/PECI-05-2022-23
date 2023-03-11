@@ -5,10 +5,7 @@
     "main": "src/server.ts",
     "scripts": {
         "build": "rm -rf build/ && tsc",
-        "start": "node build/server.js",
-	"predev": "npm run swagger",
-	"prebuild": "npm run swagger",
-	"swagger": "tsoa spec"
+        "start": "node build/server.js"
     },
     "author": "",
     "license": "ISC",
