@@ -9,24 +9,6 @@ from p4runtime_lib import bmv2, helper
 
 sys.path.append("..")
 
-SWITCH_TO_HOST_PORT = 1
-SWITCH_TO_SWITCH_PORT = 2
-
-
-def connect(name, addr, device_id, proto_dump_fpath):
-    """ Connect to bmv2.
-
-        Attributes:
-            - addr                : string    // bmv2 IP:PORT address
-            - device_id           : string    // device id
-            - proto_dump_fpath    : string    // File to dump logs
-    """
-    return bmv2.Bmv2SwitchConnection(name=name,
-                                     address=addr,
-                                     device_id=device_id,
-                                     proto_dump_file=proto_dump_fpath)
-
-
 def program(sw_conn, p4info, p4json):
     """ Program to bmv2.
 
@@ -117,9 +99,9 @@ def delSwitch(net, sw_conn):
             break
     sw_conn.shutdown()
 
-sw1 = connect("s1", "0.0.0.0:50051", 0, "./dump1.txt")
-sw2 = connect("s2", "0.0.0.0:50052", 1, "./dump2.txt")
-sw3 = connect("s3", "0.0.0.0:50053", 2, "./dump3.txt")
+#sw1 = connect("s1", "0.0.0.0:50051", 0, "./dump1.txt")
+#sw2 = connect("s2", "0.0.0.0:50052", 1, "./dump2.txt")
+#sw3 = connect("s3", "0.0.0.0:50053", 2, "./dump3.txt")
 
 program(sw1, "advanced_tunnel.p4info.txt", "advanced_tunnel.json")
 program(sw2, "advanced_tunnel.p4info.txt", "advanced_tunnel.json")
