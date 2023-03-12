@@ -17,11 +17,14 @@ from network.p4runtime_switch import P4RuntimeSwitch
 from p4runtime_lib import bmv2, helper
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
+
 UPLOAD_FOLDER = "./uploads/"
 COMPILATION_FOLDER = "./compiles/"
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['COMPILATION_FOLDER'] = COMPILATION_FOLDER
+app.config['SWS_CONNECTIONS'] = []
 
 ALLOWED_EXTENSIONS = {'p4'}
 
@@ -62,6 +65,8 @@ def upload_file():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                'File format not allowed', 400
     except Exception as e:
         warn("upload_file(): " + str(e))
         return e, 500
@@ -179,12 +184,16 @@ def connect_to_switch():
         device_id = (int)(request.form['device_id'])
         proto_dump = "./dumps/" + request.form['proto_dump']
 
-        conn = bmv2.Bmv2SwitchConnection(name=name,
-                                        address=addr,
-                                        device_id=device_id,
-                                        proto_dump_file=f"{proto_dump}{device_id}.txt")
-
-        app.config['SWS_CONNECTIONS'].append(conn)
+        if all(map(lambda conn: conn.device_id != device_id, app.config['SWS_CONNECTIONS'])):
+            conn = bmv2.Bmv2SwitchConnection(name=name,
+                                            address=addr,
+                                            device_id=device_id,
+                                            proto_dump_file=f"{proto_dump}{device_id}.txt")
+            app.config['SWS_CONNECTIONS'].append(conn)
+        
+        for sw_conn in app.config['SWS_CONNECTIONS']:
+            print(f"Connected to {sw_conn.name} at {sw_conn.address}")
+        
     except Exception as e:
         warn("connect_to_switch(): " + str(e))
         return e, 500
@@ -203,18 +212,22 @@ def connect_to_all_switches():
     try:
         proto_dump = "./dumps/" + request.form['proto_dump']
         for sw in app.config['ENVIRONMENT'].net.switches:
-            conn = bmv2.Bmv2SwitchConnection(name=sw.name,
-                                            address=f"0.0.0.0:{sw.grpc_port}",
-                                            device_id=sw.device_id,
-                                            proto_dump_file=f"{proto_dump}{sw.device_id}.txt")
-
-            app.config['SWS_CONNECTIONS'].append(conn)
+            if all(map(lambda conn: conn.device_id != sw.device_id,app.config['SWS_CONNECTIONS'])): 
+                conn = bmv2.Bmv2SwitchConnection(name=sw.name,
+                                                address=f"0.0.0.0:{sw.grpc_port}",
+                                                device_id=sw.device_id,
+                                                proto_dump_file=f"{proto_dump}{sw.device_id}.txt")
+                app.config['SWS_CONNECTIONS'].append(conn)
+            
+        for sw_conn in app.config['SWS_CONNECTIONS']:
+            print(f"Connected to {sw_conn.name} at {sw_conn.address}")
+            
     except Exception as e:
         warn("connect_to_all_switches(): " + str(e))
         return e, 500
     return '', 200
 
-# TBT
+# PASSING
 @app.route('/api/switch/program', methods=['POST'])
 def program_switch():
     """ Program bmv2 switch.
@@ -222,22 +235,23 @@ def program_switch():
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
             - device_id     : string    // Bmv2Switch to program (if equal to @ all switchs are programmed)
+    
     """
-    device_id = (int)(request.form['device_id'])
-    p4file = request.form['p4file']
+    sw_conns = app.config['SWS_CONNECTIONS']
+    
+    if 'device_id' in request.form:
+        device_id = (int)(request.form['device_id'])
+        sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
     
     try:
-        if not os.path.isfile(os.path.join(UPLOAD_FOLDER, p4file)):
+        if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file']}.p4")):
             return 'File does not exist', 400
         
-        p4info, p4json = _compile_p4(p4file)
+        p4info, p4json = _compile_p4(request.form['p4file'])
 
-        sw_conns = app.config['SWS_CONNECTIONS']
-        if device_id != '@':
-            sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
-
-  
         for sw_conn in sw_conns:
+            print(f"Programming {sw_conn.name}, {sw_conn.address}")
+            
             sw_conn.p4info = p4info
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             sw_conn.MasterArbitrationUpdate()
@@ -245,26 +259,27 @@ def program_switch():
                                                 bmv2_json_file_path=p4json)     
         
     except Exception as e:
-        warn(f"program_switch: {str(e)}")
+        warn(f"program_switch(): {e}")
         return e, 500
 
     return '', 200
 
-# TBT
+# PASSING
 def _compile_p4(p4file):
     try:
-        org = os.path.join(UPLOAD_FOLDER, p4file)
-        dst = os.path.join(COMPILATION_FOLDER, p4file)
+        if not os.path.isdir(app.config['COMPILATION_FOLDER']):
+                os.system(f"mkdir {app.config['COMPILATION_FOLDER']}")
+                
+        org = os.path.join(app.config['UPLOAD_FOLDER'], f"{p4file}.p4")
+        dst = os.path.join(app.config['COMPILATION_FOLDER'], f"{p4file}.p4info.txt")
         
-        command = f"p4c --target bmv2 --arch v1model --p4runtime-files {dst} --std {org}"
+        command = f"p4c --target bmv2 --arch v1model -o {app.config['COMPILATION_FOLDER']} --p4runtime-files {dst} --std p4-16 {org}"
         os.system(command)
         
-        p4info = dst + ".p4info.txt"
-        p4json = dst + ".json"
-        
+        p4info = os.path.join(app.config['COMPILATION_FOLDER'], f"{p4file}.p4info.txt")
+        p4json = os.path.join(app.config['COMPILATION_FOLDER'], f"{p4file}.json")
     except Exception as e:
-        warn(f'Compilation failed ! cause: {e}')
-        return None, None
+        raise Exception(f'Compilation failed: {e}')
         
     return p4info, p4json
 
@@ -335,7 +350,8 @@ def _validateTableEntry(table_fields, p4info_helper):
 # Mininet topology when stoping execution
 def SignalHandler_SIGINT(SignalNumber, Frame):
     app.config['ENVIRONMENT'].net.stop()
-    os.system('mn -c') 
+    os.system('mn -c && rm -r compiles uploads') 
+    
 signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
 app.run(host='0.0.0.0', port=6000)
