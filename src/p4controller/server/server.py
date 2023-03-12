@@ -40,7 +40,7 @@ def allowed_file(filename):
 def index():
     return 'Welcome to controller api'
 
-# TBT
+# PASSING
 @app.route('/api/files/upload', methods=['POST'])
 def upload_file():
     try:
@@ -49,6 +49,10 @@ def upload_file():
             if 'file' not in request.files:
                 flash('No file part')
                 return redirect(request.url)
+            
+            if not os.path.isdir(app.config['UPLOAD_FOLDER']):
+                os.system(f"mkdir {app.config['UPLOAD_FOLDER']}")
+            
             file = request.files['file']
             # If the user does not select a file, the browser submits an
             # empty file without a filename.
@@ -58,7 +62,6 @@ def upload_file():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                return redirect(url_for('download_file', name=filename))
     except Exception as e:
         warn("upload_file(): " + str(e))
         return e, 500
