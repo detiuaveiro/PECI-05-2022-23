@@ -1,10 +1,11 @@
-from p4.config.v1 import p4info_pb2
-from p4runtime_lib import helper
-from p4runtime_lib import bmv2
-from network.p4runtime_switch import P4RuntimeSwitch
 import sys
 import warnings
 from time import sleep
+
+from p4.config.v1 import p4info_pb2
+
+from network.p4runtime_switch import P4RuntimeSwitch
+from p4runtime_lib import bmv2, helper
 
 sys.path.append("..")
 

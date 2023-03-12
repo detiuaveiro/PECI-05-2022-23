@@ -42,6 +42,63 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Devices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/devices",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Connecting to Switch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "proto_dump",
+							"value": "dump",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/switch/connectall",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"switch",
+						"connectall"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

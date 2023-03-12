@@ -1,29 +1,27 @@
-from itertools import chain
 import sys
+from itertools import chain
+
 sys.path.append("../..")
 
-from network.p4runtime_switch import P4RuntimeSwitch
-from network.p4_host import P4Host
-from p4runtime_lib import bmv2
-from p4runtime_lib import helper
-from p4.config.v1 import p4info_pb2
-from network.build_environment import Runner
-from flask import Flask, json, flash, request, redirect, url_for
-import werkzeug
-import os, signal
-import warnings
+import os
+import signal
+from warnings import warn
 
-env = None                  # Environment variable containing the Mininet network instance
-switch_connections = []     # List of all switch Bmv2SwitchConnection
+from flask import Flask, flash, json, redirect, request, url_for
+from p4.config.v1 import p4info_pb2
+from werkzeug.utils import secure_filename
+
+from network.build_environment import Runner
+from network.p4_host import P4Host
+from network.p4runtime_switch import P4RuntimeSwitch
+from p4runtime_lib import bmv2, helper
 
 app = Flask(__name__)
-UPLOAD_FOLDER = "./saves/"
+UPLOAD_FOLDER = "./uploads/"
 COMPILATION_FOLDER = "./compiles/"
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['COMPILATION_FOLDER'] = COMPILATION_FOLDER
-app.config['ENVIRONMENT'] = env
-app.config['SWS_CONNECTIONS'] = switch_connections
 
 ALLOWED_EXTENSIONS = {'p4'}
 
@@ -42,42 +40,50 @@ def allowed_file(filename):
 def index():
     return 'Welcome to controller api'
 
-
+# TBT
 @app.route('/api/files/upload', methods=['POST'])
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = werkzeug.secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
-    return '',500
+    try:
+        if request.method == 'POST':
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+            # If the user does not select a file, the browser submits an
+            # empty file without a filename.
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('download_file', name=filename))
+    except Exception as e:
+        warn("upload_file(): " + str(e))
+        return e, 500
+    return '', 200
 
-
+# TBT
 @app.route('/api/files', methods=['GET'])
 def get_files():
-    return [UPLOAD_FOLDER+file_name for file_name in os.listdir(UPLOAD_FOLDER)], 200
-
-
+    try:
+        return [UPLOAD_FOLDER+file_name for file_name in os.listdir(UPLOAD_FOLDER)], 200
+    except Exception as e:
+        warn("get_files(): " + str(e))
+        return e, 400
+    
+# TBT    
 @app.route('/api/files/delete', methods=['DELETE'])
 def delete_file():
     try:
         os.remove(request.form['file_path'])
         return '', 200
-    except:
-        return 'Error deleting file', 400
+    except Exception as e:
+        warn("delete_file(): " + str(e))
+        return e, 400
 
-
-# TBT
+# PASSING
 @app.route('/api/deploy', methods=['POST'])
 def deploy_network():
     """ Deploy the network
@@ -91,6 +97,7 @@ def deploy_network():
     app.config['ENVIRONMENT'] = Runner(json.loads(topology),
                                        os.path.join(cwd, 'logs'),
                                        os.path.join(cwd, 'pcaps'),
+                                       os.path.join(cwd, 'dumps'),
                                        "simple_switch_grpc",
                                        False)
 
@@ -99,9 +106,10 @@ def deploy_network():
         return '', 200
     except Exception as e:
         app.config['ENVIRONMENT'].net.stop()
-        print("deploy_network(): " + str(e))
+        warn("deploy_network(): " + str(e))
         return e, 500
-        
+      
+# PASSING  
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
     """ Get all devices in the Mininet network
@@ -123,10 +131,11 @@ def get_devices():
                     devices['switches'] = []
                     
                 for intfs in node.intfList():
-                    temp['intfs'].append({
-                        'name': intfs.name,
-                        'mac': intfs.mac,
-                    }) 
+                    if intfs.mac != None:
+                        temp['intfs'].append({
+                            'name': intfs.name,
+                            'mac': intfs.mac,
+                        }) 
                 
                 temp['device_id'] = node.device_id
                 temp['grpc_port'] = node.grpc_port
@@ -141,18 +150,17 @@ def get_devices():
                     temp['intfs'].append({
                         'name': intfs.name,
                         'mac': intfs.mac,
-                        'ip/prefix': intfs.ip + "/" + str(intfs.prefixLen)
+                        'ip&prefix': intfs.ip + "/" + str(intfs.prefixLen)
                     })
                 
                 devices['hosts'].append(temp)
 
         return json.dumps(devices), 200
     except Exception as e:
-        print("get_devices(): " + str(e))
+        warn("get_devices(): " + str(e))
         return e, 500
     
-
-# TBT
+# PASSING
 @app.route('/api/switch/connect', methods=['POST'])
 def connect_to_switch():
     """ Connect to bmv2 switch.
@@ -162,21 +170,25 @@ def connect_to_switch():
             - device_id           : string    // device id
             - proto_dump_fpath    : string    // File to dump logs
     """
-    name = request.form['name']
-    addr = request.form['address']
-    device_id = (int)(request.form['device_id'])
-    proto_dump = request.form['proto_dump']
+    try:
+        name = request.form['name']
+        addr = request.form['address']
+        device_id = (int)(request.form['device_id'])
+        proto_dump = "./dumps/" + request.form['proto_dump']
 
-    conn = bmv2.Bmv2SwitchConnection(name=name,
-                                     address=addr,
-                                     device_id=device_id,
-                                     proto_dump_file=proto_dump)
+        conn = bmv2.Bmv2SwitchConnection(name=name,
+                                        address=addr,
+                                        device_id=device_id,
+                                        proto_dump_file=f"{proto_dump}{device_id}.txt")
 
-    app.config['SWS_CONNECTIONS'].append(conn)
+        app.config['SWS_CONNECTIONS'].append(conn)
+    except Exception as e:
+        warn("connect_to_switch(): " + str(e))
+        return e, 500
     
     return '', 200
 
-# TBT
+# PASSING
 @app.route('/api/switch/connectall', methods=['POST'])
 def connect_to_all_switches():
     """ Connect to all bmv2 switches.
@@ -184,16 +196,19 @@ def connect_to_all_switches():
         Attributes:
             - proto_dump_fpath    : string    // File to dump logs
     """
+    
+    try:
+        proto_dump = "./dumps/" + request.form['proto_dump']
+        for sw in app.config['ENVIRONMENT'].net.switches:
+            conn = bmv2.Bmv2SwitchConnection(name=sw.name,
+                                            address=f"0.0.0.0:{sw.grpc_port}",
+                                            device_id=sw.device_id,
+                                            proto_dump_file=f"{proto_dump}{sw.device_id}.txt")
 
-    proto_dump = request.form['proto_dump']
-    for sw in app.config['ENVIRONMENT'].net.switches:
-        conn = bmv2.Bmv2SwitchConnection(name=sw.name,
-                                         address=f"0.0.0.0:{sw.grpc_port}",
-                                         device_id=sw.device_id,
-                                         proto_dump_file=f"{proto_dump}+{sw.device_id}")
-
-        app.config['SWS_CONNECTIONS'].append(conn)
-        
+            app.config['SWS_CONNECTIONS'].append(conn)
+    except Exception as e:
+        warn("connect_to_all_switches(): " + str(e))
+        return e, 500
     return '', 200
 
 # TBT
@@ -208,39 +223,46 @@ def program_switch():
     device_id = (int)(request.form['device_id'])
     p4file = request.form['p4file']
     
-    # ATTENTION - P4 file must already have been uploaded
-    # FIXME - Add validation for p4 file existence
-    # FEATURE - Upload p4 file at same time
-    
-    p4info, p4json = _compile_p4(p4file)
-
-    sw_conns = app.config['SWS_CONNECTIONS']
-    if device_id != '@':
-        sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
-
     try:
+        if not os.path.isfile(os.path.join(UPLOAD_FOLDER, p4file)):
+            return 'File does not exist', 400
+        
+        p4info, p4json = _compile_p4(p4file)
+
+        sw_conns = app.config['SWS_CONNECTIONS']
+        if device_id != '@':
+            sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
+
+  
         for sw_conn in sw_conns:
             sw_conn.p4info = p4info
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             sw_conn.MasterArbitrationUpdate()
             sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
-                                                bmv2_json_file_path=p4json)
-        return '', 200
-    except:
-        warnings.warn("Failed configuration")
-        return '', 500
+                                                bmv2_json_file_path=p4json)     
+        
+    except Exception as e:
+        warn(f"program_switch: {str(e)}")
+        return e, 500
+
+    return '', 200
 
 # TBT
 def _compile_p4(p4file):
-    org = os.path.join(UPLOAD_FOLDER, p4file)
-    dst = os.path.join(COMPILATION_FOLDER, p4file)
-    
-    command = f"p4c --target bmv2 --arch v1model --p4runtime-files {dst} --std {org}"
-    os.system(command)
-    
-    p4info = dst + ".p4info.txt"
-    p4json = dst + ".json"
-    
+    try:
+        org = os.path.join(UPLOAD_FOLDER, p4file)
+        dst = os.path.join(COMPILATION_FOLDER, p4file)
+        
+        command = f"p4c --target bmv2 --arch v1model --p4runtime-files {dst} --std {org}"
+        os.system(command)
+        
+        p4info = dst + ".p4info.txt"
+        p4json = dst + ".json"
+        
+    except Exception as e:
+        warn(f'Compilation failed ! cause: {e}')
+        return None, None
+        
     return p4info, p4json
 
 # TBT
@@ -285,7 +307,7 @@ def insert_table():
                 sw_conn.WriteTableEntry(table_entry)
         return '', 200
     except:
-        warnings.warn("Failed configuration")
+        warn("Failed configuration")
         return '', 500
 
 def _validateTableEntry(table_fields, p4info_helper):
@@ -302,7 +324,7 @@ def _validateTableEntry(table_fields, p4info_helper):
                 table_name, match_field_name)
             match_type = p4info_match.match_type
             if match_type in match_types_with_priority:
-                warnings.warn("non-zero 'priority' field is required")
+                warn("non-zero 'priority' field is required")
                 return False
     return True
 
@@ -310,8 +332,7 @@ def _validateTableEntry(table_fields, p4info_helper):
 # Mininet topology when stoping execution
 def SignalHandler_SIGINT(SignalNumber, Frame):
     app.config['ENVIRONMENT'].net.stop()
-    os.system('mn -c')
-    
+    os.system('mn -c') 
 signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
 app.run(host='0.0.0.0', port=6000)

@@ -32,6 +32,7 @@ class Runner:
         Attributes:
             log_dir  : string   // directory for mininet log files
             pcap_dir : string   // directory for mininet switch pcap files
+            dump_dir : string   // directory for switch dump files
             quiet    : bool     // determines if we print logger messages
 
             hosts    : dict<string, dict> // mininet host names and their associated properties
@@ -56,7 +57,7 @@ class Runner:
         else:
             return str(l) + "ms"
 
-    def __init__(self, topo, log_dir, pcap_dir, bmv2_exe='simple_switch', quiet=False):
+    def __init__(self, topo, log_dir, pcap_dir, dump_dir, bmv2_exe='simple_switch', quiet=False):
         """ Initializes some attributes and reads the topology json. Does not
             actually run the exercise. Use build_env() for that.
 
@@ -77,11 +78,12 @@ class Runner:
         self.links = self.parse_links(topo['links'])
 
         # Ensure all the needed directories exist and are directories
-        for dir_name in [log_dir, pcap_dir]:
+        for dir_name in [log_dir, pcap_dir, dump_dir]:
             if not os.path.isdir(dir_name):
                 if os.path.exists(dir_name):
                     raise Exception("'%s' exists and is not a directory!" % dir_name)
                 os.mkdir(dir_name)
+        self.dump_dir = dump_dir
         self.log_dir = log_dir
         self.pcap_dir = pcap_dir
         self.bmv2_exe = bmv2_exe
