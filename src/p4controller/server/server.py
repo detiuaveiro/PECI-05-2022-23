@@ -250,13 +250,13 @@ def program_switch():
         p4info, p4json = _compile_p4(request.form['p4file'])
 
         for sw_conn in sw_conns:
-            print(f"Programming {sw_conn.name}, {sw_conn.address}")
-            
             sw_conn.p4info = p4info
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             sw_conn.MasterArbitrationUpdate()
             sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
-                                                bmv2_json_file_path=p4json)     
+                                                bmv2_json_file_path=p4json)    
+            
+            print(f"{sw_conn.name} programmed") 
         
     except Exception as e:
         warn(f"program_switch(): {e}")
@@ -283,7 +283,7 @@ def _compile_p4(p4file):
         
     return p4info, p4json
 
-# TBT
+# FAILLING
 @app.route('/api/switch/inserttable', methods=['POST'])
 def insert_table():
     """ Program bmv2 switch.
@@ -297,54 +297,38 @@ def insert_table():
             - action_params     : string    // Action parameters
             - priority          : string    // Action priority
     """
-    device_id = (int)(request.form['device_id'])
-
     sw_conns = app.config['SWS_CONNECTIONS']
-    if device_id != '@':
+    if 'device_id' in request.form:
+        device_id = (int)(request.form['device_id'])
         sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
 
-    try:
-        for sw_conn in sw_conns:
-            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
-            if _validateTableEntry(request.form, p4info_helper):   
-                table_name = request.form['table']
-                match_fields = request.form['match']
-                action_name = request.form['action_name']
-                default_action = request.form['default_action']
-                action_params = request.form['action_params']
-                priority = request.form['priority']
+    #try:
+    for sw_conn in sw_conns:
+        p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
+        
+        match_fields=request.form.get('match',None),
+        if match_fields != None:
+            # FIXME
+            match_fields = json.loads(match_fields)
+            match_fields[list(match_fields.keys())[0]] = (match_fields[list(match_fields.keys())[0]], match_fields['prefixLen'])
+            del match_fields['prefixLen']
+        action_params= request.form.get('action_params', None),
+        if action_params != None:
+            action_params = json.loads(action_params)
+            
+        table_entry = p4info_helper.buildTableEntry(
+            table_name=request.form['table'],
+            match_fields=match_fields,
+            default_action=(bool)(request.form.get('default_action', False)),
+            action_name=request.form.get('action_name',None),
+            action_params=action_params,
+            priority=request.form.get('priority', None))
 
-                table_entry = p4info_helper.buildTableEntry(
-                    table_name=table_name,
-                    match_fields=match_fields,
-                    default_action=(bool)(default_action),
-                    action_name=action_name,
-                    action_params=action_params,
-                    priority=priority)
-
-                sw_conn.WriteTableEntry(table_entry)
-        return '', 200
-    except:
-        warn("Failed configuration")
-        return '', 500
-
-def _validateTableEntry(table_fields, p4info_helper):
-    table_name = table_fields['table']
-    match_fields = table_fields.get('match')  # None if not found
-    priority = table_fields.get('priority')  # None if not found
-    match_types_with_priority = [
-        p4info_pb2.MatchField.TERNARY,
-        p4info_pb2.MatchField.RANGE
-    ]
-    if match_fields is not None and (priority is None or priority == 0):
-        for match_field_name, _ in match_fields.items():
-            p4info_match = p4info_helper.get_match_field(
-                table_name, match_field_name)
-            match_type = p4info_match.match_type
-            if match_type in match_types_with_priority:
-                warn("non-zero 'priority' field is required")
-                return False
-    return True
+        sw_conn.WriteTableEntry(table_entry)
+    return '', 200
+    #except Exception as e:
+    #    warn(f"Failed configuration: {e}")
+    #    return '', 500
 
 # Fail safe for testing so it shutsdown the 
 # Mininet topology when stoping execution

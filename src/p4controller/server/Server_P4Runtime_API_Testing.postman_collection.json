@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3c5c7b4d-0b75-43be-8608-2922cb54b18c",
+		"_postman_id": "69c2f691-15ff-4335-864a-de9116b8714a",
 		"name": "Server P4Runtime API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -67,7 +67,56 @@
 			"response": []
 		},
 		{
-			"name": "Connecting to Switch",
+			"name": "Connecting to Specific Switch",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "proto_dump",
+							"value": "dump",
+							"type": "default"
+						},
+						{
+							"key": "name",
+							"value": "s1",
+							"type": "default"
+						},
+						{
+							"key": "address",
+							"value": "0.0.0.0:50051",
+							"type": "default"
+						},
+						{
+							"key": "device_id",
+							"value": "0",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/switch/connect",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"switch",
+						"connect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Connecting to All Switches",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -95,6 +144,148 @@
 						"api",
 						"switch",
 						"connectall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Uploading P4 File",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"contentType": "",
+							"type": "file",
+							"src": "/home/peci/Desktop/PECI-05-2022-23/src/testFiles/advanced_tunnel.p4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/files/upload",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"files",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Program Swtiches",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "p4file",
+							"value": "advanced_tunnel",
+							"type": "default"
+						},
+						{
+							"key": "device_id",
+							"value": "2",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/switch/program",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"switch",
+						"program"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Write Table",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "device_id",
+							"value": "0",
+							"type": "default",
+							"disabled": true
+						},
+						{
+							"key": "table",
+							"value": "MyIngress.ipv4_lpm",
+							"type": "default"
+						},
+						{
+							"key": "match",
+							"value": "{\"hdr.ipv4.dstAddr\": \"10.0.1.1\", \"prefixLen\": 32}",
+							"type": "default"
+						},
+						{
+							"key": "action_name",
+							"value": "MyIngress.myTunnel_ingress",
+							"type": "default"
+						},
+						{
+							"key": "default_action",
+							"value": "",
+							"type": "default",
+							"disabled": true
+						},
+						{
+							"key": "action_params",
+							"value": "{\"dst_id\": 200}",
+							"type": "default"
+						},
+						{
+							"key": "priority",
+							"value": "",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/switch/inserttable",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"switch",
+						"inserttable"
 					]
 				}
 			},
