@@ -4,6 +4,7 @@ from itertools import chain
 sys.path.append("../..")
 
 import os
+import re
 import signal
 from warnings import warn
 
@@ -306,13 +307,15 @@ def insert_table():
     for sw_conn in sw_conns:
         p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
         
-        match_fields=request.form.get('match',None),
+        match_fields=request.form.get('match',None)
         if match_fields != None:
-            # FIXME
             match_fields = json.loads(match_fields)
-            match_fields[list(match_fields.keys())[0]] = (match_fields[list(match_fields.keys())[0]], match_fields['prefixLen'])
-            del match_fields['prefixLen']
-        action_params= request.form.get('action_params', None),
+            for key, value in match_fields.items():
+                match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
+                if match:
+                    match_fields[key]=(match.group(1),int(match.group(2)))
+            
+        action_params= request.form.get('action_params', None)
         if action_params != None:
             action_params = json.loads(action_params)
             
