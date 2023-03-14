@@ -303,35 +303,35 @@ def insert_table():
         device_id = (int)(request.form['device_id'])
         sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
 
-    #try:
-    for sw_conn in sw_conns:
-        p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
-        
-        match_fields=request.form.get('match',None)
-        if match_fields != None:
-            match_fields = json.loads(match_fields)
-            for key, value in match_fields.items():
-                match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
-                if match:
-                    match_fields[key]=(match.group(1),int(match.group(2)))
+    try:
+        for sw_conn in sw_conns:
+            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
-        action_params= request.form.get('action_params', None)
-        if action_params != None:
-            action_params = json.loads(action_params)
-            
-        table_entry = p4info_helper.buildTableEntry(
-            table_name=request.form['table'],
-            match_fields=match_fields,
-            default_action=(bool)(request.form.get('default_action', False)),
-            action_name=request.form.get('action_name',None),
-            action_params=action_params,
-            priority=request.form.get('priority', None))
+            match_fields=request.form.get('match',None)
+            if match_fields != None:
+                match_fields = json.loads(match_fields)
+                for key, value in match_fields.items():
+                    match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
+                    if match:
+                        match_fields[key]=(match.group(1),int(match.group(2)))
+                
+            action_params= request.form.get('action_params', None)
+            if action_params != None:
+                action_params = json.loads(action_params)
+                
+            table_entry = p4info_helper.buildTableEntry(
+                table_name=request.form['table'],
+                match_fields=match_fields,
+                default_action=(bool)(request.form.get('default_action', False)),
+                action_name=request.form.get('action_name',None),
+                action_params=action_params,
+                priority=request.form.get('priority', None))
 
-        sw_conn.WriteTableEntry(table_entry)
-    return '', 200
-    #except Exception as e:
-    #    warn(f"Failed configuration: {e}")
-    #    return '', 500
+            sw_conn.WriteTableEntry(table_entry)
+        return '', 200
+    except Exception as e:
+        warn(f"Failed configuration: {e}")
+        return '', 500
 
 # Fail safe for testing so it shutsdown the 
 # Mininet topology when stoping execution
