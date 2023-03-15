@@ -200,6 +200,7 @@
 						{
 							"key": "device_id",
 							"value": "2",
+							"description": "Optional",
 							"type": "default",
 							"disabled": true
 						}
@@ -235,6 +236,7 @@
 						{
 							"key": "device_id",
 							"value": "0",
+							"description": "Optional",
 							"type": "default",
 							"disabled": true
 						},
@@ -256,6 +258,7 @@
 						{
 							"key": "default_action",
 							"value": "",
+							"description": "Optional",
 							"type": "default",
 							"disabled": true
 						},
@@ -267,6 +270,7 @@
 						{
 							"key": "priority",
 							"value": "",
+							"description": "Optional",
 							"type": "default",
 							"disabled": true
 						}
@@ -286,6 +290,48 @@
 						"api",
 						"switch",
 						"inserttable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Table",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:6000/api/switch/gettable?device_id=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "6000",
+					"path": [
+						"api",
+						"switch",
+						"gettable"
+					],
+					"query": [
+						{
+							"key": "device_id",
+							"value": "0"
+						},
+						{
+							"key": "table_id",
+							"value": "0",
+							"description": "Optional",
+							"disabled": true
+						},
+						{
+							"key": "table_name",
+							"value": null,
+							"description": "Optional",
+							"disabled": true
+						}
 					]
 				}
 			},

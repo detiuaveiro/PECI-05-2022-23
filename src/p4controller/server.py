@@ -1,7 +1,8 @@
 import sys
+import atexit
 from itertools import chain
 
-sys.path.append("../..")
+sys.path.append("..")
 
 import os
 import re
@@ -18,7 +19,6 @@ from network.p4runtime_switch import P4RuntimeSwitch
 from p4runtime_lib import bmv2, helper
 
 app = Flask(__name__)
-app.secret_key = "super secret key"
 
 UPLOAD_FOLDER = "./uploads/"
 COMPILATION_FOLDER = "./compiles/"
@@ -77,7 +77,7 @@ def upload_file():
 @app.route('/api/files', methods=['GET'])
 def get_files():
     try:
-        return [UPLOAD_FOLDER+file_name for file_name in os.listdir(UPLOAD_FOLDER)], 200
+        return [app.config['UPLOAD_FOLDER']+file_name for file_name in os.listdir(app.config['UPLOAD_FOLDER'])], 200
     except Exception as e:
         warn("get_files(): " + str(e))
         return e, 400
@@ -284,7 +284,7 @@ def _compile_p4(p4file):
         
     return p4info, p4json
 
-# FAILLING
+# PASSING
 @app.route('/api/switch/inserttable', methods=['POST'])
 def insert_table():
     """ Program bmv2 switch.
@@ -308,7 +308,7 @@ def insert_table():
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
             match_fields=request.form.get('match',None)
-            if match_fields != None:
+            if match_fields is not None:
                 match_fields = json.loads(match_fields)
                 for key, value in match_fields.items():
                     match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
@@ -316,7 +316,7 @@ def insert_table():
                         match_fields[key]=(match.group(1),int(match.group(2)))
                 
             action_params= request.form.get('action_params', None)
-            if action_params != None:
+            if action_params is not None:
                 action_params = json.loads(action_params)
                 
             table_entry = p4info_helper.buildTableEntry(
@@ -328,17 +328,70 @@ def insert_table():
                 priority=request.form.get('priority', None))
 
             sw_conn.WriteTableEntry(table_entry)
+            
+            print(f"Table inserted at {sw_conn.name}")
+            
         return '', 200
     except Exception as e:
         warn(f"Failed configuration: {e}")
         return '', 500
 
-# Fail safe for testing so it shutsdown the 
-# Mininet topology when stoping execution
-def SignalHandler_SIGINT(SignalNumber, Frame):
-    app.config['ENVIRONMENT'].net.stop()
-    os.system('mn -c && rm -r compiles uploads') 
+# TBT
+@app.route('/api/switch/gettable', methods=['GET'])
+def get_table_entries():
+    sw_conns = app.config['SWS_CONNECTIONS']
+    if 'device_id' in request.args:
+        device_id = (int)(request.args.get('device_id'))
+        sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
     
-signal.signal(signal.SIGINT, SignalHandler_SIGINT)
+    table_entries = {}
+    try:
+        for sw_conn in sw_conns:
+            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
+            
+            table_id = request.args.get('table_id', None)
+            table_name = request.args.get('table_name', None)
+            
+            if table_id is None and table_name is not None:
+                table_id = p4info_helper.get_tables_id(table_name)
+                
+            for table in getattr(p4info_helper.p4info, "tables"):
+                pre = table.preamble
+                if pre.id == table_id or table_id is None:
+                    if not sw_conn.name in table_entries.keys():
+                        table_entries[sw_conn.name] = []
+                    
+                    table_json = {
+                        "id": pre.id,
+                        "name": pre.name,
+                        "alias": pre.alias,
+                        "match_fields": [{
+                            "id": mf.id,
+                            "name": mf.name,
+                            "bitwidth": mf.bitwidth,
+                            "match_type": mf.match_type
+                        } for mf in table.match_fields],
+                        "action_refs":[{"id": x.id} for x in table.action_refs],
+                        "size": table.size
+                    }                        
+                        
+                    table_entries[sw_conn.name].append(table_json)
+        
+        return json.dumps(table_entries), 200
+                       
+    except Exception as e:
+        warn(f"Failed to get table entry: {e}")
+        return '', 500
+
+# ATTENTION - Shutting Mininet down before exiting
+def exit_handler(*args):
+    app.config['ENVIRONMENT'].net.stop()
+    os.system('sudo mn -c && sudo rm -r compiles uploads') 
+atexit.register(exit_handler)
+signal.signal(signal.SIGTERM, exit_handler)
+signal.signal(signal.SIGINT, exit_handler)
+
+# ATTENTION
+app.debug = True
 
 app.run(host='0.0.0.0', port=6000)
