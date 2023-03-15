@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "69c2f691-15ff-4335-864a-de9116b8714a",
+		"_postman_id": "4842a992-6ac2-4e34-b6a7-1a891c57bf94",
 		"name": "Server P4Runtime API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20536356"
 	},
 	"item": [
 		{
@@ -18,12 +19,7 @@
 							"value": "{\n    \"hosts\": {\n        \"h1\": {\n            \"ip\": \"10.0.1.1/24\",\n            \"mac\": \"08:00:00:00:01:11\",\n            \"commands\": [\n                \"route add default gw 10.0.1.10 dev eth0\",\n                \"arp -i eth0 -s 10.0.1.10 08:00:00:00:01:00\"\n            ]\n        },\n        \"h2\": {\n            \"ip\": \"10.0.2.2/24\",\n            \"mac\": \"08:00:00:00:02:22\",\n            \"commands\": [\n                \"route add default gw 10.0.2.20 dev eth0\",\n                \"arp -i eth0 -s 10.0.2.20 08:00:00:00:02:00\"\n            ]\n        },\n        \"h3\": {\n            \"ip\": \"10.0.3.3/24\",\n            \"mac\": \"08:00:00:00:03:33\",\n            \"commands\": [\n                \"route add default gw 10.0.3.30 dev eth0\",\n                \"arp -i eth0 -s 10.0.3.30 08:00:00:00:03:00\"\n            ]\n        },\n        \"h4\": {\n            \"ip\": \"10.0.4.4/24\",\n            \"mac\": \"08:00:00:00:04:44\",\n            \"commands\": [\n                \"route add default gw 10.0.4.40 dev eth0\",\n                \"arp -i eth0 -s 10.0.4.40 08:00:00:00:04:00\"\n            ]\n        }\n    },\n    \"switches\": {\n        \"s1\": {},\n        \"s2\": {},\n        \"s3\": {}\n    },\n    \"links\": [\n        [\"h1\", \"s1-p1\"],\n        [\"s1-p2\", \"s2-p2\"],\n        [\"s1-p3\", \"s3-p2\"],\n        [\"s3-p3\", \"s2-p3\"],\n        [\"h2\", \"s2-p1\"],\n        [\"h3\", \"s3-p1\"],\n        [\"h4\", \"s3-p4\"]\n    ]\n}",
 							"type": "default"
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					]
 				},
 				"url": {
 					"raw": "http://127.0.0.1:6000/api/deploy",
@@ -200,7 +196,7 @@
 						{
 							"key": "device_id",
 							"value": "2",
-							"description": "Optional",
+							"description": "Optional (defaults to all switches)",
 							"type": "default",
 							"disabled": true
 						}
@@ -236,7 +232,7 @@
 						{
 							"key": "device_id",
 							"value": "0",
-							"description": "Optional",
+							"description": "Optional (defaults to all switches)",
 							"type": "default",
 							"disabled": true
 						},
@@ -301,13 +297,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:6000/api/switch/gettable?device_id=0",
+					"raw": "http://192.168.53.4:6000/api/switch/gettable",
 					"protocol": "http",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"192",
+						"168",
+						"53",
+						"4"
 					],
 					"port": "6000",
 					"path": [
@@ -317,19 +313,15 @@
 					],
 					"query": [
 						{
-							"key": "device_id",
-							"value": "0"
-						},
-						{
 							"key": "table_id",
 							"value": "0",
-							"description": "Optional",
+							"description": "Optional (defaults to all switches)",
 							"disabled": true
 						},
 						{
 							"key": "table_name",
-							"value": null,
-							"description": "Optional",
+							"value": "",
+							"description": "Optional (defaults to all tables)",
 							"disabled": true
 						}
 					]
