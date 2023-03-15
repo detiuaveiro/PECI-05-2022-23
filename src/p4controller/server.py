@@ -16,7 +16,8 @@ from werkzeug.utils import secure_filename
 from network.build_environment import Runner
 from network.p4_host import P4Host
 from network.p4runtime_switch import P4RuntimeSwitch
-from p4runtime_lib import bmv2, helper
+from p4runtime_lib import bmv2, helper, convert
+
 
 app = Flask(__name__)
 
@@ -313,7 +314,7 @@ def insert_table():
                 for key, value in match_fields.items():
                     match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
                     if match:
-                        match_fields[key]=(match.group(1),int(match.group(2)))
+                        match_fields[key]=(str(match.group(1)),int(match.group(2)))
                 
             action_params= request.form.get('action_params', None)
             if action_params is not None:
@@ -345,44 +346,115 @@ def get_table_entries():
         sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
     
     table_entries = {}
-    try:
-        for sw_conn in sw_conns:
-            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
-            
-            table_id = request.args.get('table_id', None)
-            table_name = request.args.get('table_name', None)
-            
-            if table_id is None and table_name is not None:
-                table_id = p4info_helper.get_tables_id(table_name)
-                
-            for table in getattr(p4info_helper.p4info, "tables"):
-                pre = table.preamble
-                if pre.id == table_id or table_id is None:
-                    if not sw_conn.name in table_entries.keys():
-                        table_entries[sw_conn.name] = []
-                    
-                    table_json = {
-                        "id": pre.id,
-                        "name": pre.name,
-                        "alias": pre.alias,
-                        "match_fields": [{
-                            "id": mf.id,
-                            "name": mf.name,
-                            "bitwidth": mf.bitwidth,
-                            "match_type": mf.match_type
-                        } for mf in table.match_fields],
-                        "action_refs":[{"id": x.id} for x in table.action_refs],
-                        "size": table.size
-                    }                        
-                        
-                    table_entries[sw_conn.name].append(table_json)
+    #try:
+    for sw_conn in sw_conns:
+        p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
         
-        return json.dumps(table_entries), 200
+        table_id = request.args.get('table_id', None)
+        table_name = request.args.get('table_name', None)
+        
+        if table_id is None and table_name is not None:
+            table_id = p4info_helper.get_tables_id(table_name)
+            
+        for table in getattr(p4info_helper.p4info, "tables"):
+            pre = table.preamble
+            if pre.id == table_id or table_id is None:
+                if not sw_conn.name in table_entries.keys():
+                    table_entries[sw_conn.name] = []
+                
+                for response in sw_conn.ReadTableEntries(table_id=pre.id):
+                    for entity in response.entities:
+                        table_entry = entity.table_entry
+                        table_entries[sw_conn.name].append({
+                            "table_id": table_entry.table_id,
+                            "matches": [x for x in _get_field_matches(table_entry.match)],
+                            "action": _get_action(table_entry.action),
+                            "priority": table_entry.priority,
+                            "meter_config": {
+                                    "cir": table_entry.meter_config.cir,
+                                    "cburst": table_entry.meter_config.cburst,
+                                    "pir": table_entry.meter_config.pir,
+                                    "pburst": table_entry.meter_config.pburst
+                                },
+                            "counter_data" : {
+                                    "byte_count": table_entry.counter_data.byte_count,
+                                    "packet_count": table_entry.counter_data.packet_count
+                                },
+                            "is_default_action": table_entry.is_default_action,
+                            "idle_timeout_ns": table_entry.idle_timeout_ns,
+                            "time_since_last_hit": table_entry.time_since_last_hit.elapsed_ns
+                        })
+    print(table_entries) 
+    return json.dumps(table_entries), 200
                        
-    except Exception as e:
-        warn(f"Failed to get table entry: {e}")
-        return '', 500
+    #except Exception as e:
+    #    warn(f"Failed to get table entry: {e}")
+    #    return '', 500
 
+def _get_field_matches(matches_entry):
+    for fldm in matches_entry:
+        mtch = {}
+        mtch["field_id"] = fldm.field_id
+        if len(repr(fldm.lpm)):
+            mtch["lpm"] = {
+                "value": convert.decodeIPv4(fldm.lpm.value),
+                "prefix_len": fldm.lpm.prefix_len
+            }
+        elif len(repr(fldm.exact)):
+            mtch["exact"] = {
+                "value": convert.decodeIPv4(fldm.exact.value)
+            }
+        elif len(repr(fldm.ternary)):
+            mtch["ternary"] = {
+                "value":  convert.decodeIPv4(fldm.ternary.value),
+                "mask": convert.decodeIPv4(fldm.ternary.mask)
+            }
+        elif len(repr(fldm.range)):
+            mtch["range"] = {
+                "low":  convert.decodeIPv4(fldm.range.low),
+                "high":  convert.decodeIPv4(fldm.range.high)
+            }
+        elif len(repr(fldm.optional)):
+            mtch["exact"] = {
+                "value": fldm.optional.value
+            }
+            
+        yield mtch
+
+def _get_action(table_action):
+    if len(repr(table_action.action)):
+        return {
+            "action_id": table_action.action.action_id,
+            "params":[{
+                    "param_id": x.param_id,
+                    "value": convert.decodeNum(x.value)
+                } for x in table_action.action.params]
+        }
+    elif table_action.action_profile_member_id:
+        return {
+            "action_profile_member_id": table_action.action_profile_member_id
+        }
+    elif len(repr(table_action.action_profile_group_id)):
+        return {
+            "action_profile_group_id": table_action.action_profile_group_id
+        }
+    elif len(repr(table_action.action_profile_action_set)):
+        return {
+            "action_profile_action_set": {
+                "action_profile_actions": [{
+                    "action": {
+                            "action_id": x.action.action_id,
+                            "params": [{
+                                    "param_id": y.param_id,
+                                    "value": convert.decodeNum(y.value)
+                                } for y in x.action.params]
+                        },
+                    "weight": x.weight,
+                    "watch_port": x.watch_port
+                } for x in table_action.action_profile_action_set.action_profile_actions]
+            }
+        }
+    
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
     app.config['ENVIRONMENT'].net.stop()
