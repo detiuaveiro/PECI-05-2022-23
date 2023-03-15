@@ -337,7 +337,7 @@ def insert_table():
         warn(f"Failed configuration: {e}")
         return '', 500
 
-# TBT
+# PASSING
 @app.route('/api/switch/gettable', methods=['GET'])
 def get_table_entries():
     sw_conns = app.config['SWS_CONNECTIONS']
@@ -346,50 +346,51 @@ def get_table_entries():
         sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
     
     table_entries = {}
-    #try:
-    for sw_conn in sw_conns:
-        p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
-        
-        table_id = request.args.get('table_id', None)
-        table_name = request.args.get('table_name', None)
-        
-        if table_id is None and table_name is not None:
-            table_id = p4info_helper.get_tables_id(table_name)
+    try:
+        for sw_conn in sw_conns:
+            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
-        for table in getattr(p4info_helper.p4info, "tables"):
-            pre = table.preamble
-            if pre.id == table_id or table_id is None:
-                if not sw_conn.name in table_entries.keys():
-                    table_entries[sw_conn.name] = []
+            table_id = request.args.get('table_id', None)
+            table_name = request.args.get('table_name', None)
+            
+            if table_id is None and table_name is not None:
+                table_id = p4info_helper.get_tables_id(table_name)
                 
-                for response in sw_conn.ReadTableEntries(table_id=pre.id):
-                    for entity in response.entities:
-                        table_entry = entity.table_entry
-                        table_entries[sw_conn.name].append({
-                            "table_id": table_entry.table_id,
-                            "matches": [x for x in _get_field_matches(table_entry.match)],
-                            "action": _get_action(table_entry.action),
-                            "priority": table_entry.priority,
-                            "meter_config": {
-                                    "cir": table_entry.meter_config.cir,
-                                    "cburst": table_entry.meter_config.cburst,
-                                    "pir": table_entry.meter_config.pir,
-                                    "pburst": table_entry.meter_config.pburst
-                                },
-                            "counter_data" : {
-                                    "byte_count": table_entry.counter_data.byte_count,
-                                    "packet_count": table_entry.counter_data.packet_count
-                                },
-                            "is_default_action": table_entry.is_default_action,
-                            "idle_timeout_ns": table_entry.idle_timeout_ns,
-                            "time_since_last_hit": table_entry.time_since_last_hit.elapsed_ns
-                        })
-    print(table_entries) 
-    return json.dumps(table_entries), 200
-                       
-    #except Exception as e:
-    #    warn(f"Failed to get table entry: {e}")
-    #    return '', 500
+            for table in getattr(p4info_helper.p4info, "tables"):
+                pre = table.preamble
+                if pre.id == table_id or table_id is None:
+                    if not sw_conn.name in table_entries.keys():
+                        table_entries[sw_conn.name] = []
+                    
+                    for response in sw_conn.ReadTableEntries(table_id=pre.id):
+                        for entity in response.entities:
+                            table_entry = entity.table_entry
+                            table_entries[sw_conn.name].append({
+                                "table_id": table_entry.table_id,
+                                "matches": [x for x in _get_field_matches(table_entry.match)],
+                                "action": _get_action(table_entry.action),
+                                "priority": table_entry.priority,
+                                "meter_config": {
+                                        "cir": table_entry.meter_config.cir,
+                                        "cburst": table_entry.meter_config.cburst,
+                                        "pir": table_entry.meter_config.pir,
+                                        "pburst": table_entry.meter_config.pburst
+                                    },
+                                "counter_data" : {
+                                        "byte_count": table_entry.counter_data.byte_count,
+                                        "packet_count": table_entry.counter_data.packet_count
+                                    },
+                                "is_default_action": table_entry.is_default_action,
+                                "idle_timeout_ns": table_entry.idle_timeout_ns,
+                                "time_since_last_hit": table_entry.time_since_last_hit.elapsed_ns
+                            })
+                            
+        print(table_entries) 
+        return json.dumps(table_entries), 200
+    
+    except Exception as e:
+        warn(f"Failed to get table entry: {e}")
+        return '', 500
 
 def _get_field_matches(matches_entry):
     for fldm in matches_entry:

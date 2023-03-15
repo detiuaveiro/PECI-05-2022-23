@@ -1,9 +1,8 @@
 {
 	"info": {
-		"_postman_id": "4842a992-6ac2-4e34-b6a7-1a891c57bf94",
+		"_postman_id": "20125870-dde4-41a0-8275-fec3eec7f0ee",
 		"name": "Server P4Runtime API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20536356"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -297,13 +296,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://192.168.53.4:6000/api/switch/gettable",
+					"raw": "http://127.0.0.1:6000/api/switch/gettable",
 					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"53",
-						"4"
+						"127",
+						"0",
+						"0",
+						"1"
 					],
 					"port": "6000",
 					"path": [
