@@ -31,7 +31,7 @@ app.config['SWS_CONNECTIONS'] = []
 ALLOWED_EXTENSIONS = {'p4'}
 
 # <Utils #
-def allowed_file(filename):
+def _allowed_file(filename):
     """ Utility function to check if file is of allowed extension
     
         Attributes:
@@ -39,6 +39,11 @@ def allowed_file(filename):
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def _get_switch_conns(device_id):
+    for sw_conn in app.config['SWS_CONNECTIONS']:
+        if sw_conn.device_id == device_id or not device_id:
+            yield sw_conn
 # Utils> #
 
 @app.route('/')
@@ -64,7 +69,7 @@ def upload_file():
             if file.filename == '':
                 flash('No selected file')
                 return redirect(request.url)
-            if file and allowed_file(file.filename):
+            if file and _allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             else:
@@ -236,22 +241,16 @@ def program_switch():
 
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
-            - device_id     : string    // Bmv2Switch to program (if equal to @ all switchs are programmed)
+            - device_id     : string    // Bmv2Switch to program (will program all if not specified)
     
     """
-    sw_conns = app.config['SWS_CONNECTIONS']
-    
-    if 'device_id' in request.form:
-        device_id = (int)(request.form['device_id'])
-        sw_conns = list(filter(lambda sw: sw.device_id == device_id, app.config['SWS_CONNECTIONS']))
-    
     try:
         if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file']}.p4")):
             return 'File does not exist', 400
         
         p4info, p4json = _compile_p4(request.form['p4file'])
 
-        for sw_conn in sw_conns:
+        for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
             sw_conn.p4info = p4info
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             sw_conn.MasterArbitrationUpdate()
@@ -291,7 +290,7 @@ def insert_table():
     """ Program bmv2 switch.
 
         Attributes:
-            - device_id         : string    // Bmv2Switch to program (if equal to @ all switchs are programmed)
+            - device_id         : string    // Bmv2Switch where to inser the table entry (will insert on switches all if not specified)
             - table             : string    // Table name
             - match             : string    // Matching packet field
             - action_name       : string    // Name of the action
@@ -299,13 +298,8 @@ def insert_table():
             - action_params     : string    // Action parameters
             - priority          : string    // Action priority
     """
-    sw_conns = app.config['SWS_CONNECTIONS']
-    if 'device_id' in request.form:
-        device_id = (int)(request.form['device_id'])
-        sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
-
     try:
-        for sw_conn in sw_conns:
+        for sw_conn in _get_switch_conns(request.form.get('device_id', None)):
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
             match_fields=request.form.get('match',None)
@@ -340,14 +334,16 @@ def insert_table():
 # PASSING
 @app.route('/api/switch/gettable', methods=['GET'])
 def get_table_entries():
-    sw_conns = app.config['SWS_CONNECTIONS']
-    if 'device_id' in request.args:
-        device_id = (int)(request.args.get('device_id'))
-        sw_conns = list(filter(lambda sw_conn: sw_conn.device_id == device_id, app.config['SWS_CONNECTIONS']))
+    """ Retrieve bmv2 switch table entries
     
+        Attributes:
+            - device_id         : string    // Bmv2Switch to program (will return all if not specified)
+            - table_id          : string    // Table from which to return entries
+            - table_name        : string    // Table from which to return entries (used instead of table_id)
+    """
     table_entries = {}
     try:
-        for sw_conn in sw_conns:
+        for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
             table_id = request.args.get('table_id', None)
@@ -456,6 +452,30 @@ def _get_action(table_action):
             }
         }
     
+# TBT
+@app.route('/api/switch/getcounters', methods=['GET'])
+def get_counters():
+    """ Retrieve bmv2 switch table entries
+    
+        Attributes:
+            - device_id         : string    // Bmv2Switch to program (will return counter for all switches all if not specified)
+            - counter_name      : string    // Counter name
+            - table_entry       : string    // Entry table associated with the counter
+            
+        Attention:
+            - For simplicity sake, you should configure you're counter indexes to be the match key in each table entry, that why you can always reference your counter index by the respective table entry match key
+    """
+    try:
+        for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
+            p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
+            
+            print(p4info_helper.p4info.counters[0].preamble.name)
+            
+        return '', 200
+    
+    except Exception as e:
+        warn(f"Failed to get counters: {e}")
+        return '', 500    
     
     
 # ATTENTION - Shutting Mininet down before exiting
