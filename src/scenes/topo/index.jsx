@@ -1,10 +1,9 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import Topology from "../../service/topology";
 import { Link } from 'react-router-dom';
-import { Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 
@@ -34,8 +33,8 @@ const Topo = () => {
             backgroundColor={colors.greenAccent[600]}
             borderRadius="4px"
           >
-            <Link to={"/Topology/"}
-          state={{ filename: id }}>{network}</Link>
+            <Link to={"/Table/"}
+          state={{ id: id }}>{network}</Link>
           </Box>
         );  
       },

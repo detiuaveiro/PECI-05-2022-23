@@ -11,7 +11,7 @@ import Links from "./scenes/links";
 import SwitchTable from "./scenes/switch-table";
 import About from "./scenes/about";
 import Topo from "./scenes/topo";
-//import Bar from "./scenes/bar";
+import Table from "./scenes/table";
 //import Form from "./scenes/form";
 //import Line from "./scenes/line";
 //import Pie from "./scenes/pie";
@@ -38,7 +38,7 @@ function App() {
               <Route path ="/SwitchTable" element={<SwitchTable/>} />                
               <Route path ="/about" element={<About />} />
               <Route path ="/Topo" element={<Topo/>} />
-              {/*<Route path ="/form" element={<Form />} />*/}
+              <Route path ="/Table" element={<Table />} />
               {/*<Route path ="/bar" element={<Bar />} />*/}
               {/*<Route path ="/pie" element={<Pie />} />*/}
               {/*<Route path ="/line" element={<Line />} />*/}

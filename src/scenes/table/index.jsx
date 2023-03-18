@@ -2,14 +2,17 @@ import { Box, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import { tokens } from "../../theme";
+import { useLocation } from "react-router-dom";
+import Topology from "../../service/topology";
+import { DataGrid } from "@mui/x-data-grid";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
-  
+
     return (
       <div
         role="tabpanel"
@@ -42,21 +45,67 @@ function TabPanel(props) {
 
 
 
-
 const Table = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [value, setValue] = useState(0);
+  const { state } = useLocation();
+  const { id } = state || {};
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState();
 
+  const columns = [
+    { id: "id", headerName: "ID" },
+    {
+      field: "ip",
+      headerName: "IP",
+      flex: 1,
+    },
+    {
+      field: "mac",
+      headerName: "MAC ADDRESS",
+      flex: 1,
+    },
+  ];
   const handleChange = (event, newValue) =>{
     setValue(newValue);
     }
-  
+
+
+    var TopologyService = new Topology();
+    let LoadHosts = []
+    useEffect(() => {
+      TopologyService.getId(id)
+      .then((data) => {
+          data = data.topology.data;
+          let LoadSwitchs = []
+          let LoadLinks = []
+          
+          Object.entries(data.hosts).map(([key, value]) => 
+              {
+                //TODO: 
+                //console.log(key)
+                //console.log(value.ip)
+                //console.log(value.mac)
+                //console.log("id:" + id) 
+                return LoadHosts.push({ id: key, ip: value.ip, mac: value.mac });
+              }
+              ); 
+          setData(LoadHosts);
+          setLoading(false);    
+      })
+      }, []); 
+
+  const getRowId = useMemo(() => {
+    return (params) => params.id;
+  }, []);
+    
   return (
+    <>
+    {isLoading === false && (
     <Box m="20px">
       <Header
-        title="About Us"
-        subtitle="Information about the team behind this project"
+        title="Network Topology"
       />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
@@ -66,13 +115,42 @@ const Table = () => {
           indicatorColor="secondary"
           aria-label="basic tabs example"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Hosts" {...a11yProps(0)} />
+          <Tab label="Switches" {...a11yProps(1)} />
+          <Tab label="Links" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        Item One
+          <Box
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+          >
+        <DataGrid checkboxSelection rows={data} columns={columns} getRowId={getRowId}/>
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
@@ -81,6 +159,8 @@ const Table = () => {
         Item Three
       </TabPanel>
     </Box>
+    )}
+    </>
   );
 };
 
