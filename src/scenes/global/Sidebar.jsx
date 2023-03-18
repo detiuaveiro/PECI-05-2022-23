@@ -169,8 +169,8 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Table"
-              to="/Table"
+              title="Topology"
+              to="/Topo"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

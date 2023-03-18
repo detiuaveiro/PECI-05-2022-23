@@ -10,7 +10,7 @@ import Hosts from "./scenes/hosts";
 import Links from "./scenes/links";
 import SwitchTable from "./scenes/switch-table";
 import About from "./scenes/about";
-import Table from "./scenes/table";
+import Topo from "./scenes/topo";
 //import Bar from "./scenes/bar";
 //import Form from "./scenes/form";
 //import Line from "./scenes/line";
@@ -37,7 +37,7 @@ function App() {
               <Route path ="/Links" element={<Links/>} />
               <Route path ="/SwitchTable" element={<SwitchTable/>} />                
               <Route path ="/about" element={<About />} />
-              *<Route path ="/Table" element={<Table/>} />
+              <Route path ="/Topo" element={<Topo/>} />
               {/*<Route path ="/form" element={<Form />} />*/}
               {/*<Route path ="/bar" element={<Bar />} />*/}
               {/*<Route path ="/pie" element={<Pie />} />*/}
