@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Server P4Runtime API",
-    "dateExported": "2023-03-17T21:13:08.227Z",
+    "dateExported": "2023-03-18T19:35:30.415Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -158,7 +158,7 @@
             "method": "POST",
             "sortNum": 70000,
             "created": "2023-03-17T16:05:56.822Z",
-            "modified": "2023-03-17T21:04:55.367Z",
+            "modified": "2023-03-18T19:32:56.253Z",
             "headers": [],
             "params": [],
             "body": {
@@ -189,7 +189,7 @@
                     },
                     {
                         "name": "action_params",
-                        "value": "{\"dst_id\": 200}"
+                        "value": "{\"dst_id\": 100}"
                     },
                     {
                         "name": "priority",
@@ -232,29 +232,26 @@
             "colId": "cf053df8-8482-487e-a39c-e35ecd900843",
             "containerId": "",
             "name": "Get Counters",
-            "url": "http://127.0.0.1:6000/api/switch/getcounters",
+            "url": "http://127.0.0.1:6000/api/switch/getcounters?device_id=0&counter_name=MyIngress.ingressTunnelCounter&index=100",
             "method": "GET",
             "sortNum": 90000,
             "created": "2023-03-17T21:05:24.071Z",
-            "modified": "2023-03-17T21:06:41.428Z",
+            "modified": "2023-03-18T19:32:58.498Z",
             "headers": [],
             "params": [
                 {
                     "name": "device_id",
                     "value": "0",
-                    "isDisabled": true,
                     "isPath": false
                 },
                 {
                     "name": "counter_name",
-                    "value": "",
-                    "isDisabled": true,
+                    "value": "MyIngress.ingressTunnelCounter",
                     "isPath": false
                 },
                 {
-                    "name": "table_entry",
-                    "value": "",
-                    "isDisabled": true,
+                    "name": "index",
+                    "value": "100",
                     "isPath": false
                 }
             ],

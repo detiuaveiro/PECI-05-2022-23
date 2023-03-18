@@ -42,7 +42,7 @@ def _allowed_file(filename):
 
 def _get_switch_conns(device_id):
     for sw_conn in app.config['SWS_CONNECTIONS']:
-        if sw_conn.device_id == device_id or not device_id:
+        if not device_id or sw_conn.device_id == int(device_id):
             yield sw_conn
 # Utils> #
 
@@ -337,8 +337,8 @@ def get_table_entries():
     """ Retrieve bmv2 switch table entries
     
         Attributes:
-            - device_id         : string    // Bmv2Switch to program (will return all if not specified)
-            - table_id          : string    // Table from which to return entries
+            - device_id         : number    // Bmv2Switch to program (will return all if not specified)
+            - table_id          : number    // Table from which to return entries
             - table_name        : string    // Table from which to return entries (used instead of table_id)
     """
     table_entries = {}
@@ -458,19 +458,32 @@ def get_counters():
     """ Retrieve bmv2 switch table entries
     
         Attributes:
-            - device_id         : string    // Bmv2Switch to program (will return counter for all switches all if not specified)
+            - device_id         : number    // Bmv2Switch to program (will return counter for all switches all if not specified)
             - counter_name      : string    // Counter name
-            - table_entry       : string    // Entry table associated with the counter
+            - index             : number    // Index associated with the counter
             
         Attention:
             - For simplicity sake, you should configure you're counter indexes to be the match key in each table entry, that why you can always reference your counter index by the respective table entry match key
     """
-    try:
+    try:        
         for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
             
-            print(p4info_helper.p4info.counters[0].preamble.name)
+            counter_id = p4info_helper.get_counters_id(request.args['counter_name']) if 'counter_name' in request.args.keys() else None
             
+            index = int(request.args['index']) if 'index' in request.args.keys() else 0
+            
+            for response in sw_conn.ReadCounters(counter_id, index):
+                print(response.entities)
+                for entity in response.entities:
+                    counter = entity.counter_entry
+                    print("%s %s %d: %d packets (%d bytes)" % (
+                        sw_conn.name, request.args.get('counter_name', None), counter.index.index,
+                        counter.data.packet_count, counter.data.byte_count
+                    ))
+                    
+            # FIXME - Need to get all indexes if 0, now is returning empty
+                    
         return '', 200
     
     except Exception as e:
@@ -485,8 +498,5 @@ def exit_handler(*args):
 atexit.register(exit_handler)
 signal.signal(signal.SIGTERM, exit_handler)
 signal.signal(signal.SIGINT, exit_handler)
-
-# ATTENTION
-app.debug = True
 
 app.run(host='0.0.0.0', port=6000)
