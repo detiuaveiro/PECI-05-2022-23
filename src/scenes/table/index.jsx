@@ -2,7 +2,7 @@ import { Box, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import PropTypes from 'prop-types';
 import { tokens } from "../../theme";
@@ -55,7 +55,7 @@ const Table = () => {
   const [data, setData] = useState();
 
   const columns = [
-    { id: "id", headerName: "ID" },
+    { field: "id", headerName: "ID" },
     {
       field: "ip",
       headerName: "IP",
@@ -83,11 +83,6 @@ const Table = () => {
           
           Object.entries(data.hosts).map(([key, value]) => 
               {
-                //TODO: 
-                //console.log(key)
-                //console.log(value.ip)
-                //console.log(value.mac)
-                //console.log("id:" + id) 
                 return LoadHosts.push({ id: key, ip: value.ip, mac: value.mac });
               }
               ); 
@@ -96,9 +91,6 @@ const Table = () => {
       })
       }, []); 
 
-  const getRowId = useMemo(() => {
-    return (params) => params.id;
-  }, []);
     
   return (
     <>
@@ -149,7 +141,7 @@ const Table = () => {
             },
           }}
           >
-        <DataGrid checkboxSelection rows={data} columns={columns} getRowId={getRowId}/>
+        <DataGrid checkboxSelection rows={data} columns={columns} />
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
