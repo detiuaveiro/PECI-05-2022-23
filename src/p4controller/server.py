@@ -362,6 +362,7 @@ def get_table_entries():
                         for entity in response.entities:
                             table_entry = entity.table_entry
                             table_entries[sw_conn.name].append({
+                                "table_name": pre.name,
                                 "table_id": table_entry.table_id,
                                 "matches": [x for x in _get_field_matches(table_entry.match)],
                                 "action": _get_action(table_entry.action),
@@ -498,15 +499,18 @@ def get_counters():
         return json.dumps(counter_entries), 200
     except Exception as e:
         warn(f"Failed to get counters: {e}")
-        return '', 500    
-    
+        return '', 500         
     
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
     app.config['ENVIRONMENT'].net.stop()
-    os.system('sudo mn -c && sudo rm -r compiles uploads') 
+    os.system('sudo mn -c')
+    if app.debug:
+        os.system('sudo rm -r compiles uploads') 
+        
 atexit.register(exit_handler)
 signal.signal(signal.SIGTERM, exit_handler)
 signal.signal(signal.SIGINT, exit_handler)
 
+app.debug = True
 app.run(host='0.0.0.0', port=6000)
