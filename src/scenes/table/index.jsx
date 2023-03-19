@@ -9,6 +9,7 @@ import { tokens } from "../../theme";
 import { useLocation } from "react-router-dom";
 import Topology from "../../service/topology";
 import { DataGrid } from "@mui/x-data-grid";
+import { Link } from 'react-router-dom';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -52,9 +53,11 @@ const Table = () => {
   const { state } = useLocation();
   const { id } = state || {};
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState();
+  const [hosts, setHost] = useState();
+  const [switchs, setSwitchs] = useState();
+  const [links, setLinks] = useState();
 
-  const columns = [
+  const hostcolumns = [
     { field: "id", headerName: "ID" },
     {
       field: "ip",
@@ -67,6 +70,57 @@ const Table = () => {
       flex: 1,
     },
   ];
+
+  const switchcolumns = [
+    { field: "id", headerName: "ID" },
+    {
+      field: "filename",
+      headerName: "Switch-Table",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      renderCell: ({ row: { filename } }) => {
+        return (
+         <Box
+            width="40%"
+            p="3px"
+            display="flex"
+            justifyContent="center"
+            backgroundColor={colors.greenAccent[600]}
+            borderRadius="4px"
+          >
+            <Link
+          state={{ filename: filename }}>{filename}</Link>
+          </Box>
+        );  
+      },
+    },
+    
+  ];
+
+  const linkscolumns = [
+    { field: "id", headerName: "Nº" },
+    {
+      field: "nodeA",
+      headerName: "NODE - A",
+      flex: 1,
+    },
+    {
+      field: "typeA",
+      headerName: "Type",
+      flex: 1,
+    },
+    {
+      field: "nodeB",
+      headerName: "NODE - B",
+      flex: 1,
+    },
+    {
+      field: "typeB",
+      headerName: "Type",
+      flex: 1,
+    },
+  ];
+
   const handleChange = (event, newValue) =>{
     setValue(newValue);
     }
@@ -74,19 +128,57 @@ const Table = () => {
 
     var TopologyService = new Topology();
     let LoadHosts = []
+    let LoadSwitchs = []
+    let LoadLinks = []
     useEffect(() => {
       TopologyService.getId(id)
       .then((data) => {
           data = data.topology.data;
-          let LoadSwitchs = []
-          let LoadLinks = []
-          
+          console.log(data)
+          if(data.hosts != null){
           Object.entries(data.hosts).map(([key, value]) => 
               {
                 return LoadHosts.push({ id: key, ip: value.ip, mac: value.mac });
               }
-              ); 
-          setData(LoadHosts);
+              );
+            }
+          if(data.switches != null){
+          Object.entries(data.switches).map(([key, value]) => 
+            {
+              return LoadSwitchs.push({ id: key, filename: value.runtime_json });
+            }
+            ); 
+            
+          }
+          if(data.links != null){
+            Object.entries(data.links).map(([key, value]) => {
+              var Ftype= Array.from(value[0])[0]
+              var Stype= Array.from(value[0])[1] 
+              var type, type2
+              var nid = parseInt(key, 10) + 1;
+              if(Ftype === "h"){
+                  type="Host"
+              }else{
+                  type="Switch"
+              }
+              if(Stype === "h"){
+                  type2="Host"
+              }else{
+                  type2="Switch"
+              }
+              
+              return LoadLinks.push({ 
+                  id: nid, 
+                  nodeA: value[0], 
+                  typeA: type, 
+                  nodeB: value[1], 
+                  typeB: type2 
+              });
+            });
+          }
+          setHost(LoadHosts);
+          setSwitchs(LoadSwitchs);
+          setLinks(LoadLinks);
           setLoading(false);    
       })
       }, []); 
@@ -141,14 +233,72 @@ const Table = () => {
             },
           }}
           >
-        <DataGrid checkboxSelection rows={data} columns={columns} />
+        <DataGrid checkboxSelection rows={hosts} columns={hostcolumns} />
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+      <Box
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+          >
+        <DataGrid checkboxSelection rows={switchs} columns={switchcolumns} />
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+      <Box
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+          >
+        <DataGrid checkboxSelection rows={links} columns={linkscolumns} />
+        </Box>
       </TabPanel>
     </Box>
     )}

@@ -12,12 +12,6 @@ const Switchs = () => {
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  /* TODO: Present Switch Table */
-  /* Conditionally export filename */
- /* const switchTable= (filename) => {
-    console.log(filename)
-  }*/
-
 
   const columns = [
     { field: "id", headerName: "ID" },
