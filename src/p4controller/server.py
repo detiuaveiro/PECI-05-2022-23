@@ -43,7 +43,7 @@ def _allowed_file(filename):
 def _get_switch_conns(device_id):
     for sw_conn in app.config['SWS_CONNECTIONS']:
         if not device_id or sw_conn.device_id == int(device_id):
-            yield sw_conn
+            yield sw_conn    
 # Utils> #
 
 @app.route('/')
@@ -452,7 +452,7 @@ def _get_action(table_action):
             }
         }
     
-# TBT
+# PASSING
 @app.route('/api/switch/getcounters', methods=['GET'])
 def get_counters():
     """ Retrieve bmv2 switch table entries
@@ -465,27 +465,37 @@ def get_counters():
         Attention:
             - For simplicity sake, you should configure you're counter indexes to be the match key in each table entry, that why you can always reference your counter index by the respective table entry match key
     """
-    try:        
-        for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
+    try:
+        device_id = request.args.get('device_id', None)
+        counter_name = request.args.get('counter_name', None)
+        index = int(request.args['index']) if 'index' in request.args.keys() else 0
+            
+        counter_entries = {}    
+        for sw_conn in _get_switch_conns(device_id):
             p4info_helper = helper.P4InfoHelper(sw_conn.p4info)
-            
-            counter_id = p4info_helper.get_counters_id(request.args['counter_name']) if 'counter_name' in request.args.keys() else None
-            
-            index = int(request.args['index']) if 'index' in request.args.keys() else 0
-            
-            for response in sw_conn.ReadCounters(counter_id, index):
-                print(response.entities)
-                for entity in response.entities:
-                    counter = entity.counter_entry
-                    print("%s %s %d: %d packets (%d bytes)" % (
-                        sw_conn.name, request.args.get('counter_name', None), counter.index.index,
-                        counter.data.packet_count, counter.data.byte_count
-                    ))
-                    
-            # FIXME - Need to get all indexes if 0, now is returning empty
-                    
-        return '', 200
-    
+            counter_entries[sw_conn.name] = {
+                "device_id": sw_conn.device_id,
+                "counters": []
+            }
+            for counter in p4info_helper.p4info.counters:
+                if not counter_name or counter.preamble.name == counter_name:
+                    entries = []
+                    for response in sw_conn.ReadCounters(counter.preamble.id, index):
+                        for entity in response.entities:
+                            entries.append({
+                                "index": str(entity.counter_entry.index.index),
+                                "packet_count": str(entity.counter_entry.data.packet_count),
+                                "byte_count": str(entity.counter_entry.data.byte_count)
+                            })
+                    counter_entries[sw_conn.name]['counters'].append({
+                        "id": counter.preamble.id,
+                        "name": counter.preamble.name,
+                        "entries" : entries
+                    })
+        
+        print(counter_entries)                
+        
+        return json.dumps(counter_entries), 200
     except Exception as e:
         warn(f"Failed to get counters: {e}")
         return '', 500    
