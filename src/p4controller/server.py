@@ -501,6 +501,19 @@ def get_counters():
         warn(f"Failed to get counters: {e}")
         return '', 500         
     
+    
+# TESTING
+@app.route('/api/mininet/runnetfunc', methods=['GET'])
+def run_command():
+    try:
+        # FIXME - Waiting to run results in timout for the request, must be run in background
+        func = getattr(app.config['ENVIRONMENT'].net, request.args.get('function', None))
+        func()      
+    except Exception as e:
+        warn(f"Failed to get counters: {e}")
+        return '', 500    
+    
+    
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
     app.config['ENVIRONMENT'].net.stop()
