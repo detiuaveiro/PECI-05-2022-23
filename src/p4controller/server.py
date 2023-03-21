@@ -499,20 +499,52 @@ def get_counters():
         return json.dumps(counter_entries), 200
     except Exception as e:
         warn(f"Failed to get counters: {e}")
-        return '', 500         
-    
+        return '', 500            
     
 # TESTING
 @app.route('/api/mininet/runnetfunc', methods=['GET'])
-def run_command():
+def mn_control():
+    """ Call mininet network object 
+    
+        Attributes:
+            - function          : string    // Name of the method from Mininet object to be called
+    """
     try:
         # FIXME - Waiting to run results in timout for the request, must be run in background
         func = getattr(app.config['ENVIRONMENT'].net, request.args.get('function', None))
         func()      
     except Exception as e:
-        warn(f"Failed to get counters: {e}")
-        return '', 500    
+        warn(f"Failed to run Mininet network method: {e}")
+        return '', 500
     
+# TBT - /switch/command - call Switch.sendCmd
+@app.route('/api/switch/command', methods=['POST'])
+def sw_command():
+    """ Execute command in a BMV2 Switch
+    
+        Attributes:
+            - device_id          : string    // Identification of the switch to be programmed
+            - command            : string    // Command to be run on the device
+            - verbose            : boolean   // If the endpoint is to return the stdout of the executed command
+    """
+    try:
+        for sw_conn in _get_switch_conns(request.form.get('device_id', None)):
+            sw = next((sw for sw in app.config['ENVIRONMENT'].net.switches if sw.device_id == sw_conn.device_id), None)
+            if request.form.get('verbose', None):
+                response = {
+                    "response": sw.cmdPrint(request.form['command'])
+                }
+                return json.dumps(response), 200
+            else:
+                sw.sendCmd(request.form['command'])
+                return '', 200 
+    except Exception as e:
+        warn(f"Failed to run switch command: {e}")
+        return '', 500
+
+# FEATURE - /switch/control - call Switch class methods
+# FEATURE - /hosts/control  - call Host class methods
+# FEATURE - /hosts/command  - call Host.sendCmd
     
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
