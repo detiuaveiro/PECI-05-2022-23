@@ -501,18 +501,25 @@ def get_counters():
         warn(f"Failed to get counters: {e}")
         return '', 500            
     
-# TESTING
+# PASSING
 @app.route('/api/mininet/runnetfunc', methods=['GET'])
 def mn_control():
-    """ Call mininet network object 
+    """ Call mininet network object attribute, can be a value or a function
     
         Attributes:
-            - function          : string    // Name of the method from Mininet object to be called
+            - attribute         : string    // Name of the method from Mininet object to be called
     """
     try:
-        # FIXME - Waiting to run results in timout for the request, must be run in background
         func = getattr(app.config['ENVIRONMENT'].net, request.args.get('function', None))
-        func()      
+        if callable(func):
+            func()
+        elif isinstance(func, list):
+            for ent in func:
+                print(str(ent))
+        else:
+            print(str(func))
+            
+        return '', 200
     except Exception as e:
         warn(f"Failed to run Mininet network method: {e}")
         return '', 500
@@ -548,14 +555,21 @@ def sw_command():
     
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
-    app.config['ENVIRONMENT'].net.stop()
+    clean()   
+    exit()
+    
+def clean():
+    if app.config.get('ENVIRONMENT'):
+        app.config['ENVIRONMENT'].net.stop()
     os.system('sudo mn -c')
     if app.debug:
-        os.system('sudo rm -r compiles uploads') 
+        os.system('sudo rm -r compiles uploads')
         
 atexit.register(exit_handler)
 signal.signal(signal.SIGTERM, exit_handler)
 signal.signal(signal.SIGINT, exit_handler)
+
+clean()
 
 app.debug = True
 app.run(host='0.0.0.0', port=6000)

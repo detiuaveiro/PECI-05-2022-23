@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "Server P4Runtime API",
-    "dateExported": "2023-03-20T00:54:11.198Z",
+    "dateExported": "2023-03-22T00:58:21.543Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -232,16 +232,16 @@
             "colId": "cf053df8-8482-487e-a39c-e35ecd900843",
             "containerId": "",
             "name": "Get Counters",
-            "url": "http://127.0.0.1:6000/api/switch/getcounters?device_id=0&counter_name=MyIngress.ingressTunnelCounter&index=100",
+            "url": "http://127.0.0.1:6000/api/switch/getcounters?device_id=2&counter_name=MyIngress.ingressTunnelCounter&index=100",
             "method": "GET",
             "sortNum": 90000,
             "created": "2023-03-17T21:05:24.071Z",
-            "modified": "2023-03-19T13:27:28.151Z",
+            "modified": "2023-03-22T00:56:41.735Z",
             "headers": [],
             "params": [
                 {
                     "name": "device_id",
-                    "value": "0",
+                    "value": "2",
                     "isPath": false
                 },
                 {
@@ -262,12 +262,20 @@
             "colId": "cf053df8-8482-487e-a39c-e35ecd900843",
             "containerId": "",
             "name": "Run Mininet command",
-            "url": "",
+            "url": "http://127.0.0.1:6000/api/mininet/runnetfunc?function=ping",
             "method": "GET",
             "sortNum": 100000,
             "created": "2023-03-20T00:01:45.033Z",
-            "modified": "2023-03-20T00:01:45.035Z",
-            "headers": []
+            "modified": "2023-03-22T00:49:19.404Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "function",
+                    "value": "ping",
+                    "isPath": false
+                }
+            ],
+            "tests": []
         }
     ],
     "settings": {}

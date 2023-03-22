@@ -91,7 +91,6 @@ class P4RuntimeSwitch(Switch):
             P4RuntimeSwitch.device_id += 1
         self.nanomsg = "ipc:///tmp/bm-{}-log.ipc".format(self.device_id)
 
-
     def check_switch_started(self, pid):
         for _ in range(SWITCH_START_TIMEOUT * 2):
             if not os.path.exists(os.path.join("/proc", str(pid))):
