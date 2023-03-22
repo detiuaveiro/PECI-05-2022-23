@@ -124,7 +124,8 @@ def deploy_network():
         warn("deploy_network(): " + str(e))
         return e, 500
       
-# PASSING  
+# PASSING
+# FIXME - Export to Mininet API
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
     """ Get all devices in the Mininet network
@@ -176,6 +177,7 @@ def get_devices():
         return e, 500
     
 # PASSING
+# FIXME - Must call Mininet API for switches
 @app.route('/api/switch/connect', methods=['POST'])
 def connect_to_switch():
     """ Connect to bmv2 switch.
@@ -208,6 +210,7 @@ def connect_to_switch():
     return '', 200
 
 # PASSING
+# FIXME - Must call Mininet API for switches
 @app.route('/api/switch/connectall', methods=['POST'])
 def connect_to_all_switches():
     """ Connect to all bmv2 switches.
@@ -502,6 +505,7 @@ def get_counters():
         return '', 500            
     
 # PASSING
+# FIXME - Export to Mininet API
 @app.route('/api/mininet/runnetfunc', methods=['GET'])
 def mn_control():
     """ Call mininet network object attribute, can be a value or a function
@@ -525,6 +529,7 @@ def mn_control():
         return '', 500
     
 # TBT - /switch/command - call Switch.sendCmd
+# FIXME - Export to Mininet API
 @app.route('/api/switch/command', methods=['POST'])
 def sw_command():
     """ Execute command in a BMV2 Switch
@@ -549,9 +554,9 @@ def sw_command():
         warn(f"Failed to run switch command: {e}")
         return '', 500
 
-# FEATURE - /switch/control - call Switch class methods
-# FEATURE - /hosts/control  - call Host class methods
-# FEATURE - /hosts/command  - call Host.sendCmd
+# FEATURE - /switch/control - call Switch class methods # FIXME - Export to Mininet API
+# FEATURE - /hosts/control  - call Host class methods # FIXME - Export to Mininet API
+# FEATURE - /hosts/command  - call Host.sendCmd # FIXME - Export to Mininet API
     
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
