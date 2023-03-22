@@ -1,0 +1,208 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "P4Runtime REST API",
+    "dateExported": "2023-03-22T19:14:47.222Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "16c2189a-89a5-411a-a0e2-38e5d8ce0e2e",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Connecting to Specific Switch",
+            "url": "http://127.0.0.1:6000/p4runtime/connect",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-03-22T17:54:58.985Z",
+            "modified": "2023-03-22T19:12:11.001Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "proto_dump",
+                        "value": "dump"
+                    },
+                    {
+                        "name": "name",
+                        "value": "s3"
+                    },
+                    {
+                        "name": "address",
+                        "value": "0.0.0.0:50053"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "2"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "ecb5598a-2e05-44bf-b4ec-10141135a9d1",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Uploading P4 File",
+            "url": "http://127.0.0.1:6000/p4runtime/files/upload",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2023-03-22T17:54:58.987Z",
+            "modified": "2023-03-22T18:09:49.549Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [],
+                "files": [
+                    {
+                        "name": "file",
+                        "value": "/home/peci/Desktop/PECI-05-2022-23/src/testFiles/advanced_tunnel.p4"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "e0ad3181-068a-43e1-b87f-4636fd5efccb",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Program Swtiches",
+            "url": "http://127.0.0.1:6000/p4runtime/program",
+            "method": "POST",
+            "sortNum": 60000,
+            "created": "2023-03-22T17:54:58.988Z",
+            "modified": "2023-03-22T18:10:33.932Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "p4file",
+                        "value": "advanced_tunnel"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "2",
+                        "isDisabled": true
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "d2ec78e3-cad9-43e2-b349-fdc2511b2b50",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Write Table",
+            "url": "http://127.0.0.1:6000/p4runtime/inserttable",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2023-03-22T17:54:58.989Z",
+            "modified": "2023-03-22T18:10:47.378Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "device_id",
+                        "value": "0",
+                        "isDisabled": true
+                    },
+                    {
+                        "name": "table",
+                        "value": "MyIngress.ipv4_lpm"
+                    },
+                    {
+                        "name": "match",
+                        "value": "{\"hdr.ipv4.dstAddr\": \"('10.0.1.1',32)\"}"
+                    },
+                    {
+                        "name": "action_name",
+                        "value": "MyIngress.myTunnel_ingress"
+                    },
+                    {
+                        "name": "default_action",
+                        "value": "",
+                        "isDisabled": true
+                    },
+                    {
+                        "name": "action_params",
+                        "value": "{\"dst_id\": 100}"
+                    },
+                    {
+                        "name": "priority",
+                        "value": "",
+                        "isDisabled": true
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "b27a6cde-9602-4032-8782-30d0eb9c68d0",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Get Table",
+            "url": "http://127.0.0.1:6000/p4runtime/gettable",
+            "method": "GET",
+            "sortNum": 80000,
+            "created": "2023-03-22T17:54:58.990Z",
+            "modified": "2023-03-22T18:11:09.703Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "table_id",
+                    "value": "0",
+                    "isDisabled": true,
+                    "isPath": false
+                },
+                {
+                    "name": "table_name",
+                    "value": "",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "28c38878-96de-47f9-82ed-a20d78615e83",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Get Counters",
+            "url": "http://127.0.0.1:6000/p4runtime/getcounters?device_id=2&counter_name=MyIngress.ingressTunnelCounter&index=100",
+            "method": "GET",
+            "sortNum": 90000,
+            "created": "2023-03-22T17:54:58.991Z",
+            "modified": "2023-03-22T19:14:36.657Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "device_id",
+                    "value": "2",
+                    "isPath": false
+                },
+                {
+                    "name": "counter_name",
+                    "value": "MyIngress.ingressTunnelCounter",
+                    "isPath": false
+                },
+                {
+                    "name": "index",
+                    "value": "100",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        }
+    ],
+    "settings": {}
+}

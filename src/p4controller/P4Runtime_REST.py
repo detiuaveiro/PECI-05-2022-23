@@ -9,7 +9,7 @@ import re
 import signal
 from warnings import warn
 
-from flask import Flask, flash, json, redirect, request, url_for
+from flask import Flask, flash, json, redirect, request
 from p4.config.v1 import p4info_pb2
 from werkzeug.utils import secure_filename
 
@@ -51,7 +51,7 @@ def index():
     return 'Welcome to controller api'
 
 # PASSING
-@app.route('/api/files/upload', methods=['POST'])
+@app.route('/p4runtime/files/upload', methods=['POST'])
 def upload_file():
     try:
         if request.method == 'POST':
@@ -80,7 +80,7 @@ def upload_file():
     return '', 200
 
 # TBT
-@app.route('/api/files', methods=['GET'])
+@app.route('/p4runtime/files', methods=['GET'])
 def get_files():
     try:
         return [app.config['UPLOAD_FOLDER']+file_name for file_name in os.listdir(app.config['UPLOAD_FOLDER'])], 200
@@ -89,7 +89,7 @@ def get_files():
         return e, 400
     
 # TBT    
-@app.route('/api/files/delete', methods=['DELETE'])
+@app.route('/p4runtime/files/delete', methods=['DELETE'])
 def delete_file():
     try:
         os.remove(request.form['file_path'])
@@ -97,90 +97,14 @@ def delete_file():
     except Exception as e:
         warn("delete_file(): " + str(e))
         return e, 400
-
+  
 # PASSING
-@app.route('/api/deploy', methods=['POST'])
-def deploy_network():
-    """ Deploy the network
-        
-        Attributes:
-            - topology     : string    // json describing the network topology
-    """
-    topology = request.form['topology']
-
-    cwd = os.getcwd()
-    app.config['ENVIRONMENT'] = Runner(json.loads(topology),
-                                       os.path.join(cwd, 'logs'),
-                                       os.path.join(cwd, 'pcaps'),
-                                       os.path.join(cwd, 'dumps'),
-                                       "simple_switch_grpc",
-                                       False)
-
-    try:
-        app.config['ENVIRONMENT'].build_env()
-        return '', 200
-    except Exception as e:
-        app.config['ENVIRONMENT'].net.stop()
-        warn("deploy_network(): " + str(e))
-        return e, 500
-      
-# PASSING
-# FIXME - Export to Mininet API
-@app.route('/api/devices', methods=['GET'])
-def get_devices():
-    """ Get all devices in the Mininet network
-
-        Return:
-            - device listing    : json      // json with all the devices id's and addresses
-    """
-    try:
-        devices = {}
-        
-        for node in chain(app.config['ENVIRONMENT'].net.hosts,app.config['ENVIRONMENT'].net.switches):
-            temp = {
-                'name': node.name,
-                'intfs': []
-            }
-            
-            if isinstance(node, P4RuntimeSwitch):
-                if not 'switches' in devices.keys():
-                    devices['switches'] = []
-                    
-                for intfs in node.intfList():
-                    if intfs.mac != None:
-                        temp['intfs'].append({
-                            'name': intfs.name,
-                            'mac': intfs.mac,
-                        }) 
-                
-                temp['device_id'] = node.device_id
-                temp['grpc_port'] = node.grpc_port
-                              
-                devices['switches'].append(temp)
-                
-            elif isinstance(node, P4Host):
-                if not 'hosts' in devices.keys():
-                    devices['hosts'] = []
-                
-                for intfs in node.intfList():
-                    temp['intfs'].append({
-                        'name': intfs.name,
-                        'mac': intfs.mac,
-                        'ip&prefix': intfs.ip + "/" + str(intfs.prefixLen)
-                    })
-                
-                devices['hosts'].append(temp)
-
-        return json.dumps(devices), 200
-    except Exception as e:
-        warn("get_devices(): " + str(e))
-        return e, 500
-    
-# PASSING
-# FIXME - Must call Mininet API for switches
-@app.route('/api/switch/connect', methods=['POST'])
+@app.route('/p4runtime/connect', methods=['POST'])
 def connect_to_switch():
     """ Connect to bmv2 switch.
+    
+        Endpoint:
+            - /p4runtime/connect
 
         Attributes:
             - addr                : string    // bmv2 IP:PORT address
@@ -210,37 +134,12 @@ def connect_to_switch():
     return '', 200
 
 # PASSING
-# FIXME - Must call Mininet API for switches
-@app.route('/api/switch/connectall', methods=['POST'])
-def connect_to_all_switches():
-    """ Connect to all bmv2 switches.
-
-        Attributes:
-            - proto_dump_fpath    : string    // File to dump logs
-    """
-    
-    try:
-        proto_dump = "./dumps/" + request.form['proto_dump']
-        for sw in app.config['ENVIRONMENT'].net.switches:
-            if all(map(lambda conn: conn.device_id != sw.device_id,app.config['SWS_CONNECTIONS'])): 
-                conn = bmv2.Bmv2SwitchConnection(name=sw.name,
-                                                address=f"0.0.0.0:{sw.grpc_port}",
-                                                device_id=sw.device_id,
-                                                proto_dump_file=f"{proto_dump}{sw.device_id}.txt")
-                app.config['SWS_CONNECTIONS'].append(conn)
-            
-        for sw_conn in app.config['SWS_CONNECTIONS']:
-            print(f"Connected to {sw_conn.name} at {sw_conn.address}")
-            
-    except Exception as e:
-        warn("connect_to_all_switches(): " + str(e))
-        return e, 500
-    return '', 200
-
-# PASSING
-@app.route('/api/switch/program', methods=['POST'])
+@app.route('/p4runtime/program', methods=['POST'])
 def program_switch():
     """ Program bmv2 switch.
+
+        Endpoint:
+            - /p4runtime/program
 
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
@@ -288,9 +187,12 @@ def _compile_p4(p4file):
     return p4info, p4json
 
 # PASSING
-@app.route('/api/switch/inserttable', methods=['POST'])
+@app.route('/p4runtime/inserttable', methods=['POST'])
 def insert_table():
     """ Program bmv2 switch.
+
+        Endpoint:
+            - /p4runtime/inserttable
 
         Attributes:
             - device_id         : string    // Bmv2Switch where to inser the table entry (will insert on switches all if not specified)
@@ -335,9 +237,12 @@ def insert_table():
         return '', 500
 
 # PASSING
-@app.route('/api/switch/gettable', methods=['GET'])
+@app.route('/p4runtime/gettable', methods=['GET'])
 def get_table_entries():
     """ Retrieve bmv2 switch table entries
+    
+        Endpoint:
+            - /p4runtime/gettable
     
         Attributes:
             - device_id         : number    // Bmv2Switch to program (will return all if not specified)
@@ -457,9 +362,12 @@ def _get_action(table_action):
         }
     
 # PASSING
-@app.route('/api/switch/getcounters', methods=['GET'])
+@app.route('/p4runtime/getcounters', methods=['GET'])
 def get_counters():
     """ Retrieve bmv2 switch table entries
+    
+        Endpoint:
+            - /p4runtime/getcounters
     
         Attributes:
             - device_id         : number    // Bmv2Switch to program (will return counter for all switches all if not specified)
@@ -504,69 +412,16 @@ def get_counters():
         warn(f"Failed to get counters: {e}")
         return '', 500            
     
-# PASSING
-# FIXME - Export to Mininet API
-@app.route('/api/mininet/runnetfunc', methods=['GET'])
-def mn_control():
-    """ Call mininet network object attribute, can be a value or a function
-    
-        Attributes:
-            - attribute         : string    // Name of the method from Mininet object to be called
-    """
-    try:
-        func = getattr(app.config['ENVIRONMENT'].net, request.args.get('function', None))
-        if callable(func):
-            func()
-        elif isinstance(func, list):
-            for ent in func:
-                print(str(ent))
-        else:
-            print(str(func))
-            
-        return '', 200
-    except Exception as e:
-        warn(f"Failed to run Mininet network method: {e}")
-        return '', 500
-    
-# TBT - /switch/command - call Switch.sendCmd
-# FIXME - Export to Mininet API
-@app.route('/api/switch/command', methods=['POST'])
-def sw_command():
-    """ Execute command in a BMV2 Switch
-    
-        Attributes:
-            - device_id          : string    // Identification of the switch to be programmed
-            - command            : string    // Command to be run on the device
-            - verbose            : boolean   // If the endpoint is to return the stdout of the executed command
-    """
-    try:
-        for sw_conn in _get_switch_conns(request.form.get('device_id', None)):
-            sw = next((sw for sw in app.config['ENVIRONMENT'].net.switches if sw.device_id == sw_conn.device_id), None)
-            if request.form.get('verbose', None):
-                response = {
-                    "response": sw.cmdPrint(request.form['command'])
-                }
-                return json.dumps(response), 200
-            else:
-                sw.sendCmd(request.form['command'])
-                return '', 200 
-    except Exception as e:
-        warn(f"Failed to run switch command: {e}")
-        return '', 500
-
-# FEATURE - /switch/control - call Switch class methods # FIXME - Export to Mininet API
-# FEATURE - /hosts/control  - call Host class methods # FIXME - Export to Mininet API
-# FEATURE - /hosts/command  - call Host.sendCmd # FIXME - Export to Mininet API
-    
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
     clean()   
     exit()
     
 def clean():
-    if app.config.get('ENVIRONMENT'):
-        app.config['ENVIRONMENT'].net.stop()
-    os.system('sudo mn -c')
+    if app.config.get('SWS_CONNECTIONS') != []:
+        for sw_conn in app.config.get('SWS_CONNECTIONS'):
+            sw_conn.shutdown()
+
     if app.debug:
         os.system('sudo rm -r compiles uploads')
         
@@ -576,5 +431,6 @@ signal.signal(signal.SIGINT, exit_handler)
 
 clean()
 
-app.debug = True
-app.run(host='0.0.0.0', port=6000)
+if __name__ == '__main__':
+    app.debug = False
+    app.run(host='0.0.0.0', port=6000)
