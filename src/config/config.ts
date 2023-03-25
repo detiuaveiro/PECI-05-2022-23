@@ -16,5 +16,8 @@ export const config = {
     },
     server: {
         port: SERVER_PORT
+    },
+    controller: {
+        endpoint: 'http://nginx:80/'
     }
 };
