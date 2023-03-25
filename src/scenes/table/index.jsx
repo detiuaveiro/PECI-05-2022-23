@@ -134,7 +134,6 @@ const Table = () => {
       TopologyService.getId(id)
       .then((data) => {
           data = data.topology.data;
-          console.log(data)
           if(data.hosts != null){
           Object.entries(data.hosts).map(([key, value]) => 
               {

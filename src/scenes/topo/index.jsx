@@ -44,8 +44,6 @@ const Topo = () => {
   /* Translation */
   var TopologyService = new Topology();
 
-
-
   useEffect(() => {
     TopologyService.getTopo()
     .then((data) => {
@@ -59,7 +57,7 @@ const Topo = () => {
             }
             );
         setData(topodata);
-        setLoading(false);    
+        setLoading(false);   
     })
     }, []);
 
