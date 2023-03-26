@@ -11,7 +11,7 @@ function Popup(props) {
       <div className="popup-inner">
         <Button 
         sx={{
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.blueAccent[800],
             color: colors.primary[100],
             fontSize: "14px",
             fontWeight: "bold",
