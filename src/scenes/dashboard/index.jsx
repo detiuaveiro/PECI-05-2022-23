@@ -14,7 +14,7 @@ import Dropzone from "../../components/Dropzone";
 
 const Dashboard = () => {
   const getUploadParams = () => {
-    return { url: 'https://httpbin.org/post' }
+    return { url: 'http://nginx:80/p4controller_ou_mininet/metodo/' }
   }
 
   const handleChangeStatus = ({ meta }, status) => {
