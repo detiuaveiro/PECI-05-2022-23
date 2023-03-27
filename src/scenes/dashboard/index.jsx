@@ -12,8 +12,20 @@ import StackedLineChartOutlinedIcon from "@mui/icons-material/StackedLineChartOu
 import Popup from "../../components/Popup";
 import Dropzone from "../../components/Dropzone";
 
-
 const Dashboard = () => {
+  const getUploadParams = () => {
+    return { url: 'https://httpbin.org/post' }
+  }
+
+  const handleChangeStatus = ({ meta }, status) => {
+    console.log(status,meta)
+  }
+
+  const handleSubmit = (files, allFiles) => {
+    console.log(files.map(f => f.meta))
+    allFiles.forEach(f => f.remove())
+  }
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isLoading, setLoading] = useState(true);
@@ -68,9 +80,12 @@ const Dashboard = () => {
                   >
                     Upload your file here
                 </Typography>
-                <Dropzone />
+                <Dropzone 
+                  getUploadParams={getUploadParams}
+                  onChangeStatus={handleChangeStatus}
+                  onSubmit={handleSubmit}
+                />
                 <Box>
-                    
                 </Box>
               </Popup>
             </Box>
