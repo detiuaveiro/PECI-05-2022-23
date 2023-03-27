@@ -17,8 +17,7 @@ const Dashboard = () => {
 
   let navigate = useNavigate();
   const routeChange = () => {
-    let path = 'http://grafana:3000/';
-    navigate(path);
+    window.location.assign('http://grafana:3000');
   }
 
   const getUploadParams = () => {
