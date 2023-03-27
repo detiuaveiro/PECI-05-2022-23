@@ -11,8 +11,16 @@ import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import StackedLineChartOutlinedIcon from "@mui/icons-material/StackedLineChartOutlined";
 import Popup from "../../components/Popup";
 import Dropzone from "../../components/Dropzone";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+
+  let navigate = useNavigate();
+  const routeChange = () => {
+    let path = 'http://grafana:3000/';
+    navigate(path);
+  }
+
   const getUploadParams = () => {
     return { url: 'http://nginx:80/p4controller_ou_mininet/metodo/' }
   }
@@ -201,7 +209,7 @@ const Dashboard = () => {
                   </Typography>
                 </Box>
                 <Box>
-                  <IconButton>
+                  <IconButton onClick={routeChange}>
                     <StackedLineChartOutlinedIcon
                       sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
                     />
