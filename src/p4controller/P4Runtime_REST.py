@@ -53,7 +53,7 @@ def _get_switch_conns(device_id=None, programmed=None):
     for sw_conn in app.config['SWS_CONNECTIONS']:
         pre_programmed = True if sw_conn.GetForwardingPipelineConfig() else False
         if programmed == None or (programmed and pre_programmed) or (not programmed and not pre_programmed): 
-            if not device_id or sw_conn.device_id == int(device_id):
+            if not device_id or sw_conn.device_id == device_id:
                 yield (sw_conn, pre_programmed)
 # Utils> #
 
@@ -176,18 +176,24 @@ def program_switch():
 
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
+            - name          : string    // Bmv2Switch to program (deferes to id)
             - device_id     : string    // Bmv2Switch to program (will program all if not specified)
+            
     
     """
     if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file']}.p4")):
         return 'File does not exist', 400
+    device_id = request.form.get('device_id', None, type=int)
+    name = request.form.get('name', None)
+    print(device_id, name)
     
     p4info_path, p4json = _compile_p4(request.form['p4file'])
 
-    for sw_conn, _ in _get_switch_conns(request.args.get('device_id', None)):
-        p4info_helper = helper.P4InfoHelper(p4info_path)
-        sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
-                                            bmv2_json_file_path=p4json)
+    for sw_conn, _ in _get_switch_conns(device_id):
+        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
+            p4info_helper = helper.P4InfoHelper(p4info_path)
+            sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
+                                                bmv2_json_file_path=p4json)
         
         print(f"{sw_conn.name} programmed") 
     return '', 200
@@ -217,7 +223,8 @@ def insert_table():
             - /p4runtime/inserttable
 
         Attributes:
-            - device_id         : string    // Bmv2Switch where to inser the table entry (will insert on switches all if not specified)
+            - name              : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
+            - device_id         : string    // Bmv2Switch id where to inser the table entry (will insert on switches all if not specified)
             - table_name        : string    // Table name
             - match_fields      : string    // Matching packet field
             - action_name       : string    // Name of the action
@@ -225,34 +232,37 @@ def insert_table():
             - action_params     : string    // Action parameters
             - priority          : string    // Action priority
     """
-    for sw_conn, _ in _get_switch_conns(request.form.get('device_id', None)):
-        p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
-        
-        match_fields=request.form.get('match',None)
-        if match_fields is not None:
-            match_fields = json.loads(match_fields)
-            for key, value in match_fields.items():
-                ip = value.split(',')[0][2:-1]
-                prefix = value.split(',')[1][0:-1]
-                if convert.matchesIPv4(ip):
-                    print(ip, prefix)
-                    match_fields[key]=(str(ip),int(prefix))
+    device_id = request.form.get('device_id', None, type=int)
+    name = request.form.get('name', None)
+    for sw_conn, _ in _get_switch_conns():
+        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
+            p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
             
-        action_params= request.form.get('action_params', None)
-        if action_params is not None:
-            action_params = json.loads(action_params)
-            
-        table_entry = p4info_helper.buildTableEntry(
-            table_name=request.form['table'],
-            match_fields=match_fields,
-            default_action=(bool)(request.form.get('default_action', False)),
-            action_name=request.form.get('action_name',None),
-            action_params=action_params,
-            priority=request.form.get('priority', None))
+            match_fields=request.form.get('match',None)
+            if match_fields is not None:
+                match_fields = json.loads(match_fields)
+                for key, value in match_fields.items():
+                    ip = value.split(',')[0][2:-1]
+                    prefix = value.split(',')[1][0:-1]
+                    if convert.matchesIPv4(ip):
+                        print(ip, prefix)
+                        match_fields[key]=(str(ip),int(prefix))
+                
+            action_params= request.form.get('action_params', None)
+            if action_params is not None:
+                action_params = json.loads(action_params)
+                
+            table_entry = p4info_helper.buildTableEntry(
+                table_name=request.form['table'],
+                match_fields=match_fields,
+                default_action=(bool)(request.form.get('default_action', False)),
+                action_name=request.form.get('action_name',None),
+                action_params=action_params,
+                priority=request.form.get('priority', None))
 
-        sw_conn.WriteTableEntry(table_entry)
-        
-        print(f"Table inserted at {sw_conn.name}")
+            sw_conn.WriteTableEntry(table_entry)
+            
+            print(f"Table inserted at {sw_conn.name}")
         
     return '', 200
 # PASSING
