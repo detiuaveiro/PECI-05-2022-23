@@ -118,10 +118,10 @@ def connect_to_switch():
             - /p4runtime/connect
 
         Attributes:
-            - addr                : string    // bmv2 IP:PORT address
+            - name                : string    // Device name
+            - address             : string    // bmv2 IP:PORT address
             - device_id           : string    // device id
-            - proto_dump_fpath    : string    // File to dump logs
-            - programmed          : bolean    // If BMV2 switch is already configured
+            - proto_dump          : string    // File to dump logs
     """
     name = request.form['name']
     addr = request.form['address']
@@ -142,6 +142,28 @@ def connect_to_switch():
     for sw_conn in app.config['SWS_CONNECTIONS']:
         print(f"Connected to {sw_conn.name} at {sw_conn.address}")
     
+    return '', 200
+
+# PASSING
+@app.route('/p4runtime/disconnect', methods=['POST'])
+def disconnect_from_switch():
+    """ Disconnect from bmv2 switch.
+    
+        Endpoint:
+            - /p4runtime/connect
+
+        Attributes:
+            - name                : string    // Device name, if not specified, deferes to device_id
+            - device_id           : string    // device id, if not specified, disconnect from all
+    """
+    name = request.form.get('name', None)
+    device_id = request.form.get('device_id', None, type=int)
+    
+    for sw_conn, _ in _get_switch_conns():
+        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
+            app.config['SWS_CONNECTIONS'].remove(sw_conn)
+            sw_conn.shutdown()
+            
     return '', 200
 
 # PASSING
@@ -196,8 +218,8 @@ def insert_table():
 
         Attributes:
             - device_id         : string    // Bmv2Switch where to inser the table entry (will insert on switches all if not specified)
-            - table             : string    // Table name
-            - match             : string    // Matching packet field
+            - table_name        : string    // Table name
+            - match_fields      : string    // Matching packet field
             - action_name       : string    // Name of the action
             - default_action    : string    // Default action of the table
             - action_params     : string    // Action parameters
@@ -401,7 +423,7 @@ def get_counters():
     
     return json.dumps(counter_entries), 200
 
-# TBT
+# PASSING
 @app.route('/p4runtime/getconnections', methods=['GET'])
 def get_connections():
     """ Get connections
@@ -422,8 +444,6 @@ def get_connections():
                     "proto_dump_file": sw_conn.proto_dump_file,
                     "programmed": state
                 }
-    
-    print(connections)
     
     return json.dumps(connections), 200
     

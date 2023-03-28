@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-03-22T19:14:47.222Z",
+    "dateExported": "2023-03-28T19:28:39.193Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -9,12 +9,190 @@
             "_id": "16c2189a-89a5-411a-a0e2-38e5d8ce0e2e",
             "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
             "containerId": "",
-            "name": "Connecting to Specific Switch",
+            "name": "Connecting to Specific Switch - S1",
             "url": "http://127.0.0.1:6000/p4runtime/connect",
             "method": "POST",
             "sortNum": 30000,
             "created": "2023-03-22T17:54:58.985Z",
-            "modified": "2023-03-22T19:12:11.001Z",
+            "modified": "2023-03-28T18:19:42.003Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "proto_dump",
+                        "value": "dump"
+                    },
+                    {
+                        "name": "name",
+                        "value": "s1"
+                    },
+                    {
+                        "name": "address",
+                        "value": "0.0.0.0:50051"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "0"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "fcb5605b-5d45-4aba-87dd-f9d71bb0bf0c",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Connecting to Specific Switch - S2",
+            "url": "http://127.0.0.1:6000/p4runtime/connect",
+            "method": "POST",
+            "sortNum": 33125,
+            "created": "2023-03-28T19:03:49.521Z",
+            "modified": "2023-03-28T19:12:37.972Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "proto_dump",
+                        "value": "dump"
+                    },
+                    {
+                        "name": "name",
+                        "value": "s2"
+                    },
+                    {
+                        "name": "address",
+                        "value": "0.0.0.0:50052"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "1"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "2455d2d9-97ed-4d72-bd7b-0f569d3b3be3",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Connecting to Specific Switch - S3",
+            "url": "http://127.0.0.1:6000/p4runtime/connect",
+            "method": "POST",
+            "sortNum": 34687.5,
+            "created": "2023-03-28T19:04:01.565Z",
+            "modified": "2023-03-28T19:12:51.684Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "proto_dump",
+                        "value": "dump"
+                    },
+                    {
+                        "name": "name",
+                        "value": "s3"
+                    },
+                    {
+                        "name": "address",
+                        "value": "0.0.0.0:50053"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "2"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "0ea9c371-65b2-47c4-b99f-f659c056e13f",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Get Connections - All",
+            "url": "http://127.0.0.1:6000/p4runtime/getconnections",
+            "method": "GET",
+            "sortNum": 35468.8,
+            "created": "2023-03-28T18:09:57.456Z",
+            "modified": "2023-03-28T19:04:58.573Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "programmed",
+                    "value": "True",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "2f1a6569-c4c1-4c31-81fd-8e50e2953fa2",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Disconnect From Specific Switch",
+            "url": "http://127.0.0.1:6000/p4runtime/disconnect",
+            "method": "POST",
+            "sortNum": 36250,
+            "created": "2023-03-28T19:02:58.939Z",
+            "modified": "2023-03-28T19:27:43.739Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "formdata",
+                "raw": "",
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "s3"
+                    },
+                    {
+                        "name": "device_id",
+                        "value": "2"
+                    }
+                ]
+            },
+            "tests": []
+        },
+        {
+            "_id": "b51eac13-520b-4ebb-b4e0-7699da2acf74",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Get Connections - Minus S3",
+            "url": "http://127.0.0.1:6000/p4runtime/getconnections",
+            "method": "GET",
+            "sortNum": 36875,
+            "created": "2023-03-28T19:04:56.462Z",
+            "modified": "2023-03-28T19:05:03.494Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "programmed",
+                    "value": "True",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "b1ffa0de-91ce-4b6d-b931-b96511d56657",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Connecting to Specific Switch - S3 Copy",
+            "url": "http://127.0.0.1:6000/p4runtime/connect",
+            "method": "POST",
+            "sortNum": 43437.5,
+            "created": "2023-03-28T19:05:38.701Z",
+            "modified": "2023-03-28T19:13:27.122Z",
             "headers": [],
             "params": [],
             "body": {
@@ -75,7 +253,7 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2023-03-22T17:54:58.988Z",
-            "modified": "2023-03-22T18:10:33.932Z",
+            "modified": "2023-03-28T18:22:39.277Z",
             "headers": [],
             "params": [],
             "body": {
@@ -88,11 +266,31 @@
                     },
                     {
                         "name": "device_id",
-                        "value": "2",
-                        "isDisabled": true
+                        "value": "2"
                     }
                 ]
             },
+            "tests": []
+        },
+        {
+            "_id": "8657bb6b-721f-4336-a6f5-45d79f39c58e",
+            "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
+            "containerId": "",
+            "name": "Get Connections - All Copy",
+            "url": "http://127.0.0.1:6000/p4runtime/getconnections",
+            "method": "GET",
+            "sortNum": 65000,
+            "created": "2023-03-28T19:05:48.710Z",
+            "modified": "2023-03-28T19:05:59.541Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "programmed",
+                    "value": "True",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
             "tests": []
         },
         {
@@ -178,21 +376,23 @@
             "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
             "containerId": "",
             "name": "Get Counters",
-            "url": "http://127.0.0.1:6000/p4runtime/getcounters?device_id=2&counter_name=MyIngress.ingressTunnelCounter&index=100",
+            "url": "http://127.0.0.1:6000/p4runtime/getcounters?index=100",
             "method": "GET",
             "sortNum": 90000,
             "created": "2023-03-22T17:54:58.991Z",
-            "modified": "2023-03-22T19:14:36.657Z",
+            "modified": "2023-03-28T01:32:21.916Z",
             "headers": [],
             "params": [
                 {
                     "name": "device_id",
-                    "value": "2",
+                    "value": "1",
+                    "isDisabled": true,
                     "isPath": false
                 },
                 {
                     "name": "counter_name",
                     "value": "MyIngress.ingressTunnelCounter",
+                    "isDisabled": true,
                     "isPath": false
                 },
                 {
