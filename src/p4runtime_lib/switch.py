@@ -71,7 +71,6 @@ class SwitchConnection(object):
             request = p4runtime_pb2.GetForwardingPipelineConfigRequest()
             request.device_id = self.device_id
             response = self.client_stub.GetForwardingPipelineConfig(request)
-            print(response.config)
             return response.config.p4info
         except grpc._channel._InactiveRpcError as e:
             if(e.code() == grpc.StatusCode.FAILED_PRECONDITION):

@@ -209,9 +209,11 @@ def insert_table():
         if match_fields is not None:
             match_fields = json.loads(match_fields)
             for key, value in match_fields.items():
-                match = re.match(r"\('(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})',(\d{1,2})\)",value)
-                if match:
-                    match_fields[key]=(str(match.group(1)),int(match.group(2)))
+                ip = value.split(',')[0][2:-1]
+                prefix = value.split(',')[1][0:-1]
+                if convert.matchesIPv4(ip):
+                    print(ip, prefix)
+                    match_fields[key]=(str(ip),int(prefix))
             
         action_params= request.form.get('action_params', None)
         if action_params is not None:
@@ -246,7 +248,6 @@ def get_table_entries():
     table_entries = {}
     for sw_conn in _get_switch_conns(request.args.get('device_id', None), programmed=True):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
-        print(sw_conn.name)
         
         table_id = request.args.get('table_id', None)
         table_name = request.args.get('table_name', None)
@@ -260,8 +261,8 @@ def get_table_entries():
                 if not sw_conn.name in table_entries.keys():
                     table_entries[sw_conn.name] = []   
                 for response in sw_conn.ReadTableEntries(table_id=pre.id):
-                    
                     for entity in response.entities:
+                        print(entity)
                         table_entry = entity.table_entry
                         table_entries[sw_conn.name].append({
                             "table_name": pre.name,
@@ -292,6 +293,7 @@ def _get_field_matches(matches_entry):
         mtch = {}
         mtch["field_id"] = fldm.field_id
         if len(repr(fldm.lpm)):
+            print(repr(fldm.lpm))
             mtch["lpm"] = {
                 "value": convert.decodeIPv4(fldm.lpm.value),
                 "prefix_len": fldm.lpm.prefix_len
@@ -373,9 +375,7 @@ def get_counters():
         
     counter_entries = {}    
     for sw_conn in _get_switch_conns(device_id, programmed=True):
-        print(sw_conn.name)
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
-        print()
         counter_entries[sw_conn.name] = {
             "device_id": sw_conn.device_id,
             "counters": []

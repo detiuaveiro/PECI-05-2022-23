@@ -3,10 +3,9 @@
 *.pcap
 *.log
 
-src/.vscode
-src/*__pycache__
-src/*logs
-src/*pcaps
-src/*dumps
-src/*uploads
-src/*compiles
+*.vscode
+/src/p4controller/logs
+/src/p4controller/pcaps
+/src/p4controller/uploads
+/src/p4controller/compiles
+/src/p4controller/dumps
