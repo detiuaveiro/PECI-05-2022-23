@@ -2,3 +2,11 @@
 *__pycache__
 *.pcap
 *.log
+
+src/.vscode
+src/*__pycache__
+src/*logs
+src/*pcaps
+src/*dumps
+src/*uploads
+src/*compiles
