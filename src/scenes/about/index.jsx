@@ -14,28 +14,6 @@ const About = () => {
       <Card variant="outlined">{
         <CardContent>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            Afonso Cardoso
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Student at UA
-          </Typography>
-          <Typography variant="h5" component="div">
-          <p>
-                Mechanographic Number: 88964
-            </p>
-            <p>
-                E-Mail: afonsocardoso@ua.pt
-            </p>
-            <p>
-                Mobile Number: 966360275
-            </p>
-          </Typography>
-        </CardContent>
-      }
-      </Card>
-      <Card variant="outlined">{
-        <CardContent>
-          <Typography color={colors.greenAccent[500]} variant="h5">
             David José Araújo Ferreira
           </Typography>
           <Typography sx={{ mb: 1.5 }} color="text.secondary">

@@ -138,28 +138,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Switches"
-              to="/switchs"
-              icon={<StorageOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Hosts"
-              to="/hosts"
-              icon={<RouterOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Links"
-              to="/links"
-              icon={<LanOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
+            
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -207,13 +186,6 @@ const Sidebar = () => {
               title="Line Chart"
               to="/line"
               icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/geography"
-              icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
