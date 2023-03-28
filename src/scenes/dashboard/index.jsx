@@ -12,16 +12,17 @@ import StackedLineChartOutlinedIcon from "@mui/icons-material/StackedLineChartOu
 import Popup from "../../components/Popup";
 import Dropzone from "../../components/Dropzone";
 import { useNavigate } from "react-router-dom";
+import FileUpload from "../../components/FileUpload";
 
 const Dashboard = () => {
 
   let navigate = useNavigate();
   const routeChange = () => {
-    window.location.assign('http://grafana:3000');
+    window.location.assign('http://localhost:3000');
   }
 
   const getUploadParams = () => {
-    return { url: 'http://nginx:80/p4controller_ou_mininet/metodo/' }
+    return { url: 'http://localhost:80/p4runtime/files/upload/' }
   }
 
   const handleChangeStatus = ({ meta }, status) => {
@@ -87,12 +88,8 @@ const Dashboard = () => {
                   >
                     Upload your file here
                 </Typography>
-                <Dropzone 
-                  getUploadParams={getUploadParams}
-                  onChangeStatus={handleChangeStatus}
-                  onSubmit={handleSubmit}
-                />
                 <Box>
+                    <FileUpload />
                 </Box>
               </Popup>
             </Box>

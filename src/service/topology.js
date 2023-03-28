@@ -17,7 +17,7 @@ export default class Topology{
 
     getTopo = () =>
     {
-        var Url = "http://backend:8000/api/Topology";
+        var Url = "http://localhost:8000/api/Topology";
         return axios(getAxiosConfig("GET", Url))
             .then((response) => {
                 return response.data;
@@ -25,7 +25,7 @@ export default class Topology{
     }
     getId = (Id) =>
     {
-        var Url = "http://backend:8000/api/Topology/" + Id;
+        var Url = "http://localhost:8000/api/Topology/" + Id;
         return axios(getAxiosConfig("GET", Url))
             .then((response) => {
                 return response.data;
