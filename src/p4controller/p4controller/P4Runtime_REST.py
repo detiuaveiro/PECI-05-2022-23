@@ -125,6 +125,10 @@ def connect_to_switch():
     name = request.form['name']
     addr = request.form['address']
     device_id = (int)(request.form['device_id'])
+    
+    if not os.path.isdir("./dumps/"):
+            os.system(f"mkdir ./dumps/")
+    
     proto_dump = "./dumps/" + request.form['proto_dump']
     if all(map(lambda conn: conn.device_id != device_id, app.config['SWS_CONNECTIONS'])):
         conn = bmv2.Bmv2SwitchConnection(name=name,
