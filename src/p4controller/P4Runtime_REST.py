@@ -40,7 +40,7 @@ def _allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def _get_switch_conns(device_id, programmed=None):
+def _get_switch_conns(device_id=None, programmed=None):
     """Get established connections with BMV2 Switches
 
     Args:
@@ -51,9 +51,10 @@ def _get_switch_conns(device_id, programmed=None):
         SwitchConnection: BMV2 Switch connection object
     """
     for sw_conn in app.config['SWS_CONNECTIONS']:
-        if programmed == None or (programmed and sw_conn.GetForwardingPipelineConfig()) or (not programmed and not sw_conn.GetForwardingPipelineConfig()): 
+        pre_programmed = True if sw_conn.GetForwardingPipelineConfig() else False
+        if programmed == None or (programmed and pre_programmed) or (not programmed and not pre_programmed): 
             if not device_id or sw_conn.device_id == int(device_id):
-                yield sw_conn    
+                yield (sw_conn, pre_programmed)
 # Utils> #
 
 @app.route('/')
@@ -161,7 +162,7 @@ def program_switch():
     
     p4info_path, p4json = _compile_p4(request.form['p4file'])
 
-    for sw_conn in _get_switch_conns(request.args.get('device_id', None)):
+    for sw_conn, _ in _get_switch_conns(request.args.get('device_id', None)):
         p4info_helper = helper.P4InfoHelper(p4info_path)
         sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
                                             bmv2_json_file_path=p4json)
@@ -202,7 +203,7 @@ def insert_table():
             - action_params     : string    // Action parameters
             - priority          : string    // Action priority
     """
-    for sw_conn in _get_switch_conns(request.form.get('device_id', None)):
+    for sw_conn, _ in _get_switch_conns(request.form.get('device_id', None)):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         
         match_fields=request.form.get('match',None)
@@ -246,7 +247,7 @@ def get_table_entries():
             - table_name        : string    // Table from which to return entries (used instead of table_id)
     """
     table_entries = {}
-    for sw_conn in _get_switch_conns(request.args.get('device_id', None), programmed=True):
+    for sw_conn, _ in _get_switch_conns(request.args.get('device_id', None), programmed=True):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         
         table_id = request.args.get('table_id', None)
@@ -374,7 +375,7 @@ def get_counters():
     index = int(request.args['index']) if 'index' in request.args.keys() else 0
         
     counter_entries = {}    
-    for sw_conn in _get_switch_conns(device_id, programmed=True):
+    for sw_conn, _ in _get_switch_conns(device_id, programmed=True):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         counter_entries[sw_conn.name] = {
             "device_id": sw_conn.device_id,
@@ -400,7 +401,33 @@ def get_counters():
     
     return json.dumps(counter_entries), 200
 
+# TBT
+@app.route('/p4runtime/getconnections', methods=['GET'])
+def get_connections():
+    """ Get connections
+
+        Endpoint:
+            - /p4runtime/getconnections
+            
+        Attributes:
+            - programmed        : boolean   // True to get only programmed devices, False to get only non-programmed devices. If not specified, returns all alongside with its programming state
+    """
+    programmed = request.args.get('programmed', None, type=bool)
+    connections = {}
+    for sw_conn, state in _get_switch_conns(programmed=programmed):
+        connections[f"{sw_conn.name}:{sw_conn.device_id}"] = {
+                    "name": sw_conn.name,
+                    "device_id": sw_conn.device_id,
+                    "address": sw_conn.address,
+                    "proto_dump_file": sw_conn.proto_dump_file,
+                    "programmed": state
+                }
     
+    print(connections)
+    
+    return json.dumps(connections), 200
+    
+       
 # ATTENTION - Shutting Mininet down before exiting
 def exit_handler(*args):
     clean()   
