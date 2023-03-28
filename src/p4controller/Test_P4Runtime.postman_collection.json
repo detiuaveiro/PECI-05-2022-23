@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-03-28T19:28:39.193Z",
+    "dateExported": "2023-03-28T20:06:51.993Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -253,7 +253,7 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2023-03-22T17:54:58.988Z",
-            "modified": "2023-03-28T18:22:39.277Z",
+            "modified": "2023-03-28T19:56:03.034Z",
             "headers": [],
             "params": [],
             "body": {
@@ -267,6 +267,10 @@
                     {
                         "name": "device_id",
                         "value": "2"
+                    },
+                    {
+                        "name": "name",
+                        "value": "s3"
                     }
                 ]
             },
@@ -302,7 +306,7 @@
             "method": "POST",
             "sortNum": 70000,
             "created": "2023-03-22T17:54:58.989Z",
-            "modified": "2023-03-22T18:10:47.378Z",
+            "modified": "2023-03-28T19:59:57.393Z",
             "headers": [],
             "params": [],
             "body": {
@@ -311,8 +315,7 @@
                 "form": [
                     {
                         "name": "device_id",
-                        "value": "0",
-                        "isDisabled": true
+                        "value": "2"
                     },
                     {
                         "name": "table",
@@ -339,6 +342,10 @@
                         "name": "priority",
                         "value": "",
                         "isDisabled": true
+                    },
+                    {
+                        "name": "name",
+                        "value": "s3"
                     }
                 ]
             },
@@ -353,7 +360,7 @@
             "method": "GET",
             "sortNum": 80000,
             "created": "2023-03-22T17:54:58.990Z",
-            "modified": "2023-03-22T18:11:09.703Z",
+            "modified": "2023-03-28T20:06:45.077Z",
             "headers": [],
             "params": [
                 {
@@ -365,6 +372,12 @@
                 {
                     "name": "table_name",
                     "value": "",
+                    "isDisabled": true,
+                    "isPath": false
+                },
+                {
+                    "name": "device_id",
+                    "value": "0",
                     "isDisabled": true,
                     "isPath": false
                 }
