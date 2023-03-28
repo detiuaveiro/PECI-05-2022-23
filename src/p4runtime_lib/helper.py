@@ -17,7 +17,6 @@ class P4InfoHelper(object):
         if name is not None and id is not None:
             raise AssertionError("name or id must be None")
 
-   
         for o in getattr(self.p4info, entity_type):
             pre = o.preamble
             if name:

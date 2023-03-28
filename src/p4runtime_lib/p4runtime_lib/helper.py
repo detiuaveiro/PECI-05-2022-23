@@ -6,17 +6,21 @@ from p4.config.v1 import p4info_pb2
 
 
 class P4InfoHelper(object):
-    def __init__(self, p4_info_filepath):
+    def __init__(self, p4_info_filepath=None):
         p4info = p4info_pb2.P4Info()
         # Load the p4info file into a skeleton P4Info object
-        with open(p4_info_filepath) as p4info_f:
-            google.protobuf.text_format.Merge(p4info_f.read(), p4info)
-        self.p4info = p4info
+        if (isinstance(p4_info_filepath, p4info_pb2.P4Info)):
+            self.p4info = p4_info_filepath
+        else:
+            with open(p4_info_filepath) as p4info_f:
+                google.protobuf.text_format.Merge(p4info_f.read(), p4info)
+            self.p4info = p4info
 
     def get(self, entity_type, name=None, id=None):
         if name is not None and id is not None:
             raise AssertionError("name or id must be None")
 
+   
         for o in getattr(self.p4info, entity_type):
             pre = o.preamble
             if name:

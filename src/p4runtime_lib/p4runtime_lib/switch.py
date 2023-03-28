@@ -2,8 +2,11 @@ import grpc
 from queue import Queue
 from datetime import datetime
 from abc import abstractmethod
-from tmp import p4config_pb2
 from p4.v1 import p4runtime_pb2, p4runtime_pb2_grpc
+
+import sys
+sys.path.append("..")
+from tmp import p4config_pb2
 
 MSG_LOG_MAX_LEN = 1024
 
@@ -14,7 +17,6 @@ class SwitchConnection(object):
         self.name = name
         self.address = address
         self.device_id = device_id
-        self.p4info = None
         
         self.channel = grpc.insecure_channel(self.address)
         if proto_dump_file is not None:
@@ -64,10 +66,23 @@ class SwitchConnection(object):
         else:
             self.client_stub.SetForwardingPipelineConfig(request)
 
+    def GetForwardingPipelineConfig(self):
+        try:
+            request = p4runtime_pb2.GetForwardingPipelineConfigRequest()
+            request.device_id = self.device_id
+            response = self.client_stub.GetForwardingPipelineConfig(request)
+            print(response.config)
+            return response.config.p4info
+        except grpc._channel._InactiveRpcError as e:
+            if(e.code() == grpc.StatusCode.FAILED_PRECONDITION):
+                print(e.debug_error_string())
+            return None
+             
+
     def WriteTableEntry(self, table_entry, dry_run=False):
         request = p4runtime_pb2.WriteRequest(
             device_id=self.device_id,
-            election_id=p4runtime_pb2.Uin128(low=1)
+            election_id=p4runtime_pb2.Uint128(low=1)
         )
         update = request.updates.add()
         if table_entry.is_default_action:

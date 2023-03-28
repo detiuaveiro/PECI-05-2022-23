@@ -67,7 +67,7 @@ class SwitchConnection(object):
     def WriteTableEntry(self, table_entry, dry_run=False):
         request = p4runtime_pb2.WriteRequest(
             device_id=self.device_id,
-            election_id=p4runtime_pb2.Uint128(low=1)
+            election_id=p4runtime_pb2.Uin128(low=1)
         )
         update = request.updates.add()
         if table_entry.is_default_action:
