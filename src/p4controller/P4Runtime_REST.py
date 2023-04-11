@@ -265,14 +265,16 @@ def get_table_entries():
             - /p4runtime/gettable
     
         Attributes:
+            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
             - device_id         : number    // Bmv2Switch to program (will return all if not specified)
             - table_id          : number    // Table from which to return entries
             - table_name        : string    // Table from which to return entries (used instead of table_id)
     """
     device_id = request.args.get('device_id', None, type=int)
+    name = request.args.get('device_name', None)
     
     table_entries = {}
-    for sw_conn, _ in _get_switch_conns(device_id=device_id):
+    for sw_conn, _ in _get_switch_conns(device_name=name,device_id=device_id):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         
         table_id = request.args.get('table_id', None)

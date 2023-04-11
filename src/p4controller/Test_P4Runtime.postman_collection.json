@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-04-11T22:23:14.444Z",
+    "dateExported": "2023-04-11T22:31:42.634Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -306,7 +306,7 @@
             "method": "POST",
             "sortNum": 70000,
             "created": "2023-03-22T17:54:58.989Z",
-            "modified": "2023-04-11T22:13:17.995Z",
+            "modified": "2023-04-11T22:25:29.989Z",
             "headers": [],
             "params": [],
             "body": {
@@ -315,7 +315,8 @@
                 "form": [
                     {
                         "name": "device_id",
-                        "value": "1"
+                        "value": "2",
+                        "isDisabled": true
                     },
                     {
                         "name": "table_name",
@@ -345,7 +346,7 @@
                     },
                     {
                         "name": "device_name",
-                        "value": "s2"
+                        "value": "s1"
                     }
                 ]
             },
@@ -356,11 +357,11 @@
             "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
             "containerId": "",
             "name": "Get Table",
-            "url": "http://127.0.0.1:6000/p4runtime/gettable?device_id=2",
+            "url": "http://127.0.0.1:6000/p4runtime/gettable",
             "method": "GET",
             "sortNum": 80000,
             "created": "2023-03-22T17:54:58.990Z",
-            "modified": "2023-04-11T22:02:48.020Z",
+            "modified": "2023-04-11T22:27:49.521Z",
             "headers": [],
             "params": [
                 {
@@ -377,7 +378,14 @@
                 },
                 {
                     "name": "device_id",
-                    "value": "2",
+                    "value": "1",
+                    "isDisabled": true,
+                    "isPath": false
+                },
+                {
+                    "name": "device_name",
+                    "value": "s1",
+                    "isDisabled": true,
                     "isPath": false
                 }
             ],
