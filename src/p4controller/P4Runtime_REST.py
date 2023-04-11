@@ -34,20 +34,22 @@ def _allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def _get_switch_conns(device_id=None, programmed=None):
+def _get_switch_conns(device_name=None, device_id=None, programmed=None):
     """Get established connections with BMV2 Switches
 
     Args:
         device_id (integer): BMV2 Switch id
-        programmed (bo0lean, optional): False to return non programmed devices, true for programmed devices, None for all devices. Defaults to None.
+        programmed (boolean, optional): False to return non programmed devices, true for programmed devices, None for all devices. Defaults to None.
 
     Yields:
         SwitchConnection: BMV2 Switch connection object
     """
+    #device_id = int(device_id)
+    #programmed = bool(programmed)
     for sw_conn in app.config['SWS_CONNECTIONS']:
         pre_programmed = True if sw_conn.GetForwardingPipelineConfig() else False
         if programmed == None or (programmed and pre_programmed) or (not programmed and not pre_programmed): 
-            if not device_id or sw_conn.device_id == device_id:
+            if (device_id == None and device_name==None) or sw_conn.device_id == device_id or sw_conn.name == device_name:
                 yield (sw_conn, pre_programmed)
 # Utils> #
 
@@ -147,16 +149,15 @@ def disconnect_from_switch():
             - /p4runtime/connect
 
         Attributes:
-            - name                : string    // Device name, if not specified, deferes to device_id
+            - device_name         : string    // Device name, if not specified, deferes to device_id
             - device_id           : string    // device id, if not specified, disconnect from all
     """
-    name = request.form.get('name', None)
+    name = request.form.get('device_name', None)
     device_id = request.form.get('device_id', None, type=int)
     
-    for sw_conn, _ in _get_switch_conns():
-        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
-            app.config['SWS_CONNECTIONS'].remove(sw_conn)
-            sw_conn.shutdown()
+    for sw_conn, _ in _get_switch_conns(device_id = device_id, device_name=name):
+        app.config['SWS_CONNECTIONS'].remove(sw_conn)
+        sw_conn.shutdown()
             
     return '', 200
 
@@ -170,7 +171,7 @@ def program_switch():
 
         Attributes:
             - p4file        : string    // P4 file path with which to compile the switch
-            - name          : string    // Bmv2Switch to program (deferes to id)
+            - device_name   : string    // Bmv2Switch to program (deferes to id)
             - device_id     : string    // Bmv2Switch to program (will program all if not specified)
             
     
@@ -178,18 +179,16 @@ def program_switch():
     if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file']}.p4")):
         return 'File does not exist', 400
     device_id = request.form.get('device_id', None, type=int)
-    name = request.form.get('name', None)
+    name = request.form.get('device_name', None)
     print(device_id, name)
     
     p4info_path, p4json = _compile_p4(request.form['p4file'])
 
-    for sw_conn, _ in _get_switch_conns(device_id):
-        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
-            p4info_helper = helper.P4InfoHelper(p4info_path)
-            sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
-                                                bmv2_json_file_path=p4json)
-        
-        print(f"{sw_conn.name} programmed") 
+    for sw_conn, _ in _get_switch_conns(device_id=device_id,device_name=name):
+        p4info_helper = helper.P4InfoHelper(p4info_path)
+        sw_conn.SetForwardingPipelineConfig(p4info=p4info_helper.p4info,
+                                            bmv2_json_file_path=p4json)
+    
     return '', 200
 
 # PASSING
@@ -217,7 +216,7 @@ def insert_table():
             - /p4runtime/inserttable
 
         Attributes:
-            - name              : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
+            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
             - device_id         : string    // Bmv2Switch id where to inser the table entry (will insert on switches all if not specified)
             - table_name        : string    // Table name
             - match_fields      : string    // Matching packet field
@@ -227,36 +226,34 @@ def insert_table():
             - priority          : string    // Action priority
     """
     device_id = request.form.get('device_id', None, type=int)
-    name = request.form.get('name', None)
-    for sw_conn, _ in _get_switch_conns():
-        if sw_conn.name == name or sw_conn.device_id == device_id or (name == device_id == None):
-            p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
+    device_name = request.form.get('device_name', None)
+    match_fields=request.form.get('match',None)
+    action_params= request.form.get('action_params', None)
+    
+    for sw_conn, _ in _get_switch_conns(device_name=device_name, device_id=device_id):
+        p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
             
-            match_fields=request.form.get('match',None)
-            if match_fields is not None:
-                match_fields = json.loads(match_fields)
-                for key, value in match_fields.items():
-                    ip = value.split(',')[0][2:-1]
-                    prefix = value.split(',')[1][0:-1]
-                    if convert.matchesIPv4(ip):
-                        print(ip, prefix)
-                        match_fields[key]=(str(ip),int(prefix))
-                
-            action_params= request.form.get('action_params', None)
-            if action_params is not None:
-                action_params = json.loads(action_params)
-                
-            table_entry = p4info_helper.buildTableEntry(
-                table_name=request.form['table'],
-                match_fields=match_fields,
-                default_action=(bool)(request.form.get('default_action', False)),
-                action_name=request.form.get('action_name',None),
-                action_params=action_params,
-                priority=request.form.get('priority', None))
+        if match_fields is not None:
+            match_fields = json.loads(match_fields)
+            for key, value in match_fields.items():
+                ip = value.split(',')[0][2:-1]
+                prefix = value.split(',')[1][0:-1]
+                if convert.matchesIPv4(ip):
+                    print(ip, prefix)
+                    match_fields[key]=(str(ip),int(prefix))
+            
+        if action_params is not None:
+            action_params = json.loads(action_params)
+            
+        table_entry = p4info_helper.buildTableEntry(
+            table_name=request.form['table_name'],
+            match_fields=match_fields,
+            default_action=bool(request.form.get('default_action', False)),
+            action_name=request.form.get('action_name',None),
+            action_params=action_params,
+            priority=request.form.get('priority', None))
 
-            sw_conn.WriteTableEntry(table_entry)
-            
-            print(f"Table inserted at {sw_conn.name}")
+        sw_conn.WriteTableEntry(table_entry)
         
     return '', 200
 # FAILLING
@@ -272,8 +269,10 @@ def get_table_entries():
             - table_id          : number    // Table from which to return entries
             - table_name        : string    // Table from which to return entries (used instead of table_id)
     """
+    device_id = request.args.get('device_id', None, type=int)
+    
     table_entries = {}
-    for sw_conn, _ in _get_switch_conns(request.args.get('device_id', None), programmed=True):
+    for sw_conn, _ in _get_switch_conns(device_id=device_id):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         
         table_id = request.args.get('table_id', None)
@@ -386,6 +385,7 @@ def get_counters():
             - /p4runtime/getcounters
     
         Attributes:
+            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
             - device_id         : number    // Bmv2Switch to program (will return counter for all switches all if not specified)
             - counter_name      : string    // Counter name
             - index             : number    // Index associated with the counter
@@ -393,12 +393,13 @@ def get_counters():
         Attention:
             - For simplicity sake, you should configure you're counter indexes to be the match key in each table entry, that why you can always reference your counter index by the respective table entry match key
     """
+    name = request.args.get('device_name', None)
     device_id = request.args.get('device_id', None)
     counter_name = request.args.get('counter_name', None)
     index = int(request.args['index']) if 'index' in request.args.keys() else 0
         
     counter_entries = {}    
-    for sw_conn, _ in _get_switch_conns(device_id, programmed=True):
+    for sw_conn, _ in _get_switch_conns(device_name=name,device_id=device_id, programmed=True):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
         counter_entries[sw_conn.name] = {
             "device_id": sw_conn.device_id,
@@ -418,9 +419,7 @@ def get_counters():
                     "id": counter.preamble.id,
                     "name": counter.preamble.name,
                     "entries" : entries
-                })
-    
-    print(counter_entries)                
+                })          
     
     return json.dumps(counter_entries), 200
 
@@ -435,8 +434,9 @@ def get_connections():
         Attributes:
             - programmed        : boolean   // True to get only programmed devices, False to get only non-programmed devices. If not specified, returns all alongside with its programming state
     """
-    programmed = request.args.get('programmed', None, type=bool)
+    programmed = request.args.get('programmed', None, type=lambda x: (str(x).lower() == 'true'))
     connections = {}
+    
     for sw_conn, state in _get_switch_conns(programmed=programmed):
         connections[f"{sw_conn.name}:{sw_conn.device_id}"] = {
                     "name": sw_conn.name,

@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-03-28T20:06:51.993Z",
+    "dateExported": "2023-04-11T22:23:14.444Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -122,7 +122,7 @@
             "method": "GET",
             "sortNum": 35468.8,
             "created": "2023-03-28T18:09:57.456Z",
-            "modified": "2023-03-28T19:04:58.573Z",
+            "modified": "2023-04-11T22:19:34.376Z",
             "headers": [],
             "params": [
                 {
@@ -143,7 +143,7 @@
             "method": "POST",
             "sortNum": 36250,
             "created": "2023-03-28T19:02:58.939Z",
-            "modified": "2023-03-28T19:27:43.739Z",
+            "modified": "2023-04-11T21:54:03.511Z",
             "headers": [],
             "params": [],
             "body": {
@@ -151,7 +151,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s3"
                     },
                     {
@@ -171,12 +171,12 @@
             "method": "GET",
             "sortNum": 36875,
             "created": "2023-03-28T19:04:56.462Z",
-            "modified": "2023-03-28T19:05:03.494Z",
+            "modified": "2023-04-11T21:55:11.072Z",
             "headers": [],
             "params": [
                 {
                     "name": "programmed",
-                    "value": "True",
+                    "value": "False",
                     "isDisabled": true,
                     "isPath": false
                 }
@@ -253,7 +253,7 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2023-03-22T17:54:58.988Z",
-            "modified": "2023-03-28T19:56:03.034Z",
+            "modified": "2023-04-11T21:56:17.198Z",
             "headers": [],
             "params": [],
             "body": {
@@ -269,7 +269,7 @@
                         "value": "2"
                     },
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s3"
                     }
                 ]
@@ -306,7 +306,7 @@
             "method": "POST",
             "sortNum": 70000,
             "created": "2023-03-22T17:54:58.989Z",
-            "modified": "2023-03-28T19:59:57.393Z",
+            "modified": "2023-04-11T22:13:17.995Z",
             "headers": [],
             "params": [],
             "body": {
@@ -315,15 +315,15 @@
                 "form": [
                     {
                         "name": "device_id",
-                        "value": "2"
+                        "value": "1"
                     },
                     {
-                        "name": "table",
+                        "name": "table_name",
                         "value": "MyIngress.ipv4_lpm"
                     },
                     {
-                        "name": "match",
-                        "value": "{\"hdr.ipv4.dstAddr\": \"('10.0.1.1',32)\"}"
+                        "name": "match_fields",
+                        "value": "{\"hdr.ipv4.dstAddr\": \"('10.0.1.2',32)\"}"
                     },
                     {
                         "name": "action_name",
@@ -344,8 +344,8 @@
                         "isDisabled": true
                     },
                     {
-                        "name": "name",
-                        "value": "s3"
+                        "name": "device_name",
+                        "value": "s2"
                     }
                 ]
             },
@@ -356,11 +356,11 @@
             "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
             "containerId": "",
             "name": "Get Table",
-            "url": "http://127.0.0.1:6000/p4runtime/gettable",
+            "url": "http://127.0.0.1:6000/p4runtime/gettable?device_id=2",
             "method": "GET",
             "sortNum": 80000,
             "created": "2023-03-22T17:54:58.990Z",
-            "modified": "2023-03-28T20:06:45.077Z",
+            "modified": "2023-04-11T22:02:48.020Z",
             "headers": [],
             "params": [
                 {
@@ -371,14 +371,13 @@
                 },
                 {
                     "name": "table_name",
-                    "value": "",
+                    "value": "MyIngress.ipv4_lpm",
                     "isDisabled": true,
                     "isPath": false
                 },
                 {
                     "name": "device_id",
-                    "value": "0",
-                    "isDisabled": true,
+                    "value": "2",
                     "isPath": false
                 }
             ],
@@ -389,16 +388,16 @@
             "colId": "6802bea0-4208-42dd-97d9-cf09e3109661",
             "containerId": "",
             "name": "Get Counters",
-            "url": "http://127.0.0.1:6000/p4runtime/getcounters?index=100",
+            "url": "http://127.0.0.1:6000/p4runtime/getcounters",
             "method": "GET",
             "sortNum": 90000,
             "created": "2023-03-22T17:54:58.991Z",
-            "modified": "2023-03-28T01:32:21.916Z",
+            "modified": "2023-04-11T22:00:29.747Z",
             "headers": [],
             "params": [
                 {
                     "name": "device_id",
-                    "value": "1",
+                    "value": "0",
                     "isDisabled": true,
                     "isPath": false
                 },
@@ -411,11 +410,17 @@
                 {
                     "name": "index",
                     "value": "100",
+                    "isDisabled": true,
+                    "isPath": false
+                },
+                {
+                    "name": "device_name",
+                    "value": "s1",
+                    "isDisabled": true,
                     "isPath": false
                 }
             ],
             "tests": []
         }
-    ],
-    "settings": {}
+    ]
 }
