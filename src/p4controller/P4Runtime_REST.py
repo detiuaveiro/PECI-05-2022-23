@@ -1,21 +1,15 @@
 import sys
 import atexit
-from itertools import chain
 
 sys.path.append("..")
 
 import os
-import re
 import signal
 from warnings import warn
 
 from flask import Flask, flash, json, redirect, request
-from p4.config.v1 import p4info_pb2
 from werkzeug.utils import secure_filename
 
-from network.build_environment import Runner
-from network.p4_host import P4Host
-from network.p4runtime_switch import P4RuntimeSwitch
 from p4runtime_lib import bmv2, helper, convert
 
 
@@ -265,7 +259,7 @@ def insert_table():
             print(f"Table inserted at {sw_conn.name}")
         
     return '', 200
-# PASSING
+# FAILLING
 @app.route('/p4runtime/gettable', methods=['GET'])
 def get_table_entries():
     """ Retrieve bmv2 switch table entries
@@ -295,7 +289,6 @@ def get_table_entries():
                     table_entries[sw_conn.name] = []   
                 for response in sw_conn.ReadTableEntries(table_id=pre.id):
                     for entity in response.entities:
-                        print(entity)
                         table_entry = entity.table_entry
                         table_entries[sw_conn.name].append({
                             "table_name": pre.name,
@@ -318,36 +311,34 @@ def get_table_entries():
                             "time_since_last_hit": table_entry.time_since_last_hit.elapsed_ns
                         })
                         
-    print(table_entries) 
     return json.dumps(table_entries), 200
     
 def _get_field_matches(matches_entry):
     for fldm in matches_entry:
         mtch = {}
         mtch["field_id"] = fldm.field_id
-        if len(repr(fldm.lpm)):
-            print(repr(fldm.lpm))
+        if len(str(fldm.lpm)) > 0:
             mtch["lpm"] = {
-                "value": convert.decodeIPv4(fldm.lpm.value),
+                "value": convert.decode(fldm.lpm.value),
                 "prefix_len": fldm.lpm.prefix_len
             }
-        elif len(repr(fldm.exact)):
+        elif len(str(fldm.exact)) > 0:
             mtch["exact"] = {
-                "value": convert.decodeIPv4(fldm.exact.value)
+                "value": convert.decode(fldm.exact.value)
             }
-        elif len(repr(fldm.ternary)):
+        elif len(str(fldm.ternary)) > 0:
             mtch["ternary"] = {
-                "value":  convert.decodeIPv4(fldm.ternary.value),
-                "mask": convert.decodeIPv4(fldm.ternary.mask)
+                "value":  convert.decode(fldm.ternary.value),
+                "mask": convert.decode(fldm.ternary.mask)
             }
-        elif len(repr(fldm.range)):
+        elif len(str(fldm.range)) > 0:
             mtch["range"] = {
-                "low":  convert.decodeIPv4(fldm.range.low),
-                "high":  convert.decodeIPv4(fldm.range.high)
+                "low":  convert.decode(fldm.range.low),
+                "high":  convert.decode(fldm.range.high)
             }
-        elif len(repr(fldm.optional)):
-            mtch["exact"] = {
-                "value": fldm.optional.value
+        elif len(str(fldm.optional)) > 0:
+            mtch["optional"] = {
+                "value": convert.decode(fldm.optional.value)
             }
             
         yield mtch
