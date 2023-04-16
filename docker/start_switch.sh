@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
-for idx in 0 1 2 3 4 5 6 7 8; do
+
+PORT_NUM=$1     # Number of ports of the switch
+GRPC_PORT=$2    # gRPC port number
+
+for idx in $(seq $PORT_NUM); do
     intf0="veth$(($idx*2))"
     intf1="veth$(($idx*2+1))"
     if ! ip link show $intf0 &> /dev/null; then
@@ -15,4 +19,11 @@ for idx in 0 1 2 3 4 5 6 7 8; do
     fi
 done
 
-simple_switch_grpc --no-p4 -i 10@intf1 -i 11@intf2 -i 12@intf2 -- --cpu-port ${CPU_PORT}
+INTFS_ARG=""
+for idx in $(seq 0 $PORT_NUM); do
+    INTFS_ARG="$INTFS_ARG -i $(($idx*2))@veth$(($idx*2)) -i $(($idx*2+1))@veth$(($idx*2+1))"
+done
+
+simple_switch_grpc --no-p4 $INTFS_ARG -- --grpc-server-addr 0.0.0.0:$GRPC_PORT &
+
+PID=&! && sleep 10 & echo "P4Runtime Switch starter with PID: $!"
