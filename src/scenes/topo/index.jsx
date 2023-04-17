@@ -39,6 +39,27 @@ const Topo = () => {
         );  
       },
     },
+    {
+      field: "view",
+      headerName: "View",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      renderCell: ({ row: { id, view } }) => {
+        return (
+         <Box
+            width="40%"
+            p="3px"
+            display="flex"
+            justifyContent="center"
+            backgroundColor={colors.greenAccent[600]}
+            borderRadius="4px"
+          >
+            <Link to={"/View/"}
+          state={{ id: id }}>{view}</Link>
+          </Box>
+        );  
+      },
+    },
   ];
 
   /* Translation */
@@ -53,6 +74,7 @@ const Topo = () => {
                 return {
                     id: x._id,
                     network: x.network,
+                    view:"view",
                 }
             }
             );
