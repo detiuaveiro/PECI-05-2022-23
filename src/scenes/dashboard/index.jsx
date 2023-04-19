@@ -39,6 +39,10 @@ const Dashboard = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState();
   const [buttonPopup, setButtonPopup] = useState(false);
+  const [hosts, setHost] = useState();
+  const [switchs, setSwitchs] = useState();
+  const [links, setLinks] = useState();
+
 
   var TopologyService = new Topology();
 
@@ -139,7 +143,7 @@ const Dashboard = () => {
             </Box>
             {/* ROW 2 */}
             <Box
-              gridColumn="span 12"
+              gridColumn="span 3"
               gridRow="span 2"
               backgroundColor={colors.primary[400]}
             >
@@ -156,7 +160,118 @@ const Dashboard = () => {
                     fontWeight="600"
                     color={colors.grey[100]}
                   >
-                    Number of active topologies
+                    Number of Active Topologies
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    color={colors.greenAccent[500]}
+                  >
+                    {data}
+                  </Typography>
+                </Box>
+                <Box>
+                  <IconButton>
+                    <DownloadOutlinedIcon
+                      sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
+                    />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              gridColumn="span 3"
+              gridRow="span 2"
+              backgroundColor={colors.primary[400]}
+            >
+              <Box
+                mt="25px"
+                p="0 30px"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Box>
+                  <Typography
+                    variant="h5"
+                    fontWeight="600"
+                    color={colors.grey[100]}
+                  >
+                    Number of active Hosts
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    color={colors.greenAccent[500]}
+                  >
+                    {data}
+                  </Typography>
+                </Box>
+                <Box>
+                  <IconButton>
+                    <DownloadOutlinedIcon
+                      sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
+                    />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              gridColumn="span 3"
+              gridRow="span 2"
+              backgroundColor={colors.primary[400]}
+            >
+              <Box
+                mt="25px"
+                p="0 30px"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Box>
+                  <Typography
+                    variant="h5"
+                    fontWeight="600"
+                    color={colors.grey[100]}
+                  >
+                    Number of active Switches
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    fontWeight="bold"
+                    color={colors.greenAccent[500]}
+                  >
+                    {data}
+                  </Typography>
+                </Box>
+                <Box>
+                  <IconButton>
+                    <DownloadOutlinedIcon
+                      sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
+                    />
+                  </IconButton>
+                </Box>
+              </Box>
+            </Box>
+            <Box
+              gridColumn="span 3"
+              gridRow="span 2"
+              backgroundColor={colors.primary[400]}
+            >
+              <Box
+                mt="25px"
+                p="0 30px"
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Box>
+                  <Typography
+                    variant="h5"
+                    fontWeight="600"
+                    color={colors.grey[100]}
+                  >
+                    Number of active Links
                   </Typography>
                   <Typography
                     variant="h3"
