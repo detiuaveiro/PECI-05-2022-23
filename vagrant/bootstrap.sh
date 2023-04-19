@@ -16,6 +16,6 @@ sudo apt install -y p4lang-p4c
 
 # Install docker and bmv2-switch container
 sudo apt-get install -y docker.io docker-compose
-cd $HOME/docker/
+cd docker/
 sudo docker-compose build
 sudo docker-compose up
