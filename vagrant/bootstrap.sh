@@ -2,7 +2,7 @@
 
 # p4c dependencies installation
 sudo apt-get update
-sudo apt-get install -y cmake g++ git automake libtool libgc-dev bison flex libfl-dev libboost-dev libboost-iostreams-dev libboost-graph-dev llvm pkg-config python3 python3-pip tcpdump
+sudo apt-get install -y cmake g++ git automake libtool libgc-dev bison flex libfl-dev libboost-dev libboost-iostreams-dev libboost-graph-dev llvm pkg-config python3 python3-pip tcpdump curl
 
 curl https://raw.githubusercontent.com/p4lang/p4c/main/requirements.txt > requirements.txt
 pip3 install --user -r requirements.txt
@@ -15,6 +15,7 @@ sudo apt-get update
 sudo apt install p4lang-p4c
 
 # Install docker and bmv2-switch container
-sudo apt-get install -y docker.io
-sudo docker pull davidjosearaujo/bmv2-switch
-sudo docker run -d --cap-add=NET_ADMIN davidjosearaujo/bmv2-switch --name testSwitch
+sudo apt-get install -y docker.io docker-compose
+cd docker/
+sudo docker-compose build
+sudo docker-compose up
