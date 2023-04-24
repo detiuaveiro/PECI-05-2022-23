@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>W3.CSS Template</title>
+<title>P4 Project</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -42,56 +42,59 @@ body {font-family: "Lato", sans-serif}
   <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">MERCH</a>
 </div>
 
-<!-- Page content -->
+
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
 
-  <!-- Automatic Slideshow Images -->
+  
   <div class="mySlides w3-display-container w3-center">
-    <img src="/img/one.jpg" style="width:100%;max-height:700px">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>Los Angeles</h3>
-      <p><b>We had the best time playing at Venice Beach!</b></p>   
-    </div>
+    <img src="/img/one.jpg" style="width:100%;max-height:600px">
   </div>
   <div class="mySlides w3-display-container w3-center">
-    <img src="/img/p4_language.png" style="width:100%;max-height:700px">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>New York</h3>
-      <p><b>The atmosphere in New York is lorem ipsum.</b></p>    
-    </div>
+    <img src="/img/p4_language.png" style="width:100%;max-height:600px">
   </div>
   <div class="mySlides w3-display-container w3-center">
-    <img src="/w3images/chicago.jpg" style="width:100%">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>Chicago</h3>
-      <p><b>Thank you, Chicago - A night we won't forget.</b></p>    
-    </div>
+    <img src="/img/tech.jpg" style="width:100%;max-height:600px">
   </div>
 
-  <!-- The Band Section -->
+  
   <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="p4">
     <h2 class="w3-wide">WHAT IS P4 LANGUAGE?</h2>
-    <p class="w3-opacity"><i>We love music</i></p>
-    <p class="w3-justify">We have created a fictional band website. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-      ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    <div class="w3-row w3-padding-32">
+    <p class="w3-opacity"><i>Programming Protocol-independent Packet Processors</i></p>
+    <p class="w3-justify">P4  is a high-level programming language designed for describing how network packets are processed by network devices such as switches, 
+      routers, and network interface cards (NICs). P4 is protocol-independent, meaning that it is not tied to any particular network protocol, 
+      and instead provides a way to program the packet processing behavior of network devices at a high level.</p>
+    <p class="w3-justify">With P4, network designers can define the way in which packets are processed and forwarded through a network, 
+      providing greater flexibility and control over network behavior. P4 programs can be used to define how packets are matched and modified, 
+      how routing decisions are made, and how quality of service (QoS) policies are implemented. 
+      This allows network operators to optimize their networks for specific use cases and to adapt to changing network requirements.</p>
+    <h3 class="w3-wide">WHAT ARE SOME USES FOR P4 LANGUAGE?</h3>
+    <div class="w3-row w3-padding-32 w3-display-container">
       <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round w3-margin-bottom" alt="Random Name" style="width:60%">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Network Function Virtualization</h4>
+          <p style="margin-top: 40px;">P4 language can be used to program the packet processing behavior of virtual network functions in NFV architectures. 
+            This allows network operators to deploy and manage network functions in a more flexible and scalable manner.</p>
+        </div>
       </div>
       <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round w3-margin-bottom" alt="Random Name" style="width:60%">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Software-Defined Networking</h4>
+          <p style="margin-top: 40px;">P4 can be used to program the packet processing behavior of SDN switches and controllers. 
+            This allows network operators to define and manage network policies in a more granular and programmatic way.</p>
+        </div>
       </div>
       <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round" alt="Random Name" style="width:60%">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Traffic Engineering</h4>
+          <p style="margin-top: 70px;">P4 can be used to optimize traffic engineering in large-scale networks, 
+            allowing network operators to control traffic routing and forwarding based on traffic patterns, 
+            network topology, and other factors.</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- The Tour Section -->
+  
   <div class="w3-black" id="tour">
     <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
       <h2 class="w3-wide w3-center">TOUR DATES</h2>
@@ -135,7 +138,7 @@ body {font-family: "Lato", sans-serif}
     </div>
   </div>
 
-  <!-- Ticket Modal -->
+  
   <div id="ticketModal" class="w3-modal">
     <div class="w3-modal-content w3-animate-top w3-card-4">
       <header class="w3-container w3-teal w3-center w3-padding-32"> 
@@ -155,7 +158,7 @@ body {font-family: "Lato", sans-serif}
     </div>
   </div>
 
-  <!-- The Contact Section -->
+  
   <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
     <h2 class="w3-wide w3-center">CONTACT</h2>
     <p class="w3-opacity w3-center"><i>Fan? Drop a note!</i></p>
@@ -182,13 +185,13 @@ body {font-family: "Lato", sans-serif}
     </div>
   </div>
   
-<!-- End Page Content -->
+
 </div>
 
-<!-- Image of location/map -->
+
 <img src="/w3images/map.jpg" class="w3-image w3-greyscale-min" style="width:100%">
 
-<!-- Footer -->
+
 <footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
   <i class="fa fa-facebook-official w3-hover-opacity"></i>
   <i class="fa fa-instagram w3-hover-opacity"></i>
@@ -234,6 +237,18 @@ window.onclick = function(event) {
   }
 }
 </script>
+
+<style>
+  .card {
+    border: 1px solid black;
+    padding: 10px;
+    
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  
+</style>
 
 </body>
 </html>
