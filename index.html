@@ -21,16 +21,9 @@ body {font-family: "Lato", sans-serif}
     <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="#p4" class="w3-bar-item w3-button w3-padding-large w3-hide-small">P4</a>
     <a href="#proj" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PROJECT</a>
-    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
-    <div class="w3-dropdown-hover w3-hide-small">
-      <button class="w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>     
-      <div class="w3-dropdown-content w3-bar-block w3-card-4">
-        <a href="#" class="w3-bar-item w3-button">Merchandise</a>
-        <a href="#" class="w3-bar-item w3-button">Extras</a>
-        <a href="#" class="w3-bar-item w3-button">Media</a>
-      </div>
-    </div>
-    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
+    <a href="#dev" class="w3-bar-item w3-button w3-padding-large w3-hide-small">DEVELOPMENT</a>
+  
+    
   </div>
 </div>
 
@@ -38,8 +31,7 @@ body {font-family: "Lato", sans-serif}
 <div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
   <a href="#p4" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">P4</a>
   <a href="#proj" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">PROJECT</a>
-  <a href="#contact" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">CONTACT</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">MERCH</a>
+  <a href="#dev" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">DEVELOPMENT</a>
 </div>
 
 
@@ -136,7 +128,7 @@ body {font-family: "Lato", sans-serif}
           <div class="w3-container w3-white">
             <p><b>Dashboard</b></p>
             <p class="w3-opacity"><i>By: Guilherme Craveiro</i></p>
-            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('ticketModal').style.display='block'">Explore</button>
+            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('dashboard').style.display='block'">Explore</button>
           </div>
         </div>
       </div>
@@ -154,7 +146,8 @@ body {font-family: "Lato", sans-serif}
       <div class="w3-container w3-padding-32">
         <div class="w3-row">
           <div class="w3-col m6">
-            <p>The controlling APIs section provides an overview of two critical APIs that offer comprehensive control over the network environment. 
+            <p>The controlling APIs section provides an overview of two critical APIs that offer comprehensive control over the network environment. </p>
+            <p>
               The first API translates HTTP requests into effective communication with P4 devices via the P4Runtime, which uses gRPC. 
               The P4Runtime provides a standard and programmatic interface between control-plane applications and the underlying P4-based data plane devices. 
               This API facilitates the control of a variety of P4-based devices, including switches, routers, network interface cards (NICs), and other devices. 
@@ -233,9 +226,78 @@ body {font-family: "Lato", sans-serif}
       </div>
     </div>
   </div>
+  
+  <div id="dashboard" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('dashboard').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+       <h2 class="w3-wide"><i class="fa fa-tablet w3-margin-right"></i>Dashboard</h2>
+      </header>
+      <div class="w3-container w3-padding-32">
+        <div class="w3-row">
+          <div class="w3-col m6">
+            <p>A dashboard is a powerful tool that provides a user-friendly interface to display critical information about a network topology. </p>
+            <p>
+              A well-designed dashboard generates tables that display available network topologies, including details about hosts, switches, and the links that connect them. </p>
+            <p>
+              This information helps network administrators identify issues and quickly troubleshoot problems. 
+              In addition, the dashboard includes information about the team responsible 
+              for managing the network and provides assistance to non-experienced users. 
+            </p>
+          </div>
+          <div class="w3-col m6" style="padding-left:30px;padding-right:30px;">
+            <div class="w3-card-4">
+              <img src="/img/dashboard.jpg" alt="Controlling APIs" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: solid 2px #ddd;">
+            </div>
+            <p>
+              By presenting all relevant information in a clear and concise manner, a well-designed dashboard enhances network visibility and 
+              helps ensure that the network operates efficiently and effectively.
+            </p>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
 
 
-<img src="/w3images/map.jpg" class="w3-image w3-greyscale-min" style="width:100%">
+<div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="dev">
+  <h2 class="w3-wide">PROJECT DEVELOPMENT</h2>
+  <p><i>This section will cover the development process of a project that was divided into four distinct milestones: inception and project planning, elaboration, 
+    construction, and release. Each milestone represents a crucial phase in the project's development, 
+    with specific goals and deliverables to achieve before progressing to the next stage.</i></p>
+  
+    <div class="w3-container">
+      <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button" onclick="openSection('inception')">Inception and Project Planning</button>
+        <button class="w3-bar-item w3-button" onclick="openSection('elaboration')">Elaboration</button>
+        <button class="w3-bar-item w3-button" onclick="openSection('construction')">Construction</button>
+        <button class="w3-bar-item w3-button" onclick="openSection('release')">Release</button>
+      </div>
+    
+      <div id="inception" class="w3-container w3-show">
+        <h2>Inception and Project Planning</h2>
+        <p>Information about the project planning phase.</p>
+      </div>
+    
+      <div id="elaboration" class="w3-container w3-hide">
+        <h2>Elaboration</h2>
+        <p>Information about the elaboration phase.</p>
+      </div>
+    
+      <div id="construction" class="w3-container w3-hide">
+        <h2>Construction</h2>
+        <p>Information about the construction phase.</p>
+      </div>
+    
+      <div id="release" class="w3-container w3-hide">
+        <h2>Release</h2>
+        <p>Information about the release phase.</p>
+      </div>
+    </div>
+    
+    
+</div>
 
 
 <footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
@@ -326,6 +388,17 @@ document.getElementById("microserviceBtn").addEventListener("click", function() 
     content.classList.remove("w3-hide");
   }
 });
+
+function openSection(sectionName) {
+  var i;
+  var x = document.getElementsByClassName("w3-container");
+
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+
+  document.getElementById(sectionName).style.display = "block";  
+}
 </script>
 
 <style>
