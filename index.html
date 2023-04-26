@@ -262,37 +262,73 @@ body {font-family: "Lato", sans-serif}
 
 
 <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="dev">
-  <h2 class="w3-wide">PROJECT DEVELOPMENT</h2>
-  <p><i>This section will cover the development process of a project that was divided into four distinct milestones: inception and project planning, elaboration, 
+  <h1 class="w3-wide">PROJECT DEVELOPMENT</h1>
+  <p style="font-size: 14px;"><i>This section will cover the development process of a project that was divided into four distinct milestones: inception and project planning, elaboration, 
     construction, and release. Each milestone represents a crucial phase in the project's development, 
     with specific goals and deliverables to achieve before progressing to the next stage.</i></p>
   
-    <div class="w3-container">
-      <div class="w3-bar w3-black">
-        <button class="w3-bar-item w3-button" onclick="openSection('inception')">Inception and Project Planning</button>
-        <button class="w3-bar-item w3-button" onclick="openSection('elaboration')">Elaboration</button>
-        <button class="w3-bar-item w3-button" onclick="openSection('construction')">Construction</button>
-        <button class="w3-bar-item w3-button" onclick="openSection('release')">Release</button>
+    <div class="w3-container" style="margin-top: 50px;">
+      <div class="w3-bar w3-black custom-bar w3-large">
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'inception')">M1 - INCEPTION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'elaboration')">M2 - ELABORATION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'construction')">M3 - CONSTRUCTION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'release')">M4 - RELEASE</button>
       </div>
     
-      <div id="inception" class="w3-container w3-show">
+      <div id="inception" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
         <h2>Inception and Project Planning</h2>
-        <p>Information about the project planning phase.</p>
+        <p class="para">During the inception phase of our project focused on networks defined by the P4 language, we started by identifying a problem that needed to be solved. 
+          After conducting research on the existing work, we selected the main features that would enable us to solve the problem effectively. 
+          These features included real-time monitoring of the network, creating a dashboard for multiple users, with control over the network and reactive reconfiguration.</p>
+        <p class="para">
+          To achieve these objectives, we defined a set of tasks that included requirement analysis and architecture design, defining a set of telemetry data, 
+          creating a custom dashboard, and the creation of an agent. 
+          Additionally, we set a series of rules to dynamically reprogram the devices according to data traffic analysis. 
+          By setting clear goals and tasks during the inception phase, we were able to lay a strong foundation for the rest of 
+          the project and ensure that we were on the right track from the very beginning.
+        </p>
       </div>
     
-      <div id="elaboration" class="w3-container w3-hide">
+      <div id="elaboration" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
         <h2>Elaboration</h2>
-        <p>Information about the elaboration phase.</p>
+        <p class="para">In the elaboration phase of designing networks using P4 language, it is crucial to begin by defining the state of the art. 
+          This involves considering monitoring and inband network telemetry, which are essential for tracking network behavior and identifying potential issues. 
+          The expected use and results of the network must also be defined, including whether it will be deployed on new or existing networks, 
+          used simultaneously with other SDN controllers or as a standalone solution, and whether it will have an observer role over the network, 
+          or will be capable of autonomous reactive topology reconfiguration.</p>
+        <p class="para">
+          Once these factors have been established, the next step is to elicit the requirements for the network. 
+          This involves a thorough study of similar implementations, as well as brainstorming sessions, task analysis, 
+          and domain analysis to identify the specific needs and goals of the network. By carefully considering all of these factors, 
+          designers can ensure that the resulting network is highly effective, efficient, and capable of meeting the needs of the organization or user.
+        </p>
+        <p class="para">
+          After eliciting the requirements for the network, the next step is to create use cases for the project. Use cases describe the interaction between the network and the users, outlining the specific tasks or goals that the network is designed to accomplish. These use cases provide a clear understanding of how the network will be used, and help ensure that it is aligned with the needs of the organization or user.
+        </p>
+        <p class="para">
+          In addition to creating use cases, it is also important to create personas, which are fictional characters that represent the different types of users who will be interacting with the network. Personas help to personalize the design process and provide a clear understanding of the needs and expectations of different users.
+        </p>
+        <p class="para">
+          Finally, a mock-up of the system should be created. This is a prototype of the network design that allows stakeholders to visualize how the system will look and function. The mock-up can be used to test the usability of the system and gather feedback from stakeholders before the final implementation. By creating use cases, personas, and a mock-up of the system, designers can ensure that the resulting network is tailored to the needs of the users and is intuitive and easy to use.
+        </p>
       </div>
     
-      <div id="construction" class="w3-container w3-hide">
+      <div id="construction" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
         <h2>Construction</h2>
-        <p>Information about the construction phase.</p>
+        <p class="para">During the construction phase, one of the key goals was to deploy networks defined by the P4 language. 
+          To achieve this, we focused on four main objectives: </p>
+          <p class="para">1) deploying networks via controller request or connecting to existing networks, </p>
+          <p class="para">2) programming running devices to ensure they meet our network specifications, </p>
+          <p class="para">3) viewing existing network topologies to gain insight into the network structure,</p>
+          <p class="para">4) ensuring that the backend could fetch device counters for Grafana monitoring.</p>
+          <p class="para">To accomplish these goals, we divided the project into three main components: 
+          controlling APIs, a backend system, and a dashboard for monitoring and visualization.
+          This approach helped us achieve our goals more efficiently and provided a clear structure for each team member to focus on their specific tasks.</p>
       </div>
     
-      <div id="release" class="w3-container w3-hide">
+      <div id="release" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
         <h2>Release</h2>
-        <p>Information about the release phase.</p>
+        <p class="para">Information about the release phase.</p>
       </div>
     </div>
     
@@ -307,7 +343,7 @@ body {font-family: "Lato", sans-serif}
   <i class="fa fa-pinterest-p w3-hover-opacity"></i>
   <i class="fa fa-twitter w3-hover-opacity"></i>
   <i class="fa fa-linkedin w3-hover-opacity"></i>
-  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+  <p class="w3-medium"><i>Project done by David Araújo, João Machado and Guilherme Craveiro</i></p>
 </footer>
 
 <script>
@@ -389,16 +425,22 @@ document.getElementById("microserviceBtn").addEventListener("click", function() 
   }
 });
 
-function openSection(sectionName) {
+function openSection(event, sectionName) {
   var i;
-  var x = document.getElementsByClassName("w3-container");
+  var x = document.getElementsByClassName("contain");
+  var tablinks = document.getElementsByClassName("tablink");
 
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";  
   }
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].classList.remove("w3-red");
+  }
 
   document.getElementById(sectionName).style.display = "block";  
+  event.currentTarget.classList.add("w3-red");
 }
+
 </script>
 
 <style>
@@ -408,6 +450,14 @@ function openSection(sectionName) {
     
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-bar {
+  border-radius: 25px;
+  }
+
+  .para {
+  font-size: 18px;
   }
   
 </style>
