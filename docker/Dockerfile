@@ -1,7 +1,7 @@
 FROM p4lang/behavioral-model:latest
 LABEL mantainer="David Araújo <davidaraujo.github.io"
 
-ENV PORT_NUM=8
+ENV PORT_NUM=4
 ENV GRPC_PORT=9559
 
 EXPOSE ${GRPC_PORT}
