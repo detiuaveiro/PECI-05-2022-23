@@ -10,29 +10,31 @@ import React, { useState, useEffect } from "react";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
 import StackedLineChartOutlinedIcon from "@mui/icons-material/StackedLineChartOutlined";
 import Popup from "../../components/Popup";
-import Dropzone from "../../components/Dropzone";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "../../components/FileUpload";
+import RouterOutlined  from "@mui/icons-material/RouterOutlined";
+import StorageOutlinedIcon from "@mui/icons-material/StorageOutlined";
+import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
 
 const Dashboard = () => {
-
   let navigate = useNavigate();
+  let idsArr = [];
   const routeChange = () => {
-    window.location.assign('http://localhost:3000');
-  }
+    window.location.assign("http://localhost:3000");
+  };
 
   const getUploadParams = () => {
-    return { url: 'http://localhost:80/p4runtime/files/upload/' }
-  }
+    return { url: "http://localhost:80/p4runtime/files/upload/" };
+  };
 
   const handleChangeStatus = ({ meta }, status) => {
-    console.log(status,meta)
-  }
+    console.log(status, meta);
+  };
 
   const handleSubmit = (files, allFiles) => {
-    console.log(files.map(f => f.meta))
-    allFiles.forEach(f => f.remove())
-  }
+    console.log(files.map((f) => f.meta));
+    allFiles.forEach((f) => f.remove());
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -42,9 +44,16 @@ const Dashboard = () => {
   const [hosts, setHost] = useState();
   const [switchs, setSwitchs] = useState();
   const [links, setLinks] = useState();
-
+  let totalHostCount = 0;
+  let totalSwitchCount = 0;
+  let totalLinksCount = 0;
+  let processedIds = new Set();
 
   var TopologyService = new Topology();
+
+  function addid(topodata) {
+    idsArr = topodata.map((obj) => obj.id);
+  }
 
   useEffect(() => {
     TopologyService.getTopo().then((data) => {
@@ -57,6 +66,34 @@ const Dashboard = () => {
       });
       setData(topodata.length);
       setLoading(false);
+      addid(topodata);
+      console.log(idsArr[0]);
+      for (let id of idsArr) {
+        if (!processedIds.has(id)) {
+          processedIds.add(id);
+          let promise = TopologyService.getId(id);
+          promise.then((result) => {
+            let hosts = result.topology?.data?.hosts;
+            if (hosts && Object.keys(hosts).length > 0) {
+              let hostCount = Object.keys(hosts).length;
+              totalHostCount += hostCount;
+            }
+            setHost(totalHostCount);
+            let switches = result.topology?.data?.switchs;
+            if (switches && Object.keys(switches).length > 0) {
+              let switchCount = Object.keys(switches).length;
+              totalSwitchCount += switchCount;
+            }
+            setSwitchs(totalSwitchCount);
+            let links = result.topology?.data?.links;
+            if (links && Object.keys(links).length) {
+              let linkCount = Object.keys(links).length;
+              totalLinksCount += linkCount;
+            }
+            setLinks(totalLinksCount);
+          });
+        }
+      }
     });
   }, []);
 
@@ -85,15 +122,15 @@ const Dashboard = () => {
                 Upload Files
               </Button>
               <Popup trigger={buttonPopup} setTrigger={setButtonPopup}>
-              <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    color={colors.primary[100]}
-                  >
-                    Upload your file here
+                <Typography
+                  variant="h3"
+                  fontWeight="bold"
+                  color={colors.primary[100]}
+                >
+                  Upload your file here
                 </Typography>
                 <Box>
-                    <FileUpload />
+                  <FileUpload />
                 </Box>
               </Popup>
             </Box>
@@ -204,12 +241,12 @@ const Dashboard = () => {
                     fontWeight="bold"
                     color={colors.greenAccent[500]}
                   >
-                    {data}
+                    {hosts}
                   </Typography>
                 </Box>
                 <Box>
                   <IconButton>
-                    <DownloadOutlinedIcon
+                    <RouterOutlined
                       sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
                     />
                   </IconButton>
@@ -241,12 +278,12 @@ const Dashboard = () => {
                     fontWeight="bold"
                     color={colors.greenAccent[500]}
                   >
-                    {data}
+                    {switchs}
                   </Typography>
                 </Box>
                 <Box>
                   <IconButton>
-                    <DownloadOutlinedIcon
+                    <StorageOutlinedIcon
                       sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
                     />
                   </IconButton>
@@ -278,12 +315,12 @@ const Dashboard = () => {
                     fontWeight="bold"
                     color={colors.greenAccent[500]}
                   >
-                    {data}
+                    {links}
                   </Typography>
                 </Box>
                 <Box>
                   <IconButton>
-                    <DownloadOutlinedIcon
+                    <HubOutlinedIcon
                       sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
                     />
                   </IconButton>

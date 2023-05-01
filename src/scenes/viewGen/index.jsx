@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import Topology from "../../service/topology";
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
+import './App.css';
+
 
 const ViewGen = () => {
     const theme = useTheme();
@@ -70,6 +72,9 @@ const ViewGen = () => {
           setHost(LoadHosts);
           setSwitchs(LoadSwitchs);
           setLinks(LoadLinks);
+          console.log(hosts);
+          console.log(switchs);
+          console.log(links);
           setLoading(false);    
       })
       }, []); 
@@ -83,7 +88,16 @@ const ViewGen = () => {
             m="40px 0 0 0"
             height="75vh"
           >
-            
+            <h1>Hosts</h1>
+            <div className="host-grid">
+            {Array.from(hosts.values()).map((host) => (
+              <div key={host.id} className="host-item">
+                <img src={process.env.PUBLIC_URL + '/assets/host.png'} alt="Host" className="host-image" />
+                <div className="host-name">{host.id}</div>
+                <div className="host-ip">IP: {host.ip} </div>
+              </div>
+            ))}
+            </div>
           </Box>
         </Box>
         )}
