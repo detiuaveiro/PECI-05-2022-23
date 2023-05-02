@@ -94,6 +94,7 @@ const ViewGen = () => {
       console.log(links);
       setLoading(false);
       
+    {/*
       links.forEach((link) => {
         if (link.typeA === "host") {
           const host = {
@@ -127,8 +128,34 @@ const ViewGen = () => {
           setS((switches) => [...switches, switchNode]);
         }
       });
+    */}
     });
   }, []);
+
+  const TopologyDiagram = ({ links }) => {
+    const hosts = links.filter((link) => link.typeA === "Host");
+    const switches = links.filter((link) => link.typeA === "Switch");
+  
+    const hostImgs = hosts.map((host) => {
+      return (
+        <div key={host.id} style={{ display: "inline-block", padding: "10px" }}>
+          <img src={`http://${host.nodeA}:8000/h1.png`} alt="host" />
+          <div>{host.nodeA}</div>
+        </div>
+      );
+    });
+  
+    const switchImgs = switches.map((sw) => {
+      return (
+        <div key={sw.id} style={{ display: "inline-block", padding: "10px" }}>
+          <img src={`http://${sw.nodeA}:8000/${sw.nodeB}.png`} alt="switch" />
+          <div>{sw.nodeA}</div>
+        </div>
+      );
+    });
+  
+    
+  };
 
   return (
     <>
@@ -139,46 +166,9 @@ const ViewGen = () => {
             subtitle="View the Topology of the NetWork"
           />
           <Box m="40px 0 0 0" height="75vh">
-            <div className="container">
-              <div className="host-container">
-                {h.map((host) => (
-                  <div className="box" key={host.id}>
-                    <img
-                      src={process.env.PUBLIC_URL + "/assets/host.png"}
-                      alt="Host"
-                      className="host-image"
-                    />
-                    <p>{host.name}</p>
-                    <p>{host.ip}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="switch-container">
-                {s.map((switchNode) => (
-                  <div className="box" key={switchNode.id}>
-                    <img
-                      src={process.env.PUBLIC_URL + "/assets/switch.png"}
-                      alt="Host"
-                      className="host-image"
-                    />
-                    <p>{switchNode.name}</p>
-                    <p>{switchNode.ip}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/*
-            <h1>Hosts</h1>
-            <div className="host-grid">
-            {Array.from(hosts.values()).map((host) => (
-              <div key={host.id} className="host-item">
-                <img src={process.env.PUBLIC_URL + '/assets/host.png'} alt="Host" className="host-image" />
-                <div className="host-name">{host.id}</div>
-                <div className="host-ip">IP: {host.ip} </div>
-              </div>
-            ))}
-            </div>
-            */}
+          <div>{hostImgs}</div>
+        <div>{switchImgs}</div>
+            
           </Box>
         </Box>
       )}
