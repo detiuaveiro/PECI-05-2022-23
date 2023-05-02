@@ -67,7 +67,7 @@ const Dashboard = () => {
       setData(topodata.length);
       setLoading(false);
       addid(topodata);
-      console.log(idsArr[0]);
+      console.log(idsArr);
       for (let id of idsArr) {
         if (!processedIds.has(id)) {
           processedIds.add(id);
@@ -86,11 +86,13 @@ const Dashboard = () => {
             }
             setSwitchs(totalSwitchCount);
             let links = result.topology?.data?.links;
+            console.log(links);
             if (links && Object.keys(links).length) {
               let linkCount = Object.keys(links).length;
               totalLinksCount += linkCount;
             }
             setLinks(totalLinksCount);
+            
           });
         }
       }
