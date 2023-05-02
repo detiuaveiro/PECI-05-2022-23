@@ -37,3 +37,51 @@
     font-weight: bold;
     color: white;
 }
+
+
+.App{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+}
+
+.node-label{
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.switch-image {
+    width: 10rem;
+    height: 10rem;
+    margin-bottom: 1rem;
+}
+
+.link-line{
+    border-top: 2px solid #666;
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    width: calc(100% - 32px);
+}
+
+.link-dot{
+    border: 2px solid #666;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, - 50%);
+    z-index: 1;
+}

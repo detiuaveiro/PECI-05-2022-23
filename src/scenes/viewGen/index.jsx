@@ -8,27 +8,12 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./App.css";
 
-/*
-const renderNode = (node) => {
-  if(node.startsWith("h")) {
-    return (
-      <div className="node">
-        <img src={process.env.PUBLIC_URL + '/assets/host.png'} alt="Host" className="host-image" />
-        <div className="node-label">{node}</div>
-      </div>
-    );
-  }else if (node.startsWith("s")) {
-    return (
-      <div className="node">
-        <img src={process.env.PUBLIC_URL + '/assets/switch.png'} alt="Switch" className="host-image" />
-        <div className="node-label">{node}</div>
-      </div>
-    )
-  } else {
-    return null;
-  }
-};
-*/
+
+
+
+
+
+
 
 const ViewGen = () => {
   const theme = useTheme();
@@ -61,30 +46,82 @@ const ViewGen = () => {
         });
       }
       if (data.links != null) {
-        Object.entries(data.links).map(([key, value]) => {
-          var Ftype = Array.from(value[0])[0];
-          var Stype = Array.from(value[0])[1];
-          var type, type2;
-          var nid = parseInt(key, 10) + 1;
-          if (Ftype === "h") {
-            type = "Host";
-          } else {
-            type = "Switch";
-          }
-          if (Stype === "h") {
-            type2 = "Host";
-          } else {
-            type2 = "Switch";
-          }
-
-          return LoadLinks.push({
-            id: nid,
-            nodeA: value[0],
-            typeA: type,
-            nodeB: value[1],
-            typeB: type2,
+        
+        if (data.links != null) {
+          const switches = {}; // object to keep track of switches already created
+          Object.entries(data.links).map(([key, value]) => {
+            const [fromNode, toNode] = value;
+            const [fromNodeName, fromPort] = fromNode.split('-');
+            const [toNodeName, toPort] = toNode.split('-');
+        
+            let fromType, toType;
+            if (fromNodeName.startsWith("h")) {
+              fromType = "Host";
+            } else {
+              fromType = "Switch";
+            }
+            if (toNodeName.startsWith("h")) {
+              toType = "Host";
+            } else {
+              toType = "Switch";
+            }
+        
+            let fromSwitch, toSwitch;
+            if (fromType === "Switch") {
+              if (switches[fromNodeName]) {
+                fromSwitch = switches[fromNodeName];
+                fromSwitch.ports.push(fromPort);
+              } else {
+                fromSwitch = {
+                  id: Object.keys(switches).length + 1,
+                  name: fromNodeName,
+                  type: fromType,
+                  ports: [fromPort]
+                };
+                switches[fromNodeName] = fromSwitch;
+              }
+            } else {
+              fromSwitch = {
+                id: parseInt(fromNodeName.slice(1)),
+                name: fromNodeName,
+                type: fromType
+              };
+            }
+        
+            if (toType === "Switch") {
+              if (switches[toNodeName]) {
+                toSwitch = switches[toNodeName];
+                toSwitch.ports.push(toPort);
+              } else {
+                toSwitch = {
+                  id: Object.keys(switches).length + 1,
+                  name: toNodeName,
+                  type: toType,
+                  ports: [toPort]
+                };
+                switches[toNodeName] = toSwitch;
+              }
+            } else {
+              toSwitch = {
+                id: parseInt(toNodeName.slice(1)),
+                name: toNodeName,
+                type: toType
+              };
+            }
+        
+            LoadLinks.push({
+              id: parseInt(key, 10) + 1,
+              nodeA: fromNode,
+              typeA: fromType,
+              nodeB: toNode,
+              typeB: toType,
+              switchA: fromSwitch,
+              portA: fromPort,
+              switchB: toSwitch,
+              portB: toPort
+            });
           });
-        });
+        }
       }
       setHost(LoadHosts);
       setSwitchs(LoadSwitchs);
@@ -94,7 +131,7 @@ const ViewGen = () => {
       console.log(links);
       setLoading(false);
       
-    {/*
+    /*
       links.forEach((link) => {
         if (link.typeA === "host") {
           const host = {
@@ -128,34 +165,60 @@ const ViewGen = () => {
           setS((switches) => [...switches, switchNode]);
         }
       });
-    */}
+    */
+      
     });
   }, []);
 
-  const TopologyDiagram = ({ links }) => {
-    const hosts = links.filter((link) => link.typeA === "Host");
-    const switches = links.filter((link) => link.typeA === "Switch");
+  const [renderedSwitch, setRenderedSwitch] = useState([]);
+  /*TODO: fix multiswitches*/
+  const renderNode = (node) => {
+    const randomTop = Math.random()*80;
+    const randomLeft = Math.random()*80;
   
-    const hostImgs = hosts.map((host) => {
+    if(node.startsWith("h")) {
       return (
-        <div key={host.id} style={{ display: "inline-block", padding: "10px" }}>
-          <img src={`http://${host.nodeA}:8000/h1.png`} alt="host" />
-          <div>{host.nodeA}</div>
+        <div className="node host" style={{top: `${randomTop}%`, left: `${randomLeft}%`}}>
+          <img src={process.env.PUBLIC_URL + '/assets/host.png'} alt="Host" className="host-image" />
+          <div className="node-label">{node}</div>
         </div>
       );
-    });
-  
-    const switchImgs = switches.map((sw) => {
-      return (
-        <div key={sw.id} style={{ display: "inline-block", padding: "10px" }}>
-          <img src={`http://${sw.nodeA}:8000/${sw.nodeB}.png`} alt="switch" />
-          <div>{sw.nodeA}</div>
+    }else if (node.startsWith("s")) {
+      const switchNumber = node.slice(1);
+      if (renderedSwitch && renderedSwitch.includes(switchNumber)){
+        return null;
+      } else {
+        setRenderedSwitch([...(renderedSwitch || []), switchNumber]);
+        return (
+        <div className="node switch" style={{top: `${randomTop}%`, left: `${randomLeft}%`}}>
+          <img src={process.env.PUBLIC_URL + '/assets/switch.png'} alt="Switch" className="switch-image" />
+          <div className="node-label">{node}</div>
         </div>
-      );
-    });
-  
-    
+      
+      )
+      }
+    } else {
+      return null;
+    }
   };
+
+  const getNodePosition = (node) =>{
+    const link = links.find((l) => l.nodeA === node || l.nodeB === node);
+    if(link) {
+      const nodeA = link.nodeA;
+      const nodeB = link.nodeB;
+      if(node === nodeA) {
+        return "left";
+      }else if (node === nodeB) {
+        return "right";
+      } else {
+        return null;
+      }
+    }else {
+      return null;
+    }
+    
+  }
 
   return (
     <>
@@ -166,8 +229,21 @@ const ViewGen = () => {
             subtitle="View the Topology of the NetWork"
           />
           <Box m="40px 0 0 0" height="75vh">
-          <div>{hostImgs}</div>
-        <div>{switchImgs}</div>
+            <div className="App">
+              {links.map((link) => (
+                <div className="link" key={link.id}>
+                  <div className={`link-line ${link.typeA} ${link.typeB}`} />
+                  <div className={`link-dot ${link.typeA}`} />
+                  <div className={`link-dot ${link.typeB}`} />
+                  <div className={`node-container ${getNodePosition(link.nodeA)} `} >
+                    {renderNode(link.nodeA)}
+                  </div>
+                  <div className={`node-container ${getNodePosition(link.nodeB)}`} >
+                    {renderNode(link.nodeB)}
+                  </div>
+                </div>
+              ))}
+            </div>
             
           </Box>
         </Box>
