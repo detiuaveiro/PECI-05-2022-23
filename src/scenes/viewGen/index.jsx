@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import Topology from "../../service/topology";
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import ReactFlow, { MiniMap, Controls, Background } from "react-flow-renderer";
 
 const ViewGen = () => {
   const theme = useTheme();
@@ -13,13 +13,14 @@ const ViewGen = () => {
   const { state } = useLocation();
   const { id } = state || {};
   const [isLoading, setLoading] = useState(true);
+  const [isLoadingEl, setLoadingEl] = useState(true);
 
-  const [links, setLinks] = useState();
+  const [links, setLinks] = useState([]);
 
   var TopologyService = new Topology();
 
-  let LoadLinks = [];
   useEffect(() => {
+    let LoadLinks = [];
     TopologyService.getId(id).then((data) => {
       data = data.topology.data;
 
@@ -50,12 +51,11 @@ const ViewGen = () => {
         });
       }
       setLinks(LoadLinks);
-      console.log(links);
       setLoading(false);
     });
   }, []);
   function extractNetworkInfo(stateLinks) {
-    if (!Array.isArray(stateLinks)) {
+    if (!Array.isArray(stateLinks) || stateLinks.length === 0) {
       return null;
     }
     // Initialize objects to store information about hosts and switches
@@ -99,23 +99,109 @@ const ViewGen = () => {
           };
         }
       }
+      // // Check if node B is a host
+      // if (typeB === "Host") {
+      //   // Save the port number and switch ID of the host's connection
+      //   const [portNum, switchId] = nodeB.split("-");
+      //   if (nodeB in hosts) {
+      //     hosts[nodeB]["switches"][switchId] = portNum;
+      //   } else {
+      //     hosts[nodeB] = {
+      //       switches: {
+      //         [switchId]: portNum,
+      //       },
+      //     };
+      //   }
+      // }
+
+      // Check if node A is a switch
+      if (typeA === "Switch") {
+        // Save the port number and neighbor switch ID of the switch's connection
+        const [portNum, neighborId] = nodeA.split("-");
+        const switchId = nodeB.split("-")[0];
+        if (switchId in switches) {
+          switches[switchId]["ports"][portNum] = neighborId;
+        } else {
+          switches[switchId] = {
+            ports: {
+              [portNum]: neighborId,
+            },
+          };
+        }
+      }
     }
 
     return { hosts, switches };
   }
 
-  let hosts, switches = extractNetworkInfo(links);
-  console.log(hosts);
-  console.log(switches);
+  let info = extractNetworkInfo(links ?? []);
+  console.log(info);
+  const [elements, setElements] = useState([]);
+  const [connections, setConnections] = useState([]);
+
+  useEffect(() => {
+    if (isLoading === false) {
+      const nodes = [];
+      // Create host nodes
+      for (const host in info.hosts) {
+        nodes.push({
+          id: host,
+          data: { label: host },
+          position: {
+            x:/* Math.random() * (window.innerWidth*0.5)*/ nodes.length*200,
+            y: Math.random() *5,
+          },
+          style: { background: "#FF5A5F", color: "#fff" },
+        });
+      }
+      // Create switch nodes
+      for (const switchId in info.switches) {
+        nodes.push({
+          id: switchId,
+          data: { label: `Switch ${switchId}` },
+          position: {
+            x: Math.random() * (window.innerWidth*0.5),
+            y: 100+ Math.random() * 200,
+          },
+          style: { background: "#008489", color: "#fff" },
+        });
+      }
+      // Create links between nodes
+      const edges = links.map((link) => ({
+        id: link.id.toString(),
+        source: link.nodeA.split("-")[0],
+        target: link.nodeB.split("-")[0],
+      }));
+      setElements([...nodes]);
+      setConnections([...edges]);
+      console.log(nodes);
+    }
+    setLoadingEl(false);
+    
+  }, [links]);
+
+  console.log("el", elements);
+  console.log("con", connections);
   return (
     <>
-      {isLoading === false && (
+      {isLoading === false && isLoadingEl === false && (
         <Box m="20px">
           <Header
             title="View Topology"
             subtitle="View the Topology of the NetWork"
           />
-          <Box m="40px 0 0 0" height="75vh"></Box>
+          <Box m="40px 0 0 0" height="75vh">
+            <div style={{ height: "79vh" }}>
+              <ReactFlow 
+                defaultNodes={elements}
+                defaultEdges={connections}
+              >
+                <MiniMap />
+                <Controls />
+                <Background color="#aaa" gap={16} />
+              </ReactFlow>
+            </div>
+          </Box>
         </Box>
       )}
     </>
