@@ -11,7 +11,7 @@ controllerIpSetting+=$(./getIp.sh)
 controllerIpSetting+="\""
 
 echo "[PECI RUN TOOL]   Cloning most recent vesion!"
-git clone -b backend\-devel git@github.com:detiuaveiro/PECI-05-2022-23.git backend
+git clone -b backend git@github.com:detiuaveiro/PECI-05-2022-23.git backend
 echo $controllerIpSetting >> backend/.env
 
 git clone -b auth git@github.com:detiuaveiro/PECI-05-2022-23.git auth_server
