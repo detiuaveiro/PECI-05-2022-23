@@ -13,12 +13,9 @@ import About from "./scenes/about";
 import Topo from "./scenes/topo";
 import Table from "./scenes/table";
 import ViewGen from "./scenes/viewGen";
-//import Form from "./scenes/form";
-//import Line from "./scenes/line";
-//import Pie from "./scenes/pie";
+import Com from "./scenes/commands";
 import FAQ from "./scenes/faq";
-//import Geography from "./scenes/geography";
-//import Calendar from "./scenes/calendar";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -40,13 +37,9 @@ function App() {
               <Route path ="/about" element={<About />} />
               <Route path ="/Topo" element={<Topo/>} />
               <Route path ="/Table" element={<Table />} />
-              <Route path ="/View" element={<ViewGen />} />
-              {/*<Route path ="/bar" element={<Bar />} />*/}
-              {/*<Route path ="/pie" element={<Pie />} />*/}
-              {/*<Route path ="/line" element={<Line />} />*/}
+              <Route path ="/View" element={<ViewGen />} /> 
               <Route path ="/faq" element={<FAQ />} />
-              {/*<Route path ="/geography" element={<Geography />} />*/}
-              {/*<Route path ="/calendar" element={<Calendar />} />*/}
+              <Route path ="/Command" element={<Com />} />
             </Routes>
           </main>
         </div>
