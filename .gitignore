@@ -1,3 +1,6 @@
-*venv
-*vscode
-*__pycache__
+backend/
+auth_server/
+frontend/server/
+NetworkDataFetcher/
+MockNetworkController/
+AlarmSystem/

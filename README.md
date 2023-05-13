@@ -1,3 +1,15 @@
-# P4 Network Admin Interface 
+# Usage
 
-Interface for information about your p4 network
+```
+chmod +x run.sh
+```
+
+# To run:
+```
+./run.sh
+```
+
+# To stop:
+```
+./stop.sh
+```
