@@ -1,0 +1,57 @@
+volumes:
+        mongo_data: {}
+        redis_data: {}
+        postgres_data: {}
+
+services:
+        backend:
+                build: backend/
+                ports:
+                        - "8000:8000"
+
+        mocknetworkcontroller:
+                build: MockNetworkController/
+                ports:
+                        - "5000:5000"
+
+        redis:
+                image: redis:alpine
+                command: redis-server
+                ports:
+                        - "6379:6379"
+                volumes:
+                        - redis_data:/data
+
+        mongo:
+                image: mongo:latest
+                ports:
+                        - "5511:27017"
+                volumes:
+                        - mongo_data:/data/db
+
+        postgres:
+                image: postgres:15
+                ports:
+                        - "5432:5432"
+                volumes:
+                        - postgres_data:/var/lib/postgresql/data
+                environment:
+                        POSTGRES_PASSWORD: peci
+
+        alertworkers:
+                build:
+                        context: ./AlertSystem/
+                        dockerfile: WorkerRunner/Dockerfile
+                depends_on:
+                        - redis
+                        - postgres
+
+        alertserver:
+                build: 
+                        context: ./AlertSystem/
+                        dockerfile: AlarmConfigurationApi/Dockerfile
+                ports:
+                        - "443:443"
+                depends_on:
+                        - redis
+                        - postgres

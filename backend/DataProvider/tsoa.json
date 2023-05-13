@@ -1,0 +1,8 @@
+{
+"entryFile": "src/server.ts",
+"routesDir": "./src/routes",
+"noImplicitAdditionalProperties": "throw-on-extras",
+"spec": {
+	"outputDirectory": "public",
+	"specVersion": 3
+}}

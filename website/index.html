@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>P4 Project</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body {font-family: "Lato", sans-serif}
+.mySlides {display: none}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card">
+    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+    <a href="#p4" class="w3-bar-item w3-button w3-padding-large w3-hide-small">P4</a>
+    <a href="#proj" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PROJECT</a>
+    <a href="#dev" class="w3-bar-item w3-button w3-padding-large w3-hide-small">DEVELOPMENT</a>
+  
+    
+  </div>
+</div>
+
+
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="#p4" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">P4</a>
+  <a href="#proj" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">PROJECT</a>
+  <a href="#dev" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">DEVELOPMENT</a>
+</div>
+
+
+<div class="w3-content" style="max-width:2000px;margin-top:46px">
+
+  
+  <div class="mySlides w3-display-container w3-center">
+    <img src="img/one.jpg" style="width:100%;max-height:600px">
+  </div>
+  <div class="mySlides w3-display-container w3-center">
+    <img src="img/p4_language.png" style="width:100%;max-height:600px">
+  </div>
+  <div class="mySlides w3-display-container w3-center">
+    <img src="img/tech.jpg" style="width:100%;max-height:600px">
+  </div>
+
+  
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="p4">
+    <h2 class="w3-wide">WHAT IS P4 LANGUAGE?</h2>
+    <p class="w3-opacity"><i>Programming Protocol-independent Packet Processors</i></p>
+    <p class="w3-justify">P4  is a high-level programming language designed for describing how network packets are processed by network devices such as switches, 
+      routers, and network interface cards (NICs). P4 is protocol-independent, meaning that it is not tied to any particular network protocol, 
+      and instead provides a way to program the packet processing behavior of network devices at a high level.</p>
+    <p class="w3-justify">With P4, network designers can define the way in which packets are processed and forwarded through a network, 
+      providing greater flexibility and control over network behavior. P4 programs can be used to define how packets are matched and modified, 
+      how routing decisions are made, and how quality of service (QoS) policies are implemented. 
+      This allows network operators to optimize their networks for specific use cases and to adapt to changing network requirements.</p>
+    <h3 class="w3-wide">WHAT ARE SOME USES FOR P4 LANGUAGE?</h3>
+    <div class="w3-row w3-padding-32 w3-display-container">
+      <div class="w3-third">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Network Function Virtualization</h4>
+          <p style="margin-top: 40px;">P4 language can be used to program the packet processing behavior of virtual network functions in NFV architectures. 
+            This allows network operators to deploy and manage network functions in a more flexible and scalable manner.</p>
+        </div>
+      </div>
+      <div class="w3-third">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Software-Defined Networking</h4>
+          <p style="margin-top: 40px;">P4 can be used to program the packet processing behavior of SDN switches and controllers. 
+            This allows network operators to define and manage network policies in a more granular and programmatic way.</p>
+        </div>
+      </div>
+      <div class="w3-third">
+        <div class="w3-card w3-margin card" style="width:90%">
+          <h4>Traffic Engineering</h4>
+          <p style="margin-top: 70px;">P4 can be used to optimize traffic engineering in large-scale networks, 
+            allowing network operators to control traffic routing and forwarding based on traffic patterns, 
+            network topology, and other factors.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="w3-black" id="proj">
+    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+      <h2 class="w3-wide w3-center">WHAT IS THIS PROJECT?</h2>
+      <p class="w3-opacity w3-center"><i>What are we doing here?</i></p><br>
+
+      <h3 class="w3-wide w3-center">The Problem</h3>
+      <p class="w3-justify">The limitations of big traditional networks have become apparent as their success has grown. 
+        They lack the flexibility needed to adapt to changing circumstances, making them cumbersome to manage and prone to outages. 
+        Furthermore, tracing issues throughout the network topology can be challenging, leading to lengthy downtime and frustrated users. 
+        Making rapid alterations to the network is nearly impossible, as it requires extensive planning and can often lead to preventative rather than reactive solutions. 
+        To address these challenges, a network designed using the P4 language is being developed. </p>
+
+      <h3 class="w3-wide w3-center">The Project</h3>
+      <p class="w3-justify">This project aims to create a more dynamic and adaptable network infrastructure, 
+        which can be easily reconfigured to meet the demands of modern business environments. 
+        With its ability to quickly adapt and respond to changing conditions, this new network promises to revolutionize the way we think about traditional networking.</p>
+      
+      
+      <h4 class="w3-wide w3-center">Components</h4>
+      <p class="w3-justify"><i>To ensure the success of our network project, we have divided it into three parts, each designed by a different team member. </i></p>
+        <div class="w3-row-padding w3-padding-32" style="margin:0 -16px">
+        <div class="w3-third w3-margin-bottom">
+          <div class="w3-container w3-white">
+            <p><b>Controlling APIs</b></p>
+            <p class="w3-opacity"><i>By: David Araújo</i></p>
+            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('controlApi').style.display='block'">Explore</button>
+          </div>
+        </div>
+        <div class="w3-third w3-margin-bottom">
+          
+          <div class="w3-container w3-white">
+            <p><b>Backend</b></p>
+            <p class="w3-opacity"><i>By: João Machado</i></p>
+            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('backend').style.display='block'">Explore</button>
+          </div>
+        </div>
+        <div class="w3-third w3-margin-bottom">
+          
+          <div class="w3-container w3-white">
+            <p><b>Dashboard</b></p>
+            <p class="w3-opacity"><i>By: Guilherme Craveiro</i></p>
+            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('dashboard').style.display='block'">Explore</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="controlApi" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('controlApi').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+       <h2 class="w3-wide"><i class="fa fa-cogs w3-margin-right"></i>Controlling APIs</h2>
+      </header>
+      <div class="w3-container w3-padding-32">
+        <div class="w3-row">
+          <div class="w3-col m6">
+            <p>The controlling APIs section provides an overview of two critical APIs that offer comprehensive control over the network environment. </p>
+            <p>
+              The first API translates HTTP requests into effective communication with P4 devices via the P4Runtime, which uses gRPC. 
+              The P4Runtime provides a standard and programmatic interface between control-plane applications and the underlying P4-based data plane devices. 
+              This API facilitates the control of a variety of P4-based devices, including switches, routers, network interface cards (NICs), and other devices. 
+              With P4Runtime, network operators can achieve fine-grained control over network behavior, including packet forwarding and processing.</p>
+            <p>
+              The second API enables programmatic control over a Mininet network environment using HTTP requests. 
+              Mininet is a popular open-source network emulator that enables rapid prototyping and testing of complex network scenarios. 
+              With this API, network operators can dynamically create, configure, and destroy network topologies on-demand. 
+              This API provides an intuitive and easy-to-use interface for network operators to control network behavior and experiment with different network topologies, 
+              routing schemes, and traffic patterns.
+            </p>
+          </div>
+          <div class="w3-col m6" style="padding-left:30px;padding-right:30px;">
+            <div class="w3-card-4">
+              <img src="img/controlapi.jpg" alt="Controlling APIs" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: solid 2px #ddd;">
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+
+  <div id="backend" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('backend').style.display='none'" 
+              class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+        <h2 class="w3-wide"><i class="fa fa-database w3-margin-right"></i>Backend</h2>
+      </header>
+      <div class="w3-container w3-padding-32">
+        <div class="w3-row">
+          <div class="w3-col m6" style="padding-right: 30px;">
+            <div class="w3-card-4">
+              <img src="img/backend.jpg" alt="Backend" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+            </div>
+          </div>
+          <div class="w3-col m6">
+            <button id="dataModelBtn" class="w3-button w3-block w3-left-align w3-teal w3-hover-light-blue" onclick="toggleAccordion('dataModel')">
+              <h5 class="w3-margin w3-text-white">Flexible data model (MongoDB)</h5>
+            </button>
+            <div id="dataModel" class="w3-accordion-content w3-animate-zoom w3-padding w3-hide">
+              <p>Our backend is built with a flexible data model using MongoDB, allowing for easy scalability and customization based on your needs. 
+                Whether you're handling large amounts of data or require specific data structures, our backend can accommodate it.</p>
+            </div>
+            <button id="authenticationBtn" class="w3-button w3-block w3-left-align w3-teal w3-hover-light-blue" onclick="toggleAccordion('authentication')">
+              <h5 class="w3-margin w3-text-white">Authentication</h5>
+            </button>
+            <div id="authentication" class="w3-accordion-content w3-animate-zoom w3-padding w3-hide">
+              <p>We understand the importance of security and privacy when it comes to handling user data. 
+                Our backend provides built-in authentication and authorization mechanisms to ensure only authorized users have access to specific data. 
+                Additionally, we provide user metadata storage to support user-level customization and personalization of your application.</p>
+            </div> 
+            <button id="integrationBtn" class="w3-button w3-block w3-left-align w3-teal w3-hover-light-blue" onclick="toggleAccordion('integration')">
+              <h5 class="w3-margin w3-text-white">Integration with Prometheus and Grafana</h5>
+            </button>
+            <div id="integration" class="w3-accordion-content w3-animate-zoom w3-padding w3-hide">
+              <p>We provide seamless integration with Prometheus and Grafana for metric visualization and monitoring.
+                 Our backend generates metric data to help you make informed decisions and provide insights into your application's performance.</p>
+            </div>
+            <button id="brokerBtn" class="w3-button w3-block w3-left-align w3-teal w3-hover-light-blue" onclick="toggleAccordion('broker')">
+              <h5 class="w3-margin w3-text-white">Service Broker</h5>
+            </button>
+            <div id="broker" class="w3-accordion-content w3-animate-zoom w3-padding w3-hide">
+              <p>Our backend provides a service broker to enable easy communication between microservices, 
+                ensuring smooth and efficient communication between different parts of your application.</p>
+            </div>
+            <button id="microserviceBtn" class="w3-button w3-block w3-left-align w3-teal w3-hover-light-blue" onclick="toggleAccordion('microservice')">
+              <h5 class="w3-margin w3-text-white">Microservice Architecture</h5>
+            </button>
+            <div id="microservice" class="w3-accordion-content w3-animate-zoom w3-padding w3-hide">
+              <p>Our backend is built using a microservice architecture, allowing for the creation and deployment of independent services that can be scaled and modified as needed. 
+                This architecture ensures flexibility, resilience, and scalability, making it an ideal choice for modern applications.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="dashboard" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('dashboard').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+       <h2 class="w3-wide"><i class="fa fa-tablet w3-margin-right"></i>Dashboard</h2>
+      </header>
+      <div class="w3-container w3-padding-32">
+        <div class="w3-row">
+          <div class="w3-col m6">
+            <p>A dashboard is a powerful tool that provides a user-friendly interface to display critical information about a network topology. </p>
+            <p>
+              A well-designed dashboard generates tables that display available network topologies, including details about hosts, switches, and the links that connect them. </p>
+            <p>
+              This information helps network administrators identify issues and quickly troubleshoot problems. 
+              In addition, the dashboard includes information about the team responsible 
+              for managing the network and provides assistance to non-experienced users. 
+            </p>
+          </div>
+          <div class="w3-col m6" style="padding-left:30px;padding-right:30px;">
+            <div class="w3-card-4">
+              <img src="img/dashboard.jpg" alt="Controlling APIs" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: solid 2px #ddd;">
+            </div>
+            <p>
+              By presenting all relevant information in a clear and concise manner, a well-designed dashboard enhances network visibility and 
+              helps ensure that the network operates efficiently and effectively.
+            </p>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+
+
+<div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="dev">
+  <h1 class="w3-wide">PROJECT DEVELOPMENT</h1>
+  <p style="font-size: 14px;"><i>This section will cover the development process of a project that was divided into four distinct milestones: inception and project planning, elaboration, 
+    construction, and release. Each milestone represents a crucial phase in the project's development, 
+    with specific goals and deliverables to achieve before progressing to the next stage.</i></p>
+  
+    <div class="w3-container" style="margin-top: 50px;">
+      <div class="w3-bar w3-black custom-bar w3-large">
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'inception')">M1 - INCEPTION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'elaboration')">M2 - ELABORATION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'construction')">M3 - CONSTRUCTION</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openSection(event, 'release')">M4 - RELEASE</button>
+      </div>
+    
+      <div id="inception" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
+        <h2>Inception and Project Planning</h2>
+        <p class="para">During the inception phase of our project focused on networks defined by the P4 language, we started by identifying a problem that needed to be solved. 
+          After conducting research on the existing work, we selected the main features that would enable us to solve the problem effectively. 
+          These features included real-time monitoring of the network, creating a dashboard for multiple users, with control over the network and reactive reconfiguration.</p>
+        <p class="para">
+          To achieve these objectives, we defined a set of tasks that included requirement analysis and architecture design, defining a set of telemetry data, 
+          creating a custom dashboard, and the creation of an agent. 
+          Additionally, we set a series of rules to dynamically reprogram the devices according to data traffic analysis. 
+          By setting clear goals and tasks during the inception phase, we were able to lay a strong foundation for the rest of 
+          the project and ensure that we were on the right track from the very beginning.
+        </p>
+      </div>
+    
+      <div id="elaboration" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
+        <h2>Elaboration</h2>
+        <p class="para">In the elaboration phase of designing networks using P4 language, it is crucial to begin by defining the state of the art. 
+          This involves considering monitoring and inband network telemetry, which are essential for tracking network behavior and identifying potential issues. 
+          The expected use and results of the network must also be defined, including whether it will be deployed on new or existing networks, 
+          used simultaneously with other SDN controllers or as a standalone solution, and whether it will have an observer role over the network, 
+          or will be capable of autonomous reactive topology reconfiguration.</p>
+        <p class="para">
+          Once these factors have been established, the next step is to elicit the requirements for the network. 
+          This involves a thorough study of similar implementations, as well as brainstorming sessions, task analysis, 
+          and domain analysis to identify the specific needs and goals of the network. By carefully considering all of these factors, 
+          designers can ensure that the resulting network is highly effective, efficient, and capable of meeting the needs of the organization or user.
+        </p>
+        <p class="para">
+          After eliciting the requirements for the network, the next step is to create use cases for the project. Use cases describe the interaction between the network and the users, outlining the specific tasks or goals that the network is designed to accomplish. These use cases provide a clear understanding of how the network will be used, and help ensure that it is aligned with the needs of the organization or user.
+        </p>
+        <p class="para">
+          In addition to creating use cases, it is also important to create personas, which are fictional characters that represent the different types of users who will be interacting with the network. Personas help to personalize the design process and provide a clear understanding of the needs and expectations of different users.
+        </p>
+        <p class="para">
+          Finally, a mock-up of the system should be created. This is a prototype of the network design that allows stakeholders to visualize how the system will look and function. The mock-up can be used to test the usability of the system and gather feedback from stakeholders before the final implementation. By creating use cases, personas, and a mock-up of the system, designers can ensure that the resulting network is tailored to the needs of the users and is intuitive and easy to use.
+        </p>
+      </div>
+    
+      <div id="construction" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
+        <h2>Construction</h2>
+        <p class="para">During the construction phase, one of the key goals was to deploy networks defined by the P4 language. 
+          To achieve this, we focused on four main objectives: </p>
+          <p class="para">1) deploying networks via controller request or connecting to existing networks, </p>
+          <p class="para">2) programming running devices to ensure they meet our network specifications, </p>
+          <p class="para">3) viewing existing network topologies to gain insight into the network structure,</p>
+          <p class="para">4) ensuring that the backend could fetch device counters for Grafana monitoring.</p>
+          <p class="para">To accomplish these goals, we divided the project into three main components: 
+          controlling APIs, a backend system, and a dashboard for monitoring and visualization.
+          This approach helped us achieve our goals more efficiently and provided a clear structure for each team member to focus on their specific tasks.</p>
+      </div>
+    
+      <div id="release" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
+        <h2>Release</h2>
+        <p class="para">Information about the release phase.</p>
+      </div>
+    </div>
+    
+    
+</div>
+
+
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+  <i class="fa fa-instagram w3-hover-opacity"></i>
+  <i class="fa fa-snapchat w3-hover-opacity"></i>
+  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+  <i class="fa fa-twitter w3-hover-opacity"></i>
+  <i class="fa fa-linkedin w3-hover-opacity"></i>
+  <p class="w3-medium"><i>Project done by David Araújo, João Machado and Guilherme Craveiro</i></p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}    
+  x[myIndex-1].style.display = "block";  
+  setTimeout(carousel, 4000);    
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+
+// When the user clicks anywhere outside of the modal, close it
+var modal = document.getElementById('ticketModal');
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function toggleAccordion(id) {
+  var accordionContent = document.getElementById(id);
+  if (accordionContent.style.display === "block") {
+    accordionContent.style.display = "none";
+  } else {
+    accordionContent.style.display = "block";
+  }
+}
+
+document.getElementById("dataModelBtn").addEventListener("click", function() {
+  var content = document.getElementById("dataModel");
+  if (content.classList.contains("w3-hide")) {
+    content.classList.remove("w3-hide");
+  }
+});
+
+document.getElementById("authenticationBtn").addEventListener("click", function() {
+  var content = document.getElementById("authentication");
+  if (content.classList.contains("w3-hide")) {
+    content.classList.remove("w3-hide");
+  }
+});
+
+document.getElementById("integrationBtn").addEventListener("click", function() {
+  var content = document.getElementById("integration");
+  if (content.classList.contains("w3-hide")) {
+    content.classList.remove("w3-hide");
+  }
+});
+
+document.getElementById("brokerBtn").addEventListener("click", function() {
+  var content = document.getElementById("broker");
+  if (content.classList.contains("w3-hide")) {
+    content.classList.remove("w3-hide");
+  }
+});
+
+document.getElementById("microserviceBtn").addEventListener("click", function() {
+  var content = document.getElementById("microservice");
+  if (content.classList.contains("w3-hide")) {
+    content.classList.remove("w3-hide");
+  }
+});
+
+function openSection(event, sectionName) {
+  var i;
+  var x = document.getElementsByClassName("contain");
+  var tablinks = document.getElementsByClassName("tablink");
+
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].classList.remove("w3-red");
+  }
+
+  document.getElementById(sectionName).style.display = "block";  
+  event.currentTarget.classList.add("w3-red");
+}
+
+</script>
+
+<style>
+  .card {
+    border: 1px solid black;
+    padding: 10px;
+    
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-bar {
+  border-radius: 25px;
+  }
+
+  .para {
+  font-size: 18px;
+  }
+  
+</style>
+
+</body>
+</html>
