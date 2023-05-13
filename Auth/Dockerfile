@@ -2,7 +2,7 @@ FROM rust
 
 WORKDIR /usr/src/app
 
-COPY ./auth/ ./
+COPY . .
 
 RUN rustup default nightly
 RUN cargo build --release
