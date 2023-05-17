@@ -51,6 +51,9 @@ const Com = () => {
   const [id, setId] = useState("");
   const [dcName, setDCName] = useState("");
   const [dcId, setDCId] = useState("");
+  const [file, setFile] = useState("");
+  const [progName, setProgName] = useState("");
+  const [progId, setProgId] = useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -89,13 +92,13 @@ const Com = () => {
     }
   };
 
-  const disconnect = async () => {
+  const disconnect = async (dcName, dcId) => {
     try {
       const response = await axios.post(
         "http://localhost:80/p4runtime/disconnect",
         {
-          device_name: "s3",
-          device_id: "2",
+          device_name: dcName,
+          device_id: dcId,
         }
       );
       console.log(response.data);
@@ -104,14 +107,14 @@ const Com = () => {
     }
   };
 
-  const programSwitch = async () => {
+  const programSwitch = async (file, progName, progId) => {
     try {
       const response = await axios.post(
         "http://localhost:80/p4runtime/program",
         {
-          p4file: "advanced_tunnel",
-          device_id: "2",
-          device_name: "s3",
+          p4file: file,
+          device_id: progId,
+          device_name: progName,
         }
       );
       console.log(response.data);
@@ -177,7 +180,12 @@ const Com = () => {
                 Connect to Switch
               </Typography>
 
-              <Box sx={{marginTop:"20px"}}width="50%" display="flex" justifyContent="space-between">
+              <Box
+                sx={{ marginTop: "20px" }}
+                width="50%"
+                display="flex"
+                justifyContent="space-between"
+              >
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -228,7 +236,12 @@ const Com = () => {
                 Disconnect Switch
               </Typography>
 
-              <Box sx={{marginTop:"20px"}} width="31%" display="flex" justifyContent="space-between">
+              <Box
+                sx={{ marginTop: "20px" }}
+                width="31%"
+                display="flex"
+                justifyContent="space-between"
+              >
                 <Input
                   value={dcName}
                   onChange={(e) => setDCName(e.target.value)}
@@ -273,20 +286,53 @@ const Com = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <CommandBox title="Program Switch" />
-            <Button
-              sx={{
-                backgroundColor: colors.blueAccent[700],
-                color: colors.grey[100],
-                fontSize: "14px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-                margin: "20px",
-              }}
-              onClick={() => programSwitch()}
-            >
-              Submit
-            </Button>
+            <Box width="100%" m="0 30px">
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                sx={{ color: colors.grey[100] }}
+              >
+                Program Switch
+              </Typography>
+              <Box
+                sx={{ marginTop: "20px" }}
+                width="50%"
+                display="flex"
+                justifyContent="space-between"
+              >
+                <Input
+                  value={file}
+                  onChange={(e) => setFile(e.target.value)}
+                  placeholder="P4 File"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={progName}
+                  onChange={(e) => setProgName(e.target.value)}
+                  placeholder="Switch Name"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={progId}
+                  onChange={(e) => setProgId(e.target.value)}
+                  placeholder="Switch ID"
+                  sx={{ margin: "10px" }}
+                />
+              </Box>
+              <Button
+                sx={{
+                  backgroundColor: colors.blueAccent[700],
+                  color: colors.grey[100],
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                  margin: "20px",
+                }}
+                onClick={() => programSwitch(file, progName, progId)}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
           <Box
             gridColumn="span 12"
