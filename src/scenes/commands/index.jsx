@@ -146,7 +146,7 @@ const Com = () => {
     }
   };
 
-  return (
+   return (
     <Box m="20px">
       <Header title="COMMANDS" subtitle="Send a new Command to your Network" />
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -159,7 +159,7 @@ const Com = () => {
         >
           <Tab label="Connect" {...a11yProps(0)} />
           <Tab label="Program" {...a11yProps(1)} />
-          <Tab label="Get" {...a11yProps(2)} />
+          
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
