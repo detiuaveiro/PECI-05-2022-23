@@ -319,6 +319,7 @@ const Com = () => {
                   sx={{ margin: "10px" }}
                 />
               </Box>
+              </Box>
               <Button
                 sx={{
                   backgroundColor: colors.blueAccent[700],
@@ -332,7 +333,7 @@ const Com = () => {
               >
                 Submit
               </Button>
-            </Box>
+            
           </Box>
           <Box
             gridColumn="span 12"
