@@ -54,6 +54,11 @@ const Com = () => {
   const [file, setFile] = useState("");
   const [progName, setProgName] = useState("");
   const [progId, setProgId] = useState("");
+  const [wrName, setWrName] = useState("");
+  const [table, setTable] = useState("");
+  const [actName, setActName] = useState("");
+  const [actParams, setActParams] = useState("");
+  const [fields, setFields] = useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -123,16 +128,16 @@ const Com = () => {
     }
   };
 
-  const writeTable = async () => {
+  const writeTable = async (table, fields, actName, actParams, wrName) => {
     try {
       const response = await axios.post(
         "http://localhost:80/p4runtime/inserttable",
         {
-          table_name: "MyIngress.ipv4_lpm",
-          match_fields: { "hdr.ipv4.dstAddr": "('10.0.1.2',32)" },
-          action_name: "MyIngress.myTunnel_ingress",
-          action_params: { dst_id: 100 },
-          device_name: "s1",
+          table_name: table,
+          match_fields: fields,
+          action_name: actName,
+          action_params: actParams,
+          device_name: wrName,
         }
       );
       console.log(response.data);
@@ -342,7 +347,52 @@ const Com = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <CommandBox title="Write Table" />
+            <Box width="100%" m="0 30px">
+              <Typography
+                variant="h4"
+                fontWeight="bold"
+                sx={{ color: colors.grey[100] }}
+              >
+                Write Table
+              </Typography>
+              <Box
+                sx={{ marginTop: "20px" }}
+                width="50%"
+                display="flex"
+                justifyContent="space-between"
+              >
+                <Input
+                  value={table}
+                  onChange={(e) => setTable(e.target.value)}
+                  placeholder="Table Name"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={fields}
+                  onChange={(e) => setFields(e.target.value)}
+                  placeholder="Match Fields"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={actName}
+                  onChange={(e) => setActName(e.target.value)}
+                  placeholder="Action Name"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={actParams}
+                  onChange={(e) => setActParams(e.target.value)}
+                  placeholder="Action Params"
+                  sx={{ margin: "10px" }}
+                />
+                <Input
+                  value={wrName}
+                  onChange={(e) => setWrName(e.target.value)}
+                  placeholder="Device Name"
+                  sx={{ margin: "10px" }}
+                />
+              </Box>
+            </Box>
             <Button
               sx={{
                 backgroundColor: colors.blueAccent[700],
@@ -352,13 +402,14 @@ const Com = () => {
                 padding: "10px 20px",
                 margin: "20px",
               }}
-              onClick={() => writeTable()}
+              onClick={() => writeTable(table, fields, actName, actParams, wrName)}
             >
               Submit
             </Button>
           </Box>
         </Box>
       </TabPanel>
+      {/*
       <TabPanel value={value} index={2}>
         <Box
           display="grid"
@@ -390,6 +441,7 @@ const Com = () => {
           </Box>
         </Box>
       </TabPanel>
+            */}
     </Box>
   );
 };
