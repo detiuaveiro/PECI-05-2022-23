@@ -21,8 +21,8 @@ namespace Domain.ConnectedServices
         {
             var opPath = "/p4runtime/getcounters";
             var query = $"?index=" + request.Index + (request.DeviceId > 0 ? "&device_id=" + request.DeviceId : "");
-            //var response = await this.HttpClient.GetAsync(this.Url + opPath + query );
-            var response = await this.HttpClient.GetAsync(this.Url + "/api/switch/getcounters");
+            var response = await this.HttpClient.GetAsync(this.Url + opPath + query );
+            //var response = await this.HttpClient.GetAsync(this.Url + "/api/switch/getcounters");
             if (response.IsSuccessStatusCode)
             {
                 string content;

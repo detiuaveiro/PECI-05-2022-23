@@ -3,7 +3,7 @@ import subprocess
 
 def launch_backend():
     app_name = "backend"
-    app_config_path = os.path.join(app_name, "docker-compose.yml")
+    app_config_path = os.path.join(app_name, "docker-compose.yaml")
     print(f"Launching {app_name}...")
     subprocess.run(["docker-compose", "-f", app_config_path, "up", "-d"])
     print("App launched successfully!")
@@ -13,7 +13,8 @@ def launch_frontend():
         print("Launching frontend...")
         os.chdir("./frontend")
         subprocess.check_call(['npm', 'install'])
-        subprocess.check_call(['npm', 'start'])
+        subprocess.Popen(['npm', 'start'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        os.chdir("../")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred while running the Node.js application: {e}")
 

@@ -65,19 +65,23 @@ const Com = () => {
   };
 
   const handleSubmit = () => {
-    setAddress("0.0.0.0:" + address);
     connectToSwitch(name, address, id);
   };
 
   const connectToSwitch = async (name, address, id) => {
     try {
+      let formData = new FormData();
+      formData.append("name", name);
+      formData.append("address", address);
+      formData.append("device_id", id);
+      formData.append("proto_dump", "dump");
       const response = await axios.post(
         "http://localhost:80/p4runtime/connect",
+        formData,
         {
-          proto_dump: "dump",
-          name: name,
-          address: address,
-          device_id: id,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
       );
       console.log(response.data);
@@ -114,12 +118,17 @@ const Com = () => {
 
   const programSwitch = async (file, progName, progId) => {
     try {
+      let formData = new FormData();
+      formData.append("p4file", file);
+      if(progName !== "") formData.append("progName", progName);
+      if(progId !== "") formData.append("progId", progId);
       const response = await axios.post(
         "http://localhost:80/p4runtime/program",
+        formData,
         {
-          p4file: file,
-          device_id: progId,
-          device_name: progName,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
       );
       console.log(response.data);
@@ -130,14 +139,20 @@ const Com = () => {
 
   const writeTable = async (table, fields, actName, actParams, wrName) => {
     try {
+      let formData = new FormData();
+      if(table !== "") formData.append("table", table);
+      if(fields !== "") formData.append("match", fields);
+      if(actName !== "") formData.append("action_name", actName);
+      if(actParams !== "") formData.append("action_params", actParams);
+      if(wrName !== "") formData.append("device_id", wrName);
+
       const response = await axios.post(
         "http://localhost:80/p4runtime/inserttable",
+        formData,
         {
-          table_name: table,
-          match_fields: fields,
-          action_name: actName,
-          action_params: actParams,
-          device_name: wrName,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
       );
       console.log(response.data);

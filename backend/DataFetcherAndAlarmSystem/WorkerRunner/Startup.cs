@@ -13,7 +13,6 @@ namespace WorkerRunner
         public static void MakeMigrations(DatabaseContext context)
         {
             context.Database.EnsureCreated();
-            context.Database.Migrate();
         }
 
         public static IConfiguration loadConfig()
