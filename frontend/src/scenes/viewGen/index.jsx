@@ -4,7 +4,33 @@ import Header from "../../components/Header";
 import { useLocation } from "react-router-dom";
 import Topology from "../../service/topology";
 import React, { useState, useEffect } from "react";
-import ReactFlow, { MiniMap, Controls, Background } from "react-flow-renderer";
+import ReactFlow, { MiniMap, Controls, Background, Handle, Node } from "react-flow-renderer";
+import "./App.css";
+
+const CustomNode = ({ data }) => {
+  return (
+    <div className="custom-node">
+      <Handle type="source" position="right" />
+      Host
+      <br/>
+      {data.label}
+      
+    </div>
+  );
+};
+
+const edgeOptions = {
+  animated: true,
+  style: {
+    stroke: 'white',
+  },
+};
+
+const connectionLineStyle = { stroke: 'white' };
+
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 const ViewGen = () => {
   const theme = useTheme();
@@ -142,29 +168,37 @@ const ViewGen = () => {
   useEffect(() => {
     if (isLoading === false) {
       const nodes = [];
+      const hostline= Math.random() *5;
       // Create host nodes
       for (const host in info.hosts) {
         nodes.push({
           id: host,
+          type: 'custom',
+          
           data: { label: host },
           position: {
             x:/* Math.random() * (window.innerWidth*0.5)*/ nodes.length*200,
-            y: Math.random() *5,
+            y:hostline,
           },
           style: { background: "#FF5A5F", color: "#fff" },
         });
       }
       // Create switch nodes
+      const hostcount=nodes.length;
+      const switchesline=100+ Math.random() *200;
+      let x=0;
       for (const switchId in info.switches) {
         nodes.push({
           id: switchId,
           data: { label: `Switch ${switchId}` },
           position: {
-            x: Math.random() * (window.innerWidth*0.5),
-            y: 100+ Math.random() * 200,
+            x: (nodes.length-hostcount)*300, // Math.random() * (window.innerWidth*0.5),
+            y: switchesline + (x*200),
           },
           style: { background: "#008489", color: "#fff" },
         });
+        if(x==0) x=1;
+        else x=0;
       }
       // Create links between nodes
       const edges = links.map((link) => ({
@@ -195,8 +229,24 @@ const ViewGen = () => {
               <ReactFlow 
                 defaultNodes={elements}
                 defaultEdges={connections}
+                nodeTypes={nodeTypes}
+                defaultEdgeOptions={edgeOptions}
+                connectionLineStyle={connectionLineStyle}
               >
-                <MiniMap />
+                <MiniMap 
+                  nodeStrokeColor={(n) => {
+                    if (n.style?.background) return n.style.background;
+                    if (n.type === 'custom') return '#FF0000'; // Custom color for diamond nodes
+                    return '#ddd';
+                  }}
+                  nodeColor={(n) => {
+                    if (n.style?.background) return n.style.background;
+                    if (n.type === 'custom') return '#FF0000'; // Custom color for diamond nodes
+                    return '#fff';
+                  }}
+                  nodeBorderRadius={2}
+                  
+                />
                 <Controls />
                 <Background color="#aaa" gap={16} />
               </ReactFlow>
