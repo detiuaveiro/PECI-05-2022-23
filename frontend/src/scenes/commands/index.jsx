@@ -146,7 +146,7 @@ const Com = () => {
     try {
       let formData = new FormData();
       if(table !== "") formData.append("table", table);
-      if(fields !== "") formData.append("match", fields);
+      if(fields !== "") formData.append("match_fields", fields);
       if(actName !== "") formData.append("action_name", actName);
       if(actParams !== "") formData.append("action_params", actParams);
       if(wrName !== "") formData.append("device_id", wrName);
