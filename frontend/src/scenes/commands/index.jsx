@@ -103,11 +103,16 @@ const Com = () => {
 
   const disconnect = async (dcName, dcId) => {
     try {
+      let formData = new FormData();
+      if(dcName !== "") formData.append("device_name", dcName);
+      if(dcId !== "") formData.append("device_id", dcId);
       const response = await axios.post(
         "http://localhost:80/p4runtime/disconnect",
+        formData,
         {
-          device_name: dcName,
-          device_id: dcId,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         }
       );
       console.log(response.data);
