@@ -59,6 +59,10 @@ const Com = () => {
   const [actName, setActName] = useState("");
   const [actParams, setActParams] = useState("");
   const [fields, setFields] = useState("");
+  const [responseStatusCodeConnect, setResponseStatusCodeConnect] = useState(0);
+  const [responseStatusCodeDisconnect, setResponseStatusCodeDisconnect] = useState(0);
+  const [responseStatusCodeWrite, setResponseStatusCodeWrite] = useState(0);
+  const [responseStatusCodeProgram, setResponseStatusCodeProgram] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -85,8 +89,10 @@ const Com = () => {
         }
       );
       console.log(response.data);
+      setResponseStatusCodeConnect(response.status);
     } catch (error) {
       console.error(error);
+      setResponseStatusCodeConnect(400);
     }
   };
 
@@ -116,10 +122,14 @@ const Com = () => {
         }
       );
       console.log(response.data);
+      setResponseStatusCodeDisconnect(response.status);
     } catch (error) {
       console.error(error);
+      setResponseStatusCodeDisconnect(400);
     }
   };
+
+
 
   const programSwitch = async (file, progName, progId) => {
     try {
@@ -137,7 +147,9 @@ const Com = () => {
         }
       );
       console.log(response.data);
+      setResponseStatusCodeProgram(response.status);
     } catch (error) {
+      setResponseStatusCodeProgram(400);
       console.error(error);
     }
   };
@@ -161,8 +173,10 @@ const Com = () => {
         }
       );
       console.log(response.data);
+      setResponseStatusCodeWrite(response.status);
     } catch (error) {
       console.error(error);
+      setResponseStatusCodeWrite(400);
     }
   };
 
@@ -233,7 +247,7 @@ const Com = () => {
             </Box>
             <Button
               sx={{
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: responseStatusCodeConnect == 0 ? colors.blueAccent[700] : responseStatusCodeConnect > 201 ? "#FF0000" : colors.greenAccent[700],
                 color: colors.grey[100],
                 fontSize: "14px",
                 fontWeight: "bold",
@@ -283,7 +297,7 @@ const Com = () => {
             </Box>
             <Button
               sx={{
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: responseStatusCodeDisconnect == 0 ? colors.blueAccent[700] : responseStatusCodeDisconnect > 201 ? "#FF0000" : colors.greenAccent[700],
                 color: colors.grey[100],
                 fontSize: "14px",
                 fontWeight: "bold",
@@ -347,7 +361,7 @@ const Com = () => {
               </Box>
               <Button
                 sx={{
-                  backgroundColor: colors.blueAccent[700],
+                  backgroundColor: responseStatusCodeProgram == 0 ? colors.blueAccent[700] : responseStatusCodeProgram > 201 ? "#FF0000" : colors.greenAccent[700],
                   color: colors.grey[100],
                   fontSize: "14px",
                   fontWeight: "bold",
@@ -415,7 +429,7 @@ const Com = () => {
             </Box>
             <Button
               sx={{
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: responseStatusCodeWrite == 0 ? colors.blueAccent[700] : responseStatusCodeWrite > 201 ? "#FF0000" : colors.greenAccent[700],
                 color: colors.grey[100],
                 fontSize: "14px",
                 fontWeight: "bold",
