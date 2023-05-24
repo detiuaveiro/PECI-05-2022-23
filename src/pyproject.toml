@@ -3,7 +3,7 @@ name = "src"
 version = "0.1.0"
 description = ""
 authors = ["David Araujo <davidaraujo@ua.pt>"]
-license = "Apache License"
+license = "../LICENSE"
 readme = "README.md"
 
 [tool.poetry.dependencies]

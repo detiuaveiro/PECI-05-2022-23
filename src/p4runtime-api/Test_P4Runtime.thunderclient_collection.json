@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-05-24T00:59:29.422Z",
+    "dateExported": "2023-05-24T10:49:05.965Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -14,7 +14,7 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2023-05-24T00:27:35.545Z",
-            "modified": "2023-05-24T00:27:35.545Z",
+            "modified": "2023-05-24T10:46:01.745Z",
             "headers": [],
             "params": [],
             "body": {
@@ -22,15 +22,15 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "proto_dump",
+                        "name": "switch_proto_dump",
                         "value": "dump"
                     },
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s1"
                     },
                     {
-                        "name": "address",
+                        "name": "device_address",
                         "value": "0.0.0.0:50051"
                     },
                     {
@@ -50,7 +50,7 @@
             "method": "POST",
             "sortNum": 33125,
             "created": "2023-05-24T00:27:35.546Z",
-            "modified": "2023-05-24T00:27:35.546Z",
+            "modified": "2023-05-24T10:46:20.438Z",
             "headers": [],
             "params": [],
             "body": {
@@ -58,15 +58,15 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "proto_dump",
+                        "name": "switch_proto_dump",
                         "value": "dump"
                     },
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s2"
                     },
                     {
-                        "name": "address",
+                        "name": "device_address",
                         "value": "0.0.0.0:50052"
                     },
                     {
@@ -86,7 +86,7 @@
             "method": "POST",
             "sortNum": 34687.5,
             "created": "2023-05-24T00:27:35.547Z",
-            "modified": "2023-05-24T00:27:35.547Z",
+            "modified": "2023-05-24T10:46:42.438Z",
             "headers": [],
             "params": [],
             "body": {
@@ -94,15 +94,15 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "proto_dump",
+                        "name": "switch_proto_dump",
                         "value": "dump"
                     },
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s3"
                     },
                     {
-                        "name": "address",
+                        "name": "device_address",
                         "value": "0.0.0.0:50053"
                     },
                     {
@@ -192,7 +192,7 @@
             "method": "POST",
             "sortNum": 43437.5,
             "created": "2023-05-24T00:27:35.551Z",
-            "modified": "2023-05-24T00:27:35.551Z",
+            "modified": "2023-05-24T10:47:12.083Z",
             "headers": [],
             "params": [],
             "body": {
@@ -200,15 +200,15 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "proto_dump",
+                        "name": "switch_proto_dump",
                         "value": "dump"
                     },
                     {
-                        "name": "name",
+                        "name": "device_name",
                         "value": "s3"
                     },
                     {
-                        "name": "address",
+                        "name": "device_address",
                         "value": "0.0.0.0:50053"
                     },
                     {
@@ -253,7 +253,7 @@
             "method": "POST",
             "sortNum": 60000,
             "created": "2023-05-24T00:27:35.553Z",
-            "modified": "2023-05-24T00:27:35.553Z",
+            "modified": "2023-05-24T10:47:38.248Z",
             "headers": [],
             "params": [],
             "body": {
@@ -261,7 +261,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "p4file",
+                        "name": "p4file_name",
                         "value": "advanced_tunnel"
                     },
                     {

@@ -114,14 +114,14 @@ def connect_to_switch():
             - /p4runtime/connect
 
         Attributes:
-            - name                : string    // Device name
-            - address             : string    // bmv2 IP:PORT address
-            - device_id           : string    // device id
-            - proto_dump          : string    // File to dump logs
+            - device_name         : string    // Device name
+            - device_address      : string    // BMV2 device IP:PORT address
+            - device_id           : string    // Device id
+            - switch_proto_dump   : string    // File to dump logs
     """
-    name = request.form['name']
-    addr = request.form['address']
-    device_id = (int)(request.form['device_id'])
+    name = request.form['device_name']
+    addr = request.form['device_address']
+    device_id = (int)(request.form['switch_id'])
     
     if not os.path.isdir("./dumps/"):
             os.system(f"mkdir ./dumps/")
@@ -149,7 +149,7 @@ def disconnect_from_switch():
             - /p4runtime/connect
 
         Attributes:
-            - device_name         : string    // Device name, if not specified, deferes to device_id
+            - device_name         : string    // Device name, if not specified, defers to device_id
             - device_id           : string    // device id, if not specified, disconnect from all
     """
     name = request.form.get('device_name', None)
@@ -170,19 +170,19 @@ def program_switch():
             - /p4runtime/program
 
         Attributes:
-            - p4file        : string    // P4 file path with which to compile the switch
+            - p4file_name   : string    // P4 file path with which to compile the switch
             - device_name   : string    // Bmv2Switch to program (deferes to id)
             - device_id     : string    // Bmv2Switch to program (will program all if not specified)
             
     
     """
-    if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file']}.p4")):
+    if not os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f"{request.form['p4file_name']}.p4")):
         return 'File does not exist', 400
     device_id = request.form.get('device_id', None, type=int)
     name = request.form.get('device_name', None)
     print(device_id, name)
     
-    p4info_path, p4json = _compile_p4(request.form['p4file'])
+    p4info_path, p4json = _compile_p4(request.form['p4file_name'])
 
     for sw_conn, _ in _get_switch_conns(device_id=device_id,device_name=name):
         p4info_helper = helper.P4InfoHelper(p4info_path)
@@ -216,8 +216,8 @@ def insert_table():
             - /p4runtime/inserttable
 
         Attributes:
-            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
-            - device_id         : string    // Bmv2Switch id where to inser the table entry (will insert on switches all if not specified)
+            - device_name       : string    // BMV2 device name where to insert the table entry (will defer to device_id)
+            - device_id         : string    // BMV2 device id where to insert the table entry (will insert on switches all if not specified)
             - table_name        : string    // Table name
             - match_fields      : string    // Matching packet field
             - action_name       : string    // Name of the action
@@ -225,16 +225,21 @@ def insert_table():
             - action_params     : string    // Action parameters
             - priority          : string    // Action priority
     """
-    device_id = request.form.get('device_id', None, type=int)
     device_name = request.form.get('device_name', None)
-    match_fields=request.form.get('match',None)
+    device_id = request.form.get('device_id', None, type=int)
+    table_name = request.form.get('table_name', None)
+    match_fields=request.form.get('match_fields',None)
+    action_name=request.form.get('action_name',None)
+    default_action = bool(request.form.get('default_action', False))
     action_params= request.form.get('action_params', None)
+    priority=request.form.get('priority', None)
     
     for sw_conn, _ in _get_switch_conns(device_name=device_name, device_id=device_id):
         p4info_helper = helper.P4InfoHelper(sw_conn.GetForwardingPipelineConfig())
             
         if match_fields is not None:
             match_fields = json.loads(match_fields)
+            #FIXME - Support for another matches other than IP
             for key, value in match_fields.items():
                 ip = value.split(',')[0][2:-1]
                 prefix = value.split(',')[1][0:-1]
@@ -246,12 +251,12 @@ def insert_table():
             action_params = json.loads(action_params)
             
         table_entry = p4info_helper.buildTableEntry(
-            table_name=request.form['table_name'],
+            table_name=table_name,
             match_fields=match_fields,
-            default_action=bool(request.form.get('default_action', False)),
-            action_name=request.form.get('action_name',None),
+            default_action=default_action,
+            action_name=action_name,
             action_params=action_params,
-            priority=request.form.get('priority', None))
+            priority=priority)
 
         sw_conn.WriteTableEntry(table_entry)
         
@@ -265,8 +270,8 @@ def get_table_entries():
             - /p4runtime/gettable
     
         Attributes:
-            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
-            - device_id         : number    // Bmv2Switch to program (will return all if not specified)
+            - device_name       : string    // BMV2 device name where to inser the table entry (will defer to device_id)
+            - device_id         : number    // BMV2 device to program (will return all if not specified)
             - table_id          : number    // Table from which to return entries
             - table_name        : string    // Table from which to return entries (used instead of table_id)
     """
@@ -387,8 +392,8 @@ def get_counters():
             - /p4runtime/getcounters
     
         Attributes:
-            - device_name       : string    // Bmv2Switch name where to inser the table entry (will defer to device_id)
-            - device_id         : number    // Bmv2Switch to program (will return counter for all switches all if not specified)
+            - device_name       : string    // BMV2 device name where to insert the table entry (will defer to device_id)
+            - device_id         : number    // BMV2 device to program (will return counter for all switches all if not specified)
             - counter_name      : string    // Counter name
             - index             : number    // Index associated with the counter
             
@@ -451,7 +456,7 @@ def get_connections():
     return json.dumps(connections), 200
     
        
-# ATTENTION - Shutting Mininet down before exiting
+# ATTENTION - Cleaning connections map
 def exit_handler(*args):
     clean()   
     exit()
