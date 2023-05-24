@@ -145,11 +145,11 @@ const Com = () => {
   const writeTable = async (table, fields, actName, actParams, wrName) => {
     try {
       let formData = new FormData();
-      if(table !== "") formData.append("table", table);
-      if(fields !== "") formData.append("match", fields);
+      if(table !== "") formData.append("table_name", table);
+      if(fields !== "") formData.append("match_fields", fields);
       if(actName !== "") formData.append("action_name", actName);
       if(actParams !== "") formData.append("action_params", actParams);
-      if(wrName !== "") formData.append("device_id", wrName);
+      if(wrName !== "") formData.append("device_name", wrName);
 
       const response = await axios.post(
         "http://localhost:80/p4runtime/inserttable",
