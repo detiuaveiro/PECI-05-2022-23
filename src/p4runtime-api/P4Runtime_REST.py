@@ -117,16 +117,16 @@ def connect_to_switch():
             - device_name         : string    // Device name
             - device_address      : string    // BMV2 device IP:PORT address
             - device_id           : string    // Device id
-            - switch_proto_dump   : string    // File to dump logs
+            - device_proto_dump   : string    // File to dump logs
     """
     name = request.form['device_name']
     addr = request.form['device_address']
-    device_id = (int)(request.form['switch_id'])
+    device_id = (int)(request.form['device_id'])
     
     if not os.path.isdir("./dumps/"):
             os.system(f"mkdir ./dumps/")
     
-    proto_dump = "./dumps/" + request.form['proto_dump']
+    proto_dump = "./dumps/" + request.form['device_proto_dump']
     if all(map(lambda conn: conn.device_id != device_id, app.config['SWS_CONNECTIONS'])):
         conn = bmv2.Bmv2SwitchConnection(name=name,
                                         address=addr,

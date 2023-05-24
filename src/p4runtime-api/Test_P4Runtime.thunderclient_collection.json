@@ -1,7 +1,7 @@
 {
     "client": "Thunder Client",
     "collectionName": "P4Runtime REST API",
-    "dateExported": "2023-05-24T10:49:05.965Z",
+    "dateExported": "2023-05-24T11:22:13.014Z",
     "version": "1.1",
     "folders": [],
     "requests": [
@@ -14,7 +14,7 @@
             "method": "POST",
             "sortNum": 30000,
             "created": "2023-05-24T00:27:35.545Z",
-            "modified": "2023-05-24T10:46:01.745Z",
+            "modified": "2023-05-24T11:20:16.831Z",
             "headers": [],
             "params": [],
             "body": {
@@ -22,7 +22,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "switch_proto_dump",
+                        "name": "device_proto_dump",
                         "value": "dump"
                     },
                     {
@@ -50,7 +50,7 @@
             "method": "POST",
             "sortNum": 33125,
             "created": "2023-05-24T00:27:35.546Z",
-            "modified": "2023-05-24T10:46:20.438Z",
+            "modified": "2023-05-24T11:20:19.585Z",
             "headers": [],
             "params": [],
             "body": {
@@ -58,7 +58,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "switch_proto_dump",
+                        "name": "device_proto_dump",
                         "value": "dump"
                     },
                     {
@@ -86,7 +86,7 @@
             "method": "POST",
             "sortNum": 34687.5,
             "created": "2023-05-24T00:27:35.547Z",
-            "modified": "2023-05-24T10:46:42.438Z",
+            "modified": "2023-05-24T11:20:23.081Z",
             "headers": [],
             "params": [],
             "body": {
@@ -94,7 +94,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "switch_proto_dump",
+                        "name": "device_proto_dump",
                         "value": "dump"
                     },
                     {
@@ -192,7 +192,7 @@
             "method": "POST",
             "sortNum": 43437.5,
             "created": "2023-05-24T00:27:35.551Z",
-            "modified": "2023-05-24T10:47:12.083Z",
+            "modified": "2023-05-24T11:20:58.190Z",
             "headers": [],
             "params": [],
             "body": {
@@ -200,7 +200,7 @@
                 "raw": "",
                 "form": [
                     {
-                        "name": "switch_proto_dump",
+                        "name": "device_proto_dump",
                         "value": "dump"
                     },
                     {
@@ -228,7 +228,7 @@
             "method": "POST",
             "sortNum": 50000,
             "created": "2023-05-24T00:27:35.552Z",
-            "modified": "2023-05-24T00:28:29.951Z",
+            "modified": "2023-05-24T11:21:15.968Z",
             "headers": [],
             "params": [],
             "body": {
@@ -238,7 +238,7 @@
                 "files": [
                     {
                         "name": "file",
-                        "value": "/home/localvmserver/PECI-05-2022-23/p4runtime-api/src/testFiles/advanced_tunnel.p4"
+                        "value": "/home/localvmserver/PECI-05-2022-23/src/testFiles/advanced_tunnel.p4"
                     }
                 ]
             },
