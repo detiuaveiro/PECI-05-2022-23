@@ -2,6 +2,10 @@
 *__pycache__
 *.pcap
 *.log
+*tutorials
+*dumps
+*compiles
+*uploads
 
 *.vscode
 /src/p4controller/logs
