@@ -227,7 +227,7 @@ def insert_table():
     """
     device_id = request.form.get('device_id', None, type=int)
     device_name = request.form.get('device_name', None)
-    match_fields=request.form.get('match',None)
+    match_fields=request.form.get('match_fields',None)
     action_params= request.form.get('action_params', None)
     
     for sw_conn, _ in _get_switch_conns(device_name=device_name, device_id=device_id):
