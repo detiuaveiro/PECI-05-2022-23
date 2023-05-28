@@ -6,7 +6,7 @@
 
 - [Video demonstration](https://github.com/detiuaveiro/PECI-05-2022-23/blob/documentation/documentation/deliverables/Video.mp4)
 
-- [Poster](https://github.com/detiuaveiro/PECI-05-2022-23/blob/documentation/documentation/deliverables/Poster.pdf)
+- [Poster](https://github.com/detiuaveiro/PECI-05-2022-23/blob/documentation/documentation/deliverables/MIECT_PECI_Grupo-5.pdf)
 
 - [Report](https://github.com/detiuaveiro/PECI-05-2022-23/blob/documentation/documentation/deliverables/Report.pdf)
 
