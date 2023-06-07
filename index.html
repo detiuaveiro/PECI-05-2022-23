@@ -17,13 +17,12 @@ body {font-family: "Lato", sans-serif}
 <!-- Navbar -->
 <div class="w3-top">
   <div class="w3-bar w3-black w3-card">
-    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <img src="img/logoText.png" class="w3-bar-item" style="width:150px; height:45px;"/>
     <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
     <a href="#p4" class="w3-bar-item w3-button w3-padding-large w3-hide-small">P4</a>
     <a href="#proj" class="w3-bar-item w3-button w3-padding-large w3-hide-small">PROJECT</a>
     <a href="#dev" class="w3-bar-item w3-button w3-padding-large w3-hide-small">DEVELOPMENT</a>
-  
-    
+    <a href="#vid" class="w3-bar-item w3-button w3-padding-large w3-hide-small">DEMO</a>
   </div>
 </div>
 
@@ -32,20 +31,27 @@ body {font-family: "Lato", sans-serif}
   <a href="#p4" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">P4</a>
   <a href="#proj" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">PROJECT</a>
   <a href="#dev" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">DEVELOPMENT</a>
+  <a href="#vid" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">DEMO</a>
 </div>
 
 
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
 
   
-  <div class="mySlides w3-display-container w3-center">
-    <img src="img/one.jpg" style="width:100%;max-height:600px">
+  <div class="mySlides w3-display-container w3-center fade">
+    <img src="img/sentrylogo.png" style="width:100%;max-height:600px">
   </div>
-  <div class="mySlides w3-display-container w3-center">
-    <img src="img/p4_language.png" style="width:100%;max-height:600px">
+  <div class="mySlides w3-display-container w3-center fade">
+    <img src="img/p4logo.png" style="width:100%;max-height:600px">
   </div>
-  <div class="mySlides w3-display-container w3-center">
-    <img src="img/tech.jpg" style="width:100%;max-height:600px">
+  <div class="mySlides w3-display-container w3-center fade">
+    <img src="img/uno.jpg" style="width:100%;max-height:600px">
+  </div>
+  <br>
+  <div style="text-align:center">
+    <span class="dot"></span> 
+    <span class="dot"></span> 
+    <span class="dot"></span> 
   </div>
 
   
@@ -91,7 +97,6 @@ body {font-family: "Lato", sans-serif}
     <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
       <h2 class="w3-wide w3-center">WHAT IS THIS PROJECT?</h2>
       <p class="w3-opacity w3-center"><i>What are we doing here?</i></p><br>
-
       <h3 class="w3-wide w3-center">The Problem</h3>
       <p class="w3-justify">The limitations of big traditional networks have become apparent as their success has grown. 
         They lack the flexibility needed to adapt to changing circumstances, making them cumbersome to manage and prone to outages. 
@@ -130,6 +135,13 @@ body {font-family: "Lato", sans-serif}
             <p class="w3-opacity"><i>By: Guilherme Craveiro</i></p>
             <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('dashboard').style.display='block'">Explore</button>
           </div>
+        </div>
+        
+        <div class="w3-half w3-margin-bottom">
+          <button class="w3-button w3-white w3-round w3-margin-top w3-margin-left2" onclick="downloadPDF()">Download Report <i class="fa fa-download w3-margin-left"></i></button>
+        </div>
+        <div class="w3-half w3-margin-bottom" style="text-align: right;">
+          <button class="w3-button w3-white w3-round w3-margin-top w3-margin-right2" onclick="downloadPDF2()">Download Poster <i class="fa fa-download w3-margin-left"></i></button>
         </div>
       </div>
     </div>
@@ -248,7 +260,7 @@ body {font-family: "Lato", sans-serif}
           </div>
           <div class="w3-col m6" style="padding-left:30px;padding-right:30px;">
             <div class="w3-card-4">
-              <img src="img/dashboard.jpg" alt="Controlling APIs" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: solid 2px #ddd;">
+              <img src="img/dashboard.png" alt="Controlling APIs" style="width:100%; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); border: solid 2px #ddd;">
             </div>
             <p>
               By presenting all relevant information in a clear and concise manner, a well-designed dashboard enhances network visibility and 
@@ -328,13 +340,24 @@ body {font-family: "Lato", sans-serif}
     
       <div id="release" class="w3-container contain" style="display:none; border: solid 2px black; border-radius: 10px;">
         <h2>Release</h2>
-        <p class="para">Information about the release phase.</p>
+        <p class="para">During the Release Phase of the project, significant upgrades were implemented to enhance the functionality and visual representation of the dashboard. The development team focused on integrating advanced features that would empower users to gain valuable insights from complex networks and streamline their interactions with the project's backend.</p>
+        <p class="para">One of the key highlights of this phase was the introduction of a cutting-edge visual representation network within the dashboard. This enhancement allowed users to effortlessly analyze and comprehend intricate data patterns through intuitive and visually appealing displays. The network visualizations provided an effective means to grasp complex relationships and identify critical trends, enabling users to make informed decisions with greater confidence.</p>
+        <p class="para">In addition to the visual upgrades, the development team also incorporated a crucial feature that revolutionized the user experience: the option to send commands directly to the backend of the project. This advancement empowered users to interact dynamically with the system, enabling them to perform various actions, initiate processes, and customize settings with ease. By seamlessly bridging the gap between the dashboard and the project's backend, this new functionality enhanced efficiency, responsiveness, and overall usability.</p>
+        <p class="para">While focusing on the technical aspects, the Release Phase also emphasized organization and preparation for the project's official release. The team diligently reviewed and refined the entire system, ensuring that it met the highest quality standards and addressed potential vulnerabilities. Rigorous testing and debugging processes were conducted to eliminate any remaining bugs or glitches, guaranteeing a stable and reliable platform for end-users.</p>
+        <p class="para">Additionally, meticulous attention was given to streamlining workflows, optimizing resource allocation, and enhancing the overall user interface. The aim was to provide a seamless and intuitive user experience that would facilitate user adoption and satisfaction.</p>
       </div>
     </div>
     
-    
 </div>
-
+<div class="w3-black" id="vid">
+  <div class="w3-container w3-content w3-padding-64 w3-center" style="max-width:1000px">
+    <h1 class="w3-wide">DEMO</h1>
+    <p class="w3-opacity w3-center"><i>Video Demo</i></p><br>
+    <video width="1000" controls>
+      <source src="assets/P4Sentry.mp4"/>
+    </video>
+  </div>
+</div>  
 
 <footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
   <i class="fa fa-facebook-official w3-hover-opacity"></i>
@@ -354,12 +377,17 @@ carousel();
 function carousel() {
   var i;
   var x = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";  
   }
   myIndex++;
-  if (myIndex > x.length) {myIndex = 1}    
+  if (myIndex > x.length) {myIndex = 1}  
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }  
   x[myIndex-1].style.display = "block";  
+  dots[myIndex-1].className += " active";
   setTimeout(carousel, 4000);    
 }
 
@@ -441,6 +469,27 @@ function openSection(event, sectionName) {
   event.currentTarget.classList.add("w3-red");
 }
 
+  function downloadPDF() {
+    var link = document.createElement('a');
+    link.href = 'assets/Final_Report.pdf';
+    link.download = 'Report.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function downloadPDF2() {
+    var link = document.createElement('a');
+    link.href = 'assets/Poster.pdf';
+    link.download = 'Poster.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+
 </script>
 
 <style>
@@ -458,6 +507,38 @@ function openSection(event, sectionName) {
 
   .para {
   font-size: 18px;
+  }
+
+  .fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+  }
+
+  @keyframes fade{
+    from {opacity: .4}
+    to {opacity: 1}
+  }
+
+  .dot{
+  height: 12px;
+  width: 12px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+  }
+
+  .active{
+    background-color: #717171;
+  }
+
+  .w3-margin-left2 {
+    margin-left: 160px; /* Increase the value to make the left margin bigger */
+  }
+
+  .w3-margin-right2 {
+    margin-right: 160px; /* Increase the value to make the left margin bigger */
   }
   
 </style>
